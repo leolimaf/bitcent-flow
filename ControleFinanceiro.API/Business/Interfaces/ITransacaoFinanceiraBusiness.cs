@@ -1,10 +1,9 @@
 ﻿using ControleFinanceiro.API.DTOs.TransacaoFinanceira;
 using FluentResults;
-using Microsoft.AspNetCore.JsonPatch;
 
 namespace ControleFinanceiro.API.Business.Interfaces;
 
-public interface IFinancaBusiness
+public interface ITransacaoFinanceiraBusiness
 {
     ReadTransacaoDto AdicionarTransacao(CreateTransacaoDto transacaoDto);
     ReadTransacaoDto ObterTransacaoPorId(long id);

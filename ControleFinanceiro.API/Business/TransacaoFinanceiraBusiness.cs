@@ -4,16 +4,15 @@ using ControleFinanceiro.API.Data;
 using ControleFinanceiro.API.DTOs.TransacaoFinanceira;
 using ControleFinanceiro.API.Models;
 using FluentResults;
-using Microsoft.AspNetCore.JsonPatch;
 
 namespace ControleFinanceiro.API.Business;
 
-public class FinancaBusiness : IFinancaBusiness
+public class TransacaoFinanceiraBusiness : ITransacaoFinanceiraBusiness
 {
     private AppDbContext _context;
     private IMapper _mapper;
 
-    public FinancaBusiness(AppDbContext context, IMapper mapper)
+    public TransacaoFinanceiraBusiness(AppDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;
