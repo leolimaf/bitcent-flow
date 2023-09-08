@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace ControleFinanceiro.API.Controllers;
 
 [ApiController]
-[Route("transacoes-financeiras")]
+[ApiVersion("1.0")]
+[Route("v{version:apiVersion}/transacoes-financeiras")]
 [Produces("application/json")]
 public class TransacaoFinanceiraController : ControllerBase
 {

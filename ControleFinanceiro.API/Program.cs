@@ -3,9 +3,8 @@ using System.Reflection;
 using ControleFinanceiro.API.Data;
 using ControleFinanceiro.API.Services;
 using ControleFinanceiro.API.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Interfaces;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(opts => opts.UseInMemoryDatabase("InMemory"));
 
+builder.Services.AddCors();
 // var connectionString = "ControleFinanceiroConnection";
 // builder.Services.AddDbContext<AppDbContext>(opts =>
 // {
@@ -25,6 +25,17 @@ builder.Services.AddDbContext<AppDbContext>(opts => opts.UseInMemoryDatabase("In
 builder.Services.AddControllers();
 builder.Services.AddScoped<ITransacaoFinanceiraService, TransacaoFinanceiraService>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddApiVersioning(opts =>
+{
+    opts.DefaultApiVersion = new ApiVersion(1, 0);
+    opts.ReportApiVersions = true;
+    opts.AssumeDefaultVersionWhenUnspecified = true;
+});
+builder.Services.AddVersionedApiExplorer(opts =>
+{
+    opts.GroupNameFormat = "'v'VVV";
+    opts.SubstituteApiVersionInUrl = true;
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(opts =>
@@ -72,6 +83,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseRouting();
+
+app.UseCors(o => o.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
+app.UseApiVersioning();
 
 app.UseAuthorization();
 
