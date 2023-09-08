@@ -1,18 +1,18 @@
 ﻿using AutoMapper;
-using ControleFinanceiro.API.Business.Interfaces;
 using ControleFinanceiro.API.Data;
 using ControleFinanceiro.API.DTOs.TransacaoFinanceira;
 using ControleFinanceiro.API.Models;
+using ControleFinanceiro.API.Services.Interfaces;
 using FluentResults;
 
-namespace ControleFinanceiro.API.Business;
+namespace ControleFinanceiro.API.Services;
 
-public class TransacaoFinanceiraBusiness : ITransacaoFinanceiraBusiness
+public class TransacaoFinanceiraService : ITransacaoFinanceiraService
 {
     private AppDbContext _context;
     private IMapper _mapper;
 
-    public TransacaoFinanceiraBusiness(AppDbContext context, IMapper mapper)
+    public TransacaoFinanceiraService(AppDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;

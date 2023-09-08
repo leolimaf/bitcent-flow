@@ -1,9 +1,9 @@
 ﻿using ControleFinanceiro.API.DTOs.TransacaoFinanceira;
 using FluentResults;
 
-namespace ControleFinanceiro.API.Business.Interfaces;
+namespace ControleFinanceiro.API.Services.Interfaces;
 
-public interface ITransacaoFinanceiraBusiness
+public interface ITransacaoFinanceiraService
 {
     ReadTransacaoDto AdicionarTransacao(CreateTransacaoDto transacaoDto);
     ReadTransacaoDto ObterTransacaoPorId(long id);

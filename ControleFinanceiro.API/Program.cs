@@ -1,9 +1,11 @@
 using System.Diagnostics;
 using System.Reflection;
-using ControleFinanceiro.API.Business;
-using ControleFinanceiro.API.Business.Interfaces;
 using ControleFinanceiro.API.Data;
+using ControleFinanceiro.API.Services;
+using ControleFinanceiro.API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Any;
+using Microsoft.OpenApi.Interfaces;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,7 +23,7 @@ builder.Services.AddDbContext<AppDbContext>(opts => opts.UseInMemoryDatabase("In
 // });
 
 builder.Services.AddControllers();
-builder.Services.AddScoped<ITransacaoFinanceiraBusiness, TransacaoFinanceiraBusiness>();
+builder.Services.AddScoped<ITransacaoFinanceiraService, TransacaoFinanceiraService>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -45,13 +47,13 @@ builder.Services.AddSwaggerGen(opts =>
     }
     opts.SwaggerDoc("v1",new OpenApiInfo
     {
-        Title = "Controle Financeiro - Web API",
+        Title = "Minhas Finanças - Web API",
         Version = "v1",
-        Description = "API REST desenvolvida para realizar o gerenciamento de transações financeiras",
+        Description = "Está aplicação foi desenvolvida com o propósito de auxiliar os usuários a realizarem o gerenciamento de suas transações financeiras, baseando-se nas suas receitas e despesas.",
         Contact = new OpenApiContact
         {
             Name = "Leonardo Lima",
-            Url = new Uri("https://github.com/leolimaf/controle-financeiro")
+            Url = new Uri("https://leolimaf.github.io/")
         }
     });
     opts.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
