@@ -1,8 +1,11 @@
-﻿namespace ControleFinanceiro.API.DTOs.Usuario;
+﻿using ControleFinanceiro.API.DTOs.TransacaoFinanceira;
+
+namespace ControleFinanceiro.API.DTOs.Usuario;
 
 public class ReadUsuarioDTO
 {
     public long Id { get; set; }
     public string Nome { get; set; }
     public string Email { get; set; }
+    public List<ReadTransacaoDTO> TransacaoFinanceiras { get; set; }
 }

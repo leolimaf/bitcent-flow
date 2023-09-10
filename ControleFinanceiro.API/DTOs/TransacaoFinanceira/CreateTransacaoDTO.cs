@@ -16,4 +16,7 @@ public class CreateTransacaoDTO
     
     [Required]
     public TipoTransacao Tipo { get; set; }
+    
+    [Required] 
+    public long IdUsuario { get; set; }
 }

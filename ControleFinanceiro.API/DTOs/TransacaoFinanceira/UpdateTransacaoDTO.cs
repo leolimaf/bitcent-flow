@@ -16,4 +16,7 @@ public class UpdateTransacaoDTO
     
     [Required]
     public TipoTransacao Tipo { get; set; }
+    
+    [Required] 
+    public long IdUsuario { get; set; }
 }
