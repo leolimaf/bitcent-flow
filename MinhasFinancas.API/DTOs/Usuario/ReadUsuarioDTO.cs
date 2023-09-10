@@ -1,6 +1,6 @@
-﻿using ControleFinanceiro.API.DTOs.TransacaoFinanceira;
+﻿using MinhasFinancas.API.DTOs.TransacaoFinanceira;
 
-namespace ControleFinanceiro.API.DTOs.Usuario;
+namespace MinhasFinancas.API.DTOs.Usuario;
 
 public class ReadUsuarioDTO
 {

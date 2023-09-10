@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using System.Reflection;
-using ControleFinanceiro.API.Data;
-using ControleFinanceiro.API.Services;
-using ControleFinanceiro.API.Services.Interfaces;
+using MinhasFinancas.API.Data;
+using MinhasFinancas.API.Services;
+using MinhasFinancas.API.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;

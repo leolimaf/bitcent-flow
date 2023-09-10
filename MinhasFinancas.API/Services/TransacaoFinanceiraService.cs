@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
-using ControleFinanceiro.API.Data;
-using ControleFinanceiro.API.DTOs.TransacaoFinanceira;
-using ControleFinanceiro.API.Models;
-using ControleFinanceiro.API.Services.Interfaces;
 using FluentResults;
+using MinhasFinancas.API.Data;
+using MinhasFinancas.API.DTOs.TransacaoFinanceira;
+using MinhasFinancas.API.Models;
+using MinhasFinancas.API.Services.Interfaces;
 
-namespace ControleFinanceiro.API.Services;
+namespace MinhasFinancas.API.Services;
 
 public class TransacaoFinanceiraService : ITransacaoFinanceiraService
 {

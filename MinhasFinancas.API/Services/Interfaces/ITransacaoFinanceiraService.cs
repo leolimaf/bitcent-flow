@@ -1,7 +1,7 @@
-﻿using ControleFinanceiro.API.DTOs.TransacaoFinanceira;
-using FluentResults;
+﻿using FluentResults;
+using MinhasFinancas.API.DTOs.TransacaoFinanceira;
 
-namespace ControleFinanceiro.API.Services.Interfaces;
+namespace MinhasFinancas.API.Services.Interfaces;
 
 public interface ITransacaoFinanceiraService
 {

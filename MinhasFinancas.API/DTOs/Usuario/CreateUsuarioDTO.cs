@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ControleFinanceiro.API.DTOs.Usuario;
+namespace MinhasFinancas.API.DTOs.Usuario;
 
-public class UpdateUsuarioDTO
+public class CreateUsuarioDTO
 {
     [Required]
     public string Nome { get; set; }

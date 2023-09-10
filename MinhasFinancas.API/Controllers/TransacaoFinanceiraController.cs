@@ -1,9 +1,9 @@
-﻿using ControleFinanceiro.API.DTOs.TransacaoFinanceira;
-using ControleFinanceiro.API.Services.Interfaces;
-using FluentResults;
+﻿using FluentResults;
 using Microsoft.AspNetCore.Mvc;
+using MinhasFinancas.API.DTOs.TransacaoFinanceira;
+using MinhasFinancas.API.Services.Interfaces;
 
-namespace ControleFinanceiro.API.Controllers;
+namespace MinhasFinancas.API.Controllers;
 
 [ApiController]
 [ApiVersion("1.0")]

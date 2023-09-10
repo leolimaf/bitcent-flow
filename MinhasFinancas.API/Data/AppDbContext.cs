@@ -1,7 +1,7 @@
-﻿using ControleFinanceiro.API.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using MinhasFinancas.API.Models;
 
-namespace ControleFinanceiro.API.Data;
+namespace MinhasFinancas.API.Data;
 
 public class AppDbContext : DbContext
 {

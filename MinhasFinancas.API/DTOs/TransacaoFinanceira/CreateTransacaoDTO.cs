@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using ControleFinanceiro.API.Models;
+using MinhasFinancas.API.Models;
 
-namespace ControleFinanceiro.API.DTOs.TransacaoFinanceira;
+namespace MinhasFinancas.API.DTOs.TransacaoFinanceira;
 
 public class CreateTransacaoDTO
 {

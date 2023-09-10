@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using ControleFinanceiro.API.DTOs.Usuario;
-using ControleFinanceiro.API.Models;
+using MinhasFinancas.API.DTOs.Usuario;
+using MinhasFinancas.API.Models;
 
-namespace ControleFinanceiro.API.Profiles;
+namespace MinhasFinancas.API.Profiles;
 
 public class UsuarioProfile : Profile
 {
