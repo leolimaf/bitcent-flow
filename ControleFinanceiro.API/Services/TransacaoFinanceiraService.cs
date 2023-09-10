@@ -18,31 +18,31 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
         _mapper = mapper;
     }
 
-    public ReadTransacaoDto AdicionarTransacao(CreateTransacaoDto transacaoDto)
+    public ReadTransacaoDTO AdicionarTransacao(CreateTransacaoDTO transacaoDto)
     {
         TransacaoFinanceira transacao = _mapper.Map<TransacaoFinanceira>(transacaoDto);
         _context.TransacoesFinanceiras.Add(transacao);
         _context.SaveChanges();
-        return _mapper.Map<ReadTransacaoDto>(transacao);
+        return _mapper.Map<ReadTransacaoDTO>(transacao);
     }
 
-    public ReadTransacaoDto ObterTransacaoPorId(long id)
+    public ReadTransacaoDTO ObterTransacaoPorId(long id)
     {
         var transacao = _context.TransacoesFinanceiras.FirstOrDefault(t => t.Id == id);
         
         if (transacao is not null)
-            return _mapper.Map<ReadTransacaoDto>(transacao);
+            return _mapper.Map<ReadTransacaoDTO>(transacao);
         
         return null!;
     }
 
-    public List<ReadTransacaoDto> ListarTransacoes()
+    public List<ReadTransacaoDTO> ListarTransacoes()
     {
         List<TransacaoFinanceira> transacoes = _context.TransacoesFinanceiras.ToList();
-        return _mapper.Map<List<ReadTransacaoDto>>(transacoes);
+        return _mapper.Map<List<ReadTransacaoDTO>>(transacoes);
     }
 
-    public Result AtualizarTransacao(long id, UpdateTransacaoDto transacaoDto)
+    public Result AtualizarTransacao(long id, UpdateTransacaoDTO transacaoDto)
     {
         var transacao = _context.TransacoesFinanceiras.FirstOrDefault(t => t.Id == id);
 

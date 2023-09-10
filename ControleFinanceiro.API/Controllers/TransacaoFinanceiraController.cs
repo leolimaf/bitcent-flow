@@ -22,10 +22,10 @@ public class TransacaoFinanceiraController : ControllerBase
     /// <remarks>Realiza a entrada das receitas e despesas do usuário autenticado</remarks>
     /// <response code="201">Requisição realizada com sucesso</response>
     [HttpPost, Route("adicionar-transacao")]
-    [ProducesResponseType(201, Type = typeof(ReadTransacaoDto))]
-    public IActionResult AdicionarLivro([FromBody] CreateTransacaoDto transacaoDto)
+    [ProducesResponseType(201, Type = typeof(ReadTransacaoDTO))]
+    public IActionResult AdicionarLivro([FromBody] CreateTransacaoDTO transacaoDto)
     {
-        ReadTransacaoDto readTransacaoDto = _transacaoFinanceiraService.AdicionarTransacao(transacaoDto);
+        ReadTransacaoDTO readTransacaoDto = _transacaoFinanceiraService.AdicionarTransacao(transacaoDto);
         return CreatedAtAction(nameof(ObterTransacaoPorId), readTransacaoDto);
     }
     
@@ -39,7 +39,7 @@ public class TransacaoFinanceiraController : ControllerBase
     [ProducesResponseType(404, Type = null!)]
     public IActionResult ObterTransacaoPorId([FromQuery] long id)
     {
-        ReadTransacaoDto? readTransacaoDto = _transacaoFinanceiraService.ObterTransacaoPorId(id);
+        ReadTransacaoDTO? readTransacaoDto = _transacaoFinanceiraService.ObterTransacaoPorId(id);
         if (readTransacaoDto is null) 
             return NotFound(readTransacaoDto);
         return Ok(readTransacaoDto);
@@ -53,7 +53,7 @@ public class TransacaoFinanceiraController : ControllerBase
     [ProducesResponseType(200)]
     public IActionResult ListarTransacoes()
     {
-        List<ReadTransacaoDto> readTransacaoDtos = _transacaoFinanceiraService.ListarTransacoes();
+        List<ReadTransacaoDTO> readTransacaoDtos = _transacaoFinanceiraService.ListarTransacoes();
         
         return Ok(readTransacaoDtos);
     }
@@ -66,7 +66,7 @@ public class TransacaoFinanceiraController : ControllerBase
     [HttpPut, Route("atualizar-transacao")]
     [ProducesResponseType(204)]
     [ProducesResponseType(404, Type = null!)]
-    public IActionResult AtualizarTransacao([FromQuery] long id, [FromBody] UpdateTransacaoDto transacaoDto)
+    public IActionResult AtualizarTransacao([FromQuery] long id, [FromBody] UpdateTransacaoDTO transacaoDto)
     {
         Result result = _transacaoFinanceiraService.AtualizarTransacao(id, transacaoDto);
         if (result.IsFailed)

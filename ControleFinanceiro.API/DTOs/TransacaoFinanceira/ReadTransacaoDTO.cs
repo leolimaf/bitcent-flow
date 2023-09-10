@@ -2,8 +2,10 @@
 
 namespace ControleFinanceiro.API.DTOs.TransacaoFinanceira;
 
-public class UpdateTransacaoDto
+public class ReadTransacaoDTO
 {
+    public long Id { get; set; }
+    
     public string Descricao { get; set; }
     
     public DateTime Data { get; set; }

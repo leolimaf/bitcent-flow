@@ -8,8 +8,8 @@ public class TransacaoFinanceiraProfile : Profile
 {
     public TransacaoFinanceiraProfile()
     {
-        CreateMap<CreateTransacaoDto, TransacaoFinanceira>();
-        CreateMap<TransacaoFinanceira, ReadTransacaoDto>();
-        CreateMap<UpdateTransacaoDto, TransacaoFinanceira>();
+        CreateMap<CreateTransacaoDTO, TransacaoFinanceira>();
+        CreateMap<TransacaoFinanceira, ReadTransacaoDTO>();
+        CreateMap<UpdateTransacaoDTO, TransacaoFinanceira>();
     }
 }

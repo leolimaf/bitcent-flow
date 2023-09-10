@@ -5,9 +5,9 @@ namespace ControleFinanceiro.API.Services.Interfaces;
 
 public interface ITransacaoFinanceiraService
 {
-    ReadTransacaoDto AdicionarTransacao(CreateTransacaoDto transacaoDto);
-    ReadTransacaoDto ObterTransacaoPorId(long id);
-    List<ReadTransacaoDto> ListarTransacoes();
-    Result AtualizarTransacao(long id, UpdateTransacaoDto transacaoDto);
+    ReadTransacaoDTO AdicionarTransacao(CreateTransacaoDTO transacaoDto);
+    ReadTransacaoDTO ObterTransacaoPorId(long id);
+    List<ReadTransacaoDTO> ListarTransacoes();
+    Result AtualizarTransacao(long id, UpdateTransacaoDTO transacaoDto);
     Result RemoverTransacao(long id);
 }

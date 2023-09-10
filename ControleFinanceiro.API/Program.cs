@@ -11,16 +11,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddDbContext<AppDbContext>(opts => opts.UseInMemoryDatabase("InMemory"));
+// builder.Services.AddDbContext<AppDbContext>(opts => opts.UseInMemoryDatabase("InMemory"));
+
+builder.Services.AddDbContext<AppDbContext>(opts =>
+{
+    opts.UseLazyLoadingProxies().UseSqlServer(
+        builder.Configuration.GetConnectionString("MinhasFinancasConnection")
+    );
+});
 
 builder.Services.AddCors();
-// var connectionString = "ControleFinanceiroConnection";
-// builder.Services.AddDbContext<AppDbContext>(opts =>
-// {
-//     opts.UseLazyLoadingProxies().UseMySql(
-//         builder.Configuration.GetConnectionString(connectionString), ServerVersion.AutoDetect(connectionString)
-//     );
-// });
 
 builder.Services.AddControllers();
 builder.Services.AddScoped<ITransacaoFinanceiraService, TransacaoFinanceiraService>();
