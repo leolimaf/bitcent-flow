@@ -23,10 +23,10 @@ public class TransacaoFinanceiraController : ControllerBase
     /// <response code="201">Requisição realizada com sucesso</response>
     [HttpPost, Route("adicionar-transacao")]
     [ProducesResponseType(201, Type = typeof(ReadTransacaoDTO))]
-    public IActionResult AdicionarLivro([FromBody] CreateTransacaoDTO transacaoDto)
+    public IActionResult AdicionarTransacaoFinanceira([FromBody] CreateTransacaoDTO transacaoDto)
     {
         ReadTransacaoDTO readTransacaoDto = _transacaoFinanceiraService.AdicionarTransacao(transacaoDto);
-        return CreatedAtAction(nameof(ObterTransacaoPorId), readTransacaoDto);
+        return CreatedAtAction(nameof(ObterTransacaoPorId), new {version = HttpContext.GetRequestedApiVersion()!.ToString(), readTransacaoDto.Id} , readTransacaoDto);
     }
     
     /// <summary>Obtem uma transação financeira</summary>
@@ -35,11 +35,11 @@ public class TransacaoFinanceiraController : ControllerBase
     /// <response code="200">Requisição realizada com sucesso</response>
     /// <response code="404">A transação não foi encontrada</response>
     [HttpGet, Route("obter-transacao-por-id")]
-    [ProducesResponseType(200)]
+    [ProducesResponseType(200, Type = typeof(ReadTransacaoDTO))]
     [ProducesResponseType(404, Type = null!)]
-    public IActionResult ObterTransacaoPorId([FromQuery] long id)
+    public IActionResult ObterTransacaoPorId(long id)
     {
-        ReadTransacaoDTO? readTransacaoDto = _transacaoFinanceiraService.ObterTransacaoPorId(id);
+        ReadTransacaoDTO readTransacaoDto = _transacaoFinanceiraService.ObterTransacaoPorId(id);
         if (readTransacaoDto is null) 
             return NotFound(readTransacaoDto);
         return Ok(readTransacaoDto);
@@ -50,7 +50,7 @@ public class TransacaoFinanceiraController : ControllerBase
     /// <remarks>Retorna todas as transações financeiras do usuário autenticado</remarks>
     /// <response code="200">Requisição realizada com sucesso</response>
     [HttpGet, Route("listar-transacoes")]
-    [ProducesResponseType(200)]
+    [ProducesResponseType(200, Type = typeof(List<ReadTransacaoDTO>))]
     public IActionResult ListarTransacoes()
     {
         List<ReadTransacaoDTO> readTransacaoDtos = _transacaoFinanceiraService.ListarTransacoes();
