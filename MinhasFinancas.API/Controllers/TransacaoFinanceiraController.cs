@@ -21,7 +21,7 @@ public class TransacaoFinanceiraController : ControllerBase
     /// <summary> Adiciona uma transação financeira</summary>
     /// <remarks>Realiza a entrada das receitas e despesas do usuário autenticado</remarks>
     /// <response code="201">Requisição realizada com sucesso</response>
-    [HttpPost, Route("adicionar-transacao")]
+    [HttpPost, Route("adicionar")]
     [ProducesResponseType(201, Type = typeof(ReadTransacaoDTO))]
     public IActionResult AdicionarTransacaoFinanceira([FromBody] CreateTransacaoDTO transacaoDto)
     {
@@ -34,7 +34,7 @@ public class TransacaoFinanceiraController : ControllerBase
     /// <param name="id">Identificador da transação financeira</param>
     /// <response code="200">Requisição realizada com sucesso</response>
     /// <response code="404">A transação não foi encontrada</response>
-    [HttpGet, Route("obter-transacao-por-id")]
+    [HttpGet, Route("obter-id")]
     [ProducesResponseType(200, Type = typeof(ReadTransacaoDTO))]
     [ProducesResponseType(404, Type = null!)]
     public IActionResult ObterTransacaoPorId(long id)
@@ -49,7 +49,7 @@ public class TransacaoFinanceiraController : ControllerBase
     /// <summary>Lista todas as transações financeiras</summary>
     /// <remarks>Retorna todas as transações financeiras do usuário autenticado</remarks>
     /// <response code="200">Requisição realizada com sucesso</response>
-    [HttpGet, Route("listar-transacoes")]
+    [HttpGet, Route("listar")]
     [ProducesResponseType(200, Type = typeof(List<ReadTransacaoDTO>))]
     public IActionResult ListarTransacoes()
     {
@@ -63,7 +63,7 @@ public class TransacaoFinanceiraController : ControllerBase
     /// <param name="id">Identificador da transação financeira</param>
     /// <response code="204">Requisição realizada com sucesso</response>
     /// <response code="404">A transação não foi encontrada</response>
-    [HttpPut, Route("atualizar-transacao")]
+    [HttpPut, Route("atualizar")]
     [ProducesResponseType(204)]
     [ProducesResponseType(404, Type = null!)]
     public IActionResult AtualizarTransacao([FromQuery] long id, [FromBody] UpdateTransacaoDTO transacaoDto)
@@ -79,7 +79,7 @@ public class TransacaoFinanceiraController : ControllerBase
     /// <param name="id">Identificador da transação financeira</param>
     /// <response code="204">Requisição realizada com sucesso</response>
     /// <response code="404">A transação não foi encontrada</response>
-    [HttpDelete, Route("remover-transacao")]
+    [HttpDelete, Route("remover")]
     [ProducesResponseType(204)]
     [ProducesResponseType(404, Type = null!)]
     public IActionResult RemoverTransacao([FromQuery] long id)
