@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MinhasFinancas.Auth.DTOs;
+namespace MinhasFinancas.Auth.DTOs.Usuario;
 
-public class LoginUsuarioDTO
+public class CredenciaisDTO
 {
     public string? Nome { get; set; }
     

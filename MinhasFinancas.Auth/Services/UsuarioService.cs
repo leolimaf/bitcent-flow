@@ -1,9 +1,14 @@
-﻿using System.Security.Cryptography;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using MinhasFinancas.Auth.Data;
 using MinhasFinancas.Auth.DTOs;
+using MinhasFinancas.Auth.DTOs.Token;
+using MinhasFinancas.Auth.DTOs.Usuario;
 using MinhasFinancas.Auth.Models;
 using MinhasFinancas.Auth.Services.Interfaces;
 
@@ -12,7 +17,6 @@ namespace MinhasFinancas.Auth.Services;
 public class UsuarioService : IUsuarioService
 {
     private IMapper _mapper;
-    
     private TokenService _tokenService;
     private AppDbContext _context;
 
@@ -42,18 +46,56 @@ public class UsuarioService : IUsuarioService
         return _mapper.Map<ReadUsuarioDTO>(usuario);
     }
 
-    public async Task<TokenDto?> LogarUsuario(LoginUsuarioDTO credenciais)
+    public async Task<TokenDTO?> LogarUsuario(CredenciaisDTO credenciaisDto)
     {
-        var senha = ComputarHash(credenciais.Senha, SHA256.Create());
-        var usuario = await  _context.Usuarios.FirstOrDefaultAsync(u => (u.Nome == credenciais.Nome && u.Senha == senha) 
-                                                                        || u.Email == credenciais.Email && u.Senha == senha);
+        var senha = ComputarHash(credenciaisDto.Senha, SHA256.Create());
+        var usuario = await  _context.Usuarios.FirstOrDefaultAsync(u => (u.Nome == credenciaisDto.Nome && u.Senha == senha) 
+                                                                        || u.Email == credenciaisDto.Email && u.Senha == senha);
 
         return usuario is not null ? 
-            _tokenService.GenerateToken(usuario) :
+            _tokenService.GerarToken(usuario) :
             null;
     }
     
-    public static string ComputarHash(string entrada, SHA256 algoritmo)
+    public async Task<TokenDTO> LogarUsuario(TokenValueDTO tokenValueDto)
+    {
+        var principal = _tokenService.GetPrincipalFromExpiredToken(tokenValueDto.AccessToken);
+        var username = principal.Identity?.Name;
+        
+        var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Nome == username);
+        
+        if (usuario is null || usuario.Token != tokenValueDto.RefreshToken || usuario.ValidadeToken <= DateTime.Now)
+            return null!;
+        
+        var accessToken = _tokenService.GerarAccessToken(principal.Claims);
+        var refreshToken = _tokenService.GerarRefreshToken();
+        
+        usuario.Token = refreshToken;
+
+        var user = await _context.Usuarios.FirstOrDefaultAsync(u => u.Nome == usuario.Nome || u.Email == usuario.Email);
+        
+        if (user is null)
+            return null;
+        
+        await _context.SaveChangesAsync();
+        
+        return _tokenService.RetornarTokenAtualizado(accessToken, refreshToken);
+    }
+
+    public async Task<bool> RevogarToken(string nomeDeUsuario)
+    {
+        var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Nome == nomeDeUsuario);
+        
+        if (usuario is null)
+            return false;
+        
+        usuario.Token = null;
+        await _context.SaveChangesAsync();
+        
+        return true;
+    }
+
+    private static string ComputarHash(string entrada, SHA256 algoritmo)
     {
         byte[] inputBytes = Encoding.UTF8.GetBytes(entrada);
         byte[] hashedBytes = algoritmo.ComputeHash(inputBytes);

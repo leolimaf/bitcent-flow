@@ -1,4 +1,4 @@
-﻿namespace MinhasFinancas.Auth.DTOs;
+﻿namespace MinhasFinancas.Auth.DTOs.Usuario;
 
 public class ReadUsuarioDTO
 {

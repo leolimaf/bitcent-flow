@@ -1,6 +1,6 @@
-﻿namespace MinhasFinancas.Auth.DTOs;
+﻿namespace MinhasFinancas.Auth.DTOs.Token;
 
-public class TokenDto
+public class TokenDTO
 {
     public bool Authenticated { get; set; }
     public string Created { get; set; }
@@ -8,7 +8,7 @@ public class TokenDto
     public string AccessToken { get; set; }
     public string RefreshToken { get; set; }
 
-    public TokenDto(bool authenticated, string created, string expiration, string accessToken, string refreshToken)
+    public TokenDTO(bool authenticated, string created, string expiration, string accessToken, string refreshToken)
     {
         Authenticated = authenticated;
         Created = created;
