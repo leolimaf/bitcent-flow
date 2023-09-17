@@ -1,9 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace MinhasFinancas.Auth.Models;
 
 [Table("USUARIO")]
+[Index(nameof(Nome), IsUnique = true)]
+[Index(nameof(Email), IsUnique = true)]
 public class Usuario
 {
     [Key]
@@ -20,8 +23,8 @@ public class Usuario
     public string Email { get; set; }
 
     [Required, DataType(DataType.Password)]
-    [Column("SENHA")]
-    public string Senha { get; set; }
+    [Column("SENHA_HASH")]
+    public string SenhaHash { get; set; }
     
     [Column("TOKEN")]
     public string? Token { get; set; }

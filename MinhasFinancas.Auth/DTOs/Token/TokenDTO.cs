@@ -7,6 +7,11 @@ public class TokenDTO
     public string Expiration { get; set; }
     public string AccessToken { get; set; }
     public string RefreshToken { get; set; }
+    public string Flag { get; set; }
+
+    public TokenDTO()
+    {
+    }
 
     public TokenDTO(bool authenticated, string created, string expiration, string accessToken, string refreshToken)
     {

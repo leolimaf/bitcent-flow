@@ -22,6 +22,10 @@ public class UsuarioController : ControllerBase
     public async Task<IActionResult> Cadastrar([FromBody] CreateUsuarioDTO usuarioDto)
     {
         ReadUsuarioDTO readUsuarioDto = await _usuarioService.CadastrarUsuario(usuarioDto);
+
+        if (!string.IsNullOrWhiteSpace(readUsuarioDto.Flag))
+            return BadRequest(readUsuarioDto.Flag);
+        
         return CreatedAtAction(nameof(ObterPorId), readUsuarioDto.Id, readUsuarioDto);
     }
     
@@ -30,16 +34,23 @@ public class UsuarioController : ControllerBase
     public async Task<IActionResult> ObterPorId(long id)
     {
         ReadUsuarioDTO readUsuarioDto = await _usuarioService.ObterUsuarioPorId(id);
+
+        if (readUsuarioDto is null)
+            return NotFound(readUsuarioDto);
+
+        if (readUsuarioDto.Nome != User.Identity.Name)
+            return Forbid();
         
-        return readUsuarioDto is not null ? 
-            Ok(readUsuarioDto) : 
-            NotFound(readUsuarioDto);
+        return Ok(readUsuarioDto);
     }
 
     [HttpPost, Route("logar")]
     public async Task<IActionResult> Logar([FromBody] CredenciaisDTO usuarioDto)
     {
         var token = await _usuarioService.LogarUsuario(usuarioDto);
+
+        if (token is not null && !string.IsNullOrWhiteSpace(token.Flag))
+            return Unauthorized(token.Flag);
 
         return token is not null ? 
             Ok(token) : 
@@ -56,7 +67,7 @@ public class UsuarioController : ControllerBase
         var token = await _usuarioService.LogarUsuario(tokenValueDto);
 
         if (token is null)
-            return Unauthorized("Invalid client request");
+            return Unauthorized();
         
         return Ok(token);
     }
@@ -68,7 +79,7 @@ public class UsuarioController : ControllerBase
         var result = await _usuarioService.RevogarToken(User.Identity.Name);
 
         if (!result)
-            return BadRequest("Invalid client request");
+            return BadRequest();
         
         return NoContent();
     }

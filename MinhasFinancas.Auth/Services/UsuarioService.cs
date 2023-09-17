@@ -1,12 +1,6 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using MinhasFinancas.Auth.Data;
-using MinhasFinancas.Auth.DTOs;
 using MinhasFinancas.Auth.DTOs.Token;
 using MinhasFinancas.Auth.DTOs.Usuario;
 using MinhasFinancas.Auth.Models;
@@ -29,9 +23,15 @@ public class UsuarioService : IUsuarioService
 
     public async Task<ReadUsuarioDTO> CadastrarUsuario(CreateUsuarioDTO usuarioDto)
     {
+        if (await _context.Usuarios.AnyAsync(x => x.Nome == usuarioDto.Nome))
+            return new ReadUsuarioDTO{Flag = "Nome de usuário já cadastrado."};
+
+        if (await _context.Usuarios.AnyAsync(x => x.Email == usuarioDto.Email))
+            return new ReadUsuarioDTO{Flag = "E-mail já cadastrado."};
+        
         Usuario usuario = _mapper.Map<Usuario>(usuarioDto);
         
-        usuario.Senha = ComputarHash(usuario.Senha, SHA256.Create());
+        usuario.SenhaHash = BCrypt.Net.BCrypt.HashPassword(usuarioDto.Senha);
         
         _context.Usuarios.Add(usuario);
         await _context.SaveChangesAsync();
@@ -48,13 +48,15 @@ public class UsuarioService : IUsuarioService
 
     public async Task<TokenDTO?> LogarUsuario(CredenciaisDTO credenciaisDto)
     {
-        var senha = ComputarHash(credenciaisDto.Senha, SHA256.Create());
-        var usuario = await  _context.Usuarios.FirstOrDefaultAsync(u => (u.Nome == credenciaisDto.Nome && u.Senha == senha) 
-                                                                        || u.Email == credenciaisDto.Email && u.Senha == senha);
+        var usuario = await  _context.Usuarios.FirstOrDefaultAsync(u => u.Nome == credenciaisDto.Nome || u.Email == credenciaisDto.Email);
 
-        return usuario is not null ? 
-            _tokenService.GerarToken(usuario) :
-            null;
+        if (usuario is null)
+            return new TokenDTO{Flag = "Usuário / E-mail inválido(s)"};
+
+        if (!BCrypt.Net.BCrypt.Verify(credenciaisDto.Senha, usuario.SenhaHash))
+            return new TokenDTO { Flag = "Senha inválida" };
+
+        return _tokenService.GerarToken(usuario);
     }
     
     public async Task<TokenDTO> LogarUsuario(TokenValueDTO tokenValueDto)
@@ -93,12 +95,5 @@ public class UsuarioService : IUsuarioService
         await _context.SaveChangesAsync();
         
         return true;
-    }
-
-    private static string ComputarHash(string entrada, SHA256 algoritmo)
-    {
-        byte[] inputBytes = Encoding.UTF8.GetBytes(entrada);
-        byte[] hashedBytes = algoritmo.ComputeHash(inputBytes);
-        return BitConverter.ToString(hashedBytes);
     }
 }

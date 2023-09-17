@@ -35,7 +35,7 @@ builder.Services.AddSwaggerGen(opts =>
     opts.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
-        Description = @"Cabeçalho de autorização padrão utilizando o Bearer Authentication Scheme.",
+        Description = "Cabeçalho de autorização JWT utilizando o Bearer Authentication Scheme.\r\n\r\n Inclua Bearer [espaço] seguido pelo seu token na entrada de texto abaixo.",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer"
