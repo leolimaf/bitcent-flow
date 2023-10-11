@@ -11,7 +11,7 @@ public class ReadTransacaoDTO
     
     public DateTime Data { get; set; }
     
-    public decimal Valor { get; set; }
+    public double Valor { get; set; }
     
     public TipoTransacao Tipo { get; set; }
     

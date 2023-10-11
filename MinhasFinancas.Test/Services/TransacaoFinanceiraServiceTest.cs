@@ -1,35 +1,32 @@
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using MinhasFinancas.API.Data;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using MinhasFinancas.API.DTOs.TransacaoFinanceira;
-using MinhasFinancas.API.Services;
+using MinhasFinancas.API.Models;
 using MinhasFinancas.API.Services.Interfaces;
 
 namespace MinhasFinancas.Test.Services;
 
-public class TransacaoFinanceiraServiceTest : IDisposable
+public class TransacaoFinanceiraServiceTest : IClassFixture<TestFixture>
 {
     private readonly ITransacaoFinanceiraService _transacaoFinanceiraService;
-    private readonly AppDbContext _dbContext;
-    
-    public TransacaoFinanceiraServiceTest()
+
+    public TransacaoFinanceiraServiceTest(TestFixture fixture)
     {
-        // Configuração do serviço
-        var serviceCollection = new ServiceCollection();
-        serviceCollection.AddDbContext<AppDbContext>(options =>
+        _transacaoFinanceiraService = fixture.DbContext.GetService<ITransacaoFinanceiraService>();
+    }
+    
+    [Fact]
+    public void TestarAdicionarTransacao()
+    {
+        var transacaoDto = new CreateTransacaoDTO
         {
-            options.UseInMemoryDatabase("InMemoryDatabase");
-        });
-
-        serviceCollection.AddScoped<ITransacaoFinanceiraService, TransacaoFinanceiraService>();
-        serviceCollection.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-        var serviceProvider = serviceCollection.BuildServiceProvider();
-
-        // Resolvendo as dependências
-        _transacaoFinanceiraService = serviceProvider.GetRequiredService<ITransacaoFinanceiraService>();
-        _dbContext = serviceProvider.GetRequiredService<AppDbContext>();
+            Descricao = "Aluguel",
+            Valor = 930,
+            Data = DateTime.Today,
+            Tipo = TipoTransacao.DESPESA
+        };
+        
+        var transacao = _transacaoFinanceiraService.AdicionarTransacao(transacaoDto);
+        Assert.IsType<ReadTransacaoDTO>(transacao);
     }
 
     [Fact]
@@ -41,12 +38,46 @@ public class TransacaoFinanceiraServiceTest : IDisposable
         var listaDeTransacoes = _transacaoFinanceiraService.ListarTransacoes();
 
         // Assert
-        // Assert.NotNull(listaDeTransacoes);
         Assert.IsType<List<ReadTransacaoDTO>>(listaDeTransacoes);
     }
 
-    public void Dispose()
+    [Fact]
+    public void TestarObterTransacaoPorId()
     {
-        _dbContext.Dispose();
+        var transacao = _transacaoFinanceiraService.ObterTransacaoPorId(1);
+        Assert.NotNull(transacao);
+    }
+    
+    [Theory]
+    [InlineData(1), InlineData(2), InlineData(3)]
+    public void TestarObterTransacaoPorVariosIds(int id)
+    {
+        var transacao = _transacaoFinanceiraService.ObterTransacaoPorId(id);
+        Assert.NotNull(transacao);
+    }
+    
+    [Fact]
+    public void TestarAtualizarTransacao()
+    {
+        var transacao = _transacaoFinanceiraService.ObterTransacaoPorId(1);
+        
+        var transacaoDto = new UpdateTransacaoDTO
+        {
+            Descricao = transacao.Descricao,
+            Valor = 246.75,
+            Data = DateTime.Today,
+            Tipo = transacao.Tipo
+        };
+
+        var result = _transacaoFinanceiraService.AtualizarTransacao(1, transacaoDto);
+        Assert.True(result.IsSuccess);
+    }
+
+    [Fact]
+    public void TestarRemoverTransacao()
+    {
+        var result = _transacaoFinanceiraService.RemoverTransacao(3);
+        Assert.True(result.IsSuccess);
+        
     }
 }

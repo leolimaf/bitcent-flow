@@ -11,14 +11,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddDbContext<AppDbContext>(opts => opts.UseInMemoryDatabase("InMemory"));
+// builder.Services.AddDbContext<AppDbContext>(opts => opts.UseInMemoryDatabase("InMemory"));
 
-// builder.Services.AddDbContext<AppDbContext>(opts =>
-// {
-//     opts.UseLazyLoadingProxies().UseSqlServer(
-//         builder.Configuration.GetConnectionString("MinhasFinancasConnection")
-//     );
-// });
+builder.Services.AddDbContext<AppDbContext>(opts =>
+{
+    opts.UseLazyLoadingProxies().UseSqlServer(
+        builder.Configuration.GetConnectionString("MinhasFinancasConnection")
+    );
+});
 
 builder.Services.AddCors();
 

@@ -12,7 +12,7 @@ public class CreateTransacaoDTO
     public DateTime Data { get; set; }
     
     [Required]
-    public decimal Valor { get; set; }
+    public double Valor { get; set; }
     
     [Required]
     public TipoTransacao Tipo { get; set; }

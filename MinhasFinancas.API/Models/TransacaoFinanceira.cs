@@ -21,7 +21,7 @@ public class TransacaoFinanceira
     
     [Required]
     [Column("VALOR")]
-    public decimal Valor { get; set; }
+    public double Valor { get; set; }
     
     [Required]
     [Column("TIPO")]
