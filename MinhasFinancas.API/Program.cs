@@ -1,13 +1,18 @@
 using System.Diagnostics;
 using System.Reflection;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using MinhasFinancas.API.Data;
 using MinhasFinancas.API.Services;
 using MinhasFinancas.API.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+var config = builder.Configuration;
 
 // Add services to the container.
 
@@ -21,6 +26,33 @@ builder.Services.AddDbContext<AppDbContext>(opts =>
 });
 
 builder.Services.AddCors();
+
+builder.Services.AddAuthentication(opts =>
+{
+    opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    opts.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    opts.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(opts =>
+{
+    opts.TokenValidationParameters = new TokenValidationParameters
+    {
+        // ValidIssuer = config["TokenConfigurations:Issuer"],
+        // ValidAudience = config["TokenConfigurations:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenConfigurations:Secret"]!)),
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ClockSkew = TimeSpan.Zero
+    };
+});
+builder.Services.AddAuthorization(opts =>
+{
+    opts.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
+        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+        .RequireAuthenticatedUser()
+        .Build());
+});
 
 builder.Services.AddControllers();
 builder.Services.AddScoped<ITransacaoFinanceiraService, TransacaoFinanceiraService>();
@@ -40,6 +72,34 @@ builder.Services.AddVersionedApiExplorer(opts =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(opts =>
 {
+    opts.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Description = "Cabeçalho de autorização JWT utilizando o Bearer Authentication Scheme.\r\n\r\n Inclua Bearer [espaço] seguido pelo seu token na entrada de texto abaixo.",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+    
+    opts.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                },
+                Scheme = "Bearer",
+                Name = "Bearer",
+                In = ParameterLocation.Header,
+            },
+            new List<string>()
+        }
+    });
+    
     if (Debugger.IsAttached)
     {
         opts.AddServer(new OpenApiServer()
@@ -53,14 +113,14 @@ builder.Services.AddSwaggerGen(opts =>
         opts.AddServer(new OpenApiServer()
         {
             Description = "Production",
-            Url = "https://controle-financeiro-web-api.com.br" // TODO: ALTERAR
+            Url = "https://my-finances-web-api.com.br" // TODO: ALTERAR
         });
     }
     opts.SwaggerDoc("v1",new OpenApiInfo
     {
         Title = "Minhas Finanças - Web API",
         Version = "v1",
-        Description = "Está aplicação foi desenvolvida com o propósito de auxiliar os usuários a realizarem o gerenciamento de suas transações financeiras, baseando-se nas suas receitas e despesas.",
+        Description = "Aplicação desenvolvida com o propósito de auxiliar os usuários a realizarem o gerenciamento de suas transações financeiras.",
         Contact = new OpenApiContact
         {
             Name = "Leonardo Lima",
@@ -89,6 +149,8 @@ app.UseRouting();
 app.UseCors(o => o.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 app.UseApiVersioning();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

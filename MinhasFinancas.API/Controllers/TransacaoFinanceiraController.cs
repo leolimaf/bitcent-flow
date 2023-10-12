@@ -1,4 +1,5 @@
 ﻿using FluentResults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MinhasFinancas.API.Services.Interfaces;
 using MinhasFinancas.Domain.DTOs.TransacaoFinanceira;
@@ -6,6 +7,7 @@ using MinhasFinancas.Domain.DTOs.TransacaoFinanceira;
 namespace MinhasFinancas.API.Controllers;
 
 [ApiController]
+[Authorize(Policy = "Bearer")]
 [ApiVersion("1.0")]
 [Route("v{version:apiVersion}/transacoes-financeiras")]
 [Produces("application/json")]
@@ -30,11 +32,11 @@ public class TransacaoFinanceiraController : ControllerBase
     }
     
     /// <summary>Obtem uma transação financeira</summary>
-    /// <remarks>A partir do identificador de uma transação financeira do usuário, é possível obte-lá</remarks>
+    /// <remarks>A partir do identificador de uma transação financeira do usuário autenticado, é possível obte-lá</remarks>
     /// <param name="id">Identificador da transação financeira</param>
     /// <response code="200">Requisição realizada com sucesso</response>
     /// <response code="404">A transação não foi encontrada</response>
-    [HttpGet, Route("obter-id")]
+    [HttpGet, Route("obter-por-id")]
     [ProducesResponseType(200, Type = typeof(ReadTransacaoDTO))]
     [ProducesResponseType(404, Type = null!)]
     public IActionResult ObterTransacaoPorId(long id)
@@ -59,7 +61,7 @@ public class TransacaoFinanceiraController : ControllerBase
     }
 
     /// <summary>Atualiza uma transação financeira</summary>
-    /// <remarks>A partir do identificador de uma transação financeira do usuário, é possível editá-la</remarks>
+    /// <remarks>A partir do identificador de uma transação financeira do usuário autenticado, é possível editá-la</remarks>
     /// <param name="id">Identificador da transação financeira</param>
     /// <response code="204">Requisição realizada com sucesso</response>
     /// <response code="404">A transação não foi encontrada</response>
@@ -75,7 +77,7 @@ public class TransacaoFinanceiraController : ControllerBase
     }
 
     /// <summary>Remove uma transação financeira</summary>
-    /// <remarks>A partir do identificador de uma transação financeira do usuário, é possível apagá-la</remarks>
+    /// <remarks>A partir do identificador de uma transação financeira do usuário autenticado, é possível apagá-la</remarks>
     /// <param name="id">Identificador da transação financeira</param>
     /// <response code="204">Requisição realizada com sucesso</response>
     /// <response code="404">A transação não foi encontrada</response>

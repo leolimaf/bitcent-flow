@@ -56,6 +56,8 @@ public class TokenService
         var signinCredentials = new SigningCredentials(chave, SecurityAlgorithms.HmacSha256);
         var token = new JwtSecurityToken(
             expires: DateTime.Now.AddHours(1.5), 
+            issuer: _configuration.Issuer,
+            audience: _configuration.Audience,
             claims: claims, 
             signingCredentials: signinCredentials
         );
@@ -79,7 +81,7 @@ public class TokenService
             ValidateIssuer = false,
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.Secret)),
-            ValidateLifetime = false
+            ValidateLifetime = true
         };
         var tokenHandler = new JwtSecurityTokenHandler();
         SecurityToken securityToken;

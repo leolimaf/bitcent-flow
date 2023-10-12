@@ -24,10 +24,10 @@ public class UsuarioService : IUsuarioService
     public async Task<ReadUsuarioDTO> CadastrarUsuario(CreateUsuarioDTO usuarioDto)
     {
         if (await _context.Usuarios.AnyAsync(x => x.Nome == usuarioDto.Nome))
-            return new ReadUsuarioDTO{Flag = "Nome de usuário já cadastrado."};
+            return new ReadUsuarioDTO{Message = "Nome de usuário já cadastrado."};
 
         if (await _context.Usuarios.AnyAsync(x => x.Email == usuarioDto.Email))
-            return new ReadUsuarioDTO{Flag = "E-mail já cadastrado."};
+            return new ReadUsuarioDTO{Message = "E-mail já cadastrado."};
         
         Usuario usuario = _mapper.Map<Usuario>(usuarioDto);
         
@@ -51,10 +51,10 @@ public class UsuarioService : IUsuarioService
         var usuario = await  _context.Usuarios.FirstOrDefaultAsync(u => u.Nome == credenciaisDto.Nome || u.Email == credenciaisDto.Email);
 
         if (usuario is null)
-            return new TokenDTO{Flag = "Usuário / E-mail inválido(s)"};
+            return new TokenDTO{Message = "Usuário / E-mail inválido(s)"};
 
         if (!BCrypt.Net.BCrypt.Verify(credenciaisDto.Senha, usuario.SenhaHash))
-            return new TokenDTO { Flag = "Senha inválida" };
+            return new TokenDTO { Message = "Senha inválida" };
 
         return _tokenService.GerarToken(usuario);
     }

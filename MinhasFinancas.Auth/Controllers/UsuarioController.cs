@@ -7,6 +7,7 @@ using MinhasFinancas.Domain.DTOs.Usuario;
 namespace MinhasFinancas.Auth.Controllers;
 
 [ApiController]
+[Authorize(Policy = "Bearer")]
 [Route("usuario")]
 [Produces("application/json")]
 public class UsuarioController : ControllerBase
@@ -18,19 +19,19 @@ public class UsuarioController : ControllerBase
         _usuarioService = usuarioService;
     }
 
+    [AllowAnonymous]
     [HttpPost, Route("cadastrar")]
     public async Task<IActionResult> Cadastrar([FromBody] CreateUsuarioDTO usuarioDto)
     {
         ReadUsuarioDTO readUsuarioDto = await _usuarioService.CadastrarUsuario(usuarioDto);
 
-        if (!string.IsNullOrWhiteSpace(readUsuarioDto.Flag))
-            return BadRequest(readUsuarioDto.Flag);
+        if (!string.IsNullOrWhiteSpace(readUsuarioDto.Message))
+            return BadRequest(readUsuarioDto.Message);
         
         return CreatedAtAction(nameof(ObterPorId), readUsuarioDto.Id, readUsuarioDto);
     }
     
     [HttpGet, Route("obter-por-id")]
-    [Authorize(Policy = "Bearer")]
     public async Task<IActionResult> ObterPorId(long id)
     {
         ReadUsuarioDTO readUsuarioDto = await _usuarioService.ObterUsuarioPorId(id);
@@ -38,27 +39,28 @@ public class UsuarioController : ControllerBase
         if (readUsuarioDto is null)
             return NotFound(readUsuarioDto);
 
-        if (readUsuarioDto.Nome != User.Identity.Name)
+        if (readUsuarioDto.Nome != User.Identity.Name) // TODO: Validar a partir das claims
             return Forbid();
         
         return Ok(readUsuarioDto);
     }
 
+    [AllowAnonymous]
     [HttpPost, Route("logar")]
     public async Task<IActionResult> Logar([FromBody] CredenciaisDTO usuarioDto)
     {
         var token = await _usuarioService.LogarUsuario(usuarioDto);
 
-        if (token is not null && !string.IsNullOrWhiteSpace(token.Flag))
-            return Unauthorized(token.Flag);
+        if (token is not null && !string.IsNullOrWhiteSpace(token.Message))
+            return Unauthorized(token.Message);
 
         return token is not null ? 
             Ok(token) : 
             Unauthorized();
     }
     
+    [AllowAnonymous]
     [HttpPost, Route("atualizar-token")]
-    [Authorize(Policy = "Bearer")]
     public async Task<IActionResult> AtualizarToken([FromBody] TokenValueDTO tokenValueDto)
     {
         if (string.IsNullOrWhiteSpace(tokenValueDto.AccessToken) || string.IsNullOrWhiteSpace(tokenValueDto.RefreshToken))
@@ -73,7 +75,6 @@ public class UsuarioController : ControllerBase
     }
     
     [HttpPost, Route("deslogar")]
-    [Authorize(Policy = "Bearer")]
     public async Task<IActionResult> Deslogar()
     {
         var result = await _usuarioService.RevogarToken(User.Identity.Name);

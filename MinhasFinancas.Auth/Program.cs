@@ -1,7 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -22,6 +21,37 @@ builder.Services.AddDbContext<AppDbContext>(opts =>
     );
 });
 
+builder.Services.AddCors();
+
+var tokenConfigurations = new TokenConfiguration();
+new ConfigureFromConfigurationOptions<TokenConfiguration>(builder.Configuration.GetSection("TokenConfigurations")).Configure(tokenConfigurations);
+builder.Services.AddSingleton(tokenConfigurations);
+
+builder.Services.AddAuthentication(opts =>
+{
+    opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    opts.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    opts.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(opts =>
+{
+    opts.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenConfigurations.Secret)),
+        ValidateAudience = false,
+        ValidateIssuer = false,
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero
+    };
+});
+builder.Services.AddAuthorization(auth =>
+{
+    auth.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
+        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+        .RequireAuthenticatedUser()
+        .Build());
+});
+
 builder.Services.AddControllers();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -37,7 +67,8 @@ builder.Services.AddSwaggerGen(opts =>
         Name = "Authorization",
         Description = "Cabeçalho de autorização JWT utilizando o Bearer Authentication Scheme.\r\n\r\n Inclua Bearer [espaço] seguido pelo seu token na entrada de texto abaixo.",
         In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
         Scheme = "Bearer"
     });
     opts.AddSecurityRequirement(new OpenApiSecurityRequirement()
@@ -50,7 +81,7 @@ builder.Services.AddSwaggerGen(opts =>
                     Type = ReferenceType.SecurityScheme,
                     Id = "Bearer"
                 },
-                Scheme = "oauth2",
+                Scheme = "Bearer",
                 Name = "Bearer",
                 In = ParameterLocation.Header,
             },
@@ -58,34 +89,6 @@ builder.Services.AddSwaggerGen(opts =>
         }
     });
 });
-
-var tokenConfigurations = new TokenConfiguration();
-new ConfigureFromConfigurationOptions<TokenConfiguration>(builder.Configuration.GetSection("TokenConfigurations")).Configure(tokenConfigurations);
-builder.Services.AddSingleton(tokenConfigurations);
-
-builder.Services.AddAuthentication(opts =>
-{
-    opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(opts =>
-{
-    opts.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenConfigurations.Secret)),
-        ValidateAudience = false,
-        ValidateIssuer = false,
-        ClockSkew = TimeSpan.Zero
-    };
-});
-builder.Services.AddAuthorization(auth =>
-{
-    auth.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
-        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-        .RequireAuthenticatedUser()
-        .Build());
-});
-
-builder.Services.AddCors();
 
 var app = builder.Build();
 
