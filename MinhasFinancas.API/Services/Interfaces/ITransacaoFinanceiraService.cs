@@ -1,5 +1,5 @@
 ﻿using FluentResults;
-using MinhasFinancas.API.DTOs.TransacaoFinanceira;
+using MinhasFinancas.Domain.DTOs.TransacaoFinanceira;
 
 namespace MinhasFinancas.API.Services.Interfaces;
 

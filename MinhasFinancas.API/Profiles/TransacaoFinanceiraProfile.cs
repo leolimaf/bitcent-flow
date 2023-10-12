@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using MinhasFinancas.API.DTOs.TransacaoFinanceira;
-using MinhasFinancas.API.Models;
+using MinhasFinancas.Domain.DTOs.TransacaoFinanceira;
+using MinhasFinancas.Domain.Models;
 
 namespace MinhasFinancas.API.Profiles;
 

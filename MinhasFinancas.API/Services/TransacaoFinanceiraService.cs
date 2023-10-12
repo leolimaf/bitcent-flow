@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using FluentResults;
 using MinhasFinancas.API.Data;
-using MinhasFinancas.API.DTOs.TransacaoFinanceira;
-using MinhasFinancas.API.Models;
 using MinhasFinancas.API.Services.Interfaces;
+using MinhasFinancas.Domain.DTOs.TransacaoFinanceira;
+using MinhasFinancas.Domain.Models;
 
 namespace MinhasFinancas.API.Services;
 

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MinhasFinancas.Auth.DTOs.Usuario;
+namespace MinhasFinancas.Domain.DTOs.Usuario;
 
 public class CredenciaisDTO
 {

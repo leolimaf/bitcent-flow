@@ -1,7 +1,7 @@
 ﻿using FluentResults;
 using Microsoft.AspNetCore.Mvc;
-using MinhasFinancas.API.DTOs.TransacaoFinanceira;
 using MinhasFinancas.API.Services.Interfaces;
+using MinhasFinancas.Domain.DTOs.TransacaoFinanceira;
 
 namespace MinhasFinancas.API.Controllers;
 

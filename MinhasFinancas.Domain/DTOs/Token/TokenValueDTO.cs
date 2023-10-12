@@ -1,4 +1,4 @@
-﻿namespace MinhasFinancas.Auth.DTOs.Token;
+﻿namespace MinhasFinancas.Domain.DTOs.Token;
 
 public class TokenValueDTO
 {

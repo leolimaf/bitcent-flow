@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MinhasFinancas.Auth.DTOs.Token;
-using MinhasFinancas.Auth.DTOs.Usuario;
 using MinhasFinancas.Auth.Services.Interfaces;
+using MinhasFinancas.Domain.DTOs.Token;
+using MinhasFinancas.Domain.DTOs.Usuario;
 
 namespace MinhasFinancas.Auth.Controllers;
 

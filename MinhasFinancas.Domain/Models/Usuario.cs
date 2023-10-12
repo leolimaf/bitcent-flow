@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace MinhasFinancas.Auth.Models;
+namespace MinhasFinancas.Domain.Models;
 
 [Table("USUARIO")]
 [Index(nameof(Nome), IsUnique = true)]
@@ -31,4 +31,7 @@ public class Usuario
     
     [Column("VALIDADE_TOKEN")]
     public DateTime? ValidadeToken { get; set; }
+    
+    public virtual List<TransacaoFinanceira> TransacaoFinanceiras { get; set; }
+
 }

@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MinhasFinancas.API.Data;
-using MinhasFinancas.API.Models;
 using MinhasFinancas.API.Services;
 using MinhasFinancas.API.Services.Interfaces;
+using MinhasFinancas.Domain.Models;
 
 namespace MinhasFinancas.Test;
 

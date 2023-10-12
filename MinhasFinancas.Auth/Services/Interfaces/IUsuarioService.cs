@@ -1,5 +1,5 @@
-﻿using MinhasFinancas.Auth.DTOs.Token;
-using MinhasFinancas.Auth.DTOs.Usuario;
+﻿using MinhasFinancas.Domain.DTOs.Token;
+using MinhasFinancas.Domain.DTOs.Usuario;
 
 namespace MinhasFinancas.Auth.Services.Interfaces;
 

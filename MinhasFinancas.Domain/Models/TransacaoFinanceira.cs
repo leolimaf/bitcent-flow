@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MinhasFinancas.API.Models;
+namespace MinhasFinancas.Domain.Models;
 
 [Table("TRANSACAO_FINANCEIRA")]
 public class TransacaoFinanceira

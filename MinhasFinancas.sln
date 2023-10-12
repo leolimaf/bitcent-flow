@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinhasFinancas.Auth", "Minh
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinhasFinancas.Test", "MinhasFinancas.Test\MinhasFinancas.Test.csproj", "{9DAD8BEF-1B2F-4D5E-94C7-2BD9BA40117D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinhasFinancas.Domain", "MinhasFinancas.Domain\MinhasFinancas.Domain.csproj", "{76EA79A6-C9B6-46D0-8538-227FE2567388}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{9DAD8BEF-1B2F-4D5E-94C7-2BD9BA40117D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9DAD8BEF-1B2F-4D5E-94C7-2BD9BA40117D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9DAD8BEF-1B2F-4D5E-94C7-2BD9BA40117D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76EA79A6-C9B6-46D0-8538-227FE2567388}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76EA79A6-C9B6-46D0-8538-227FE2567388}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76EA79A6-C9B6-46D0-8538-227FE2567388}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76EA79A6-C9B6-46D0-8538-227FE2567388}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,18 +1,20 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using MinhasFinancas.API.Models;
+using MinhasFinancas.Domain.Models;
 
-namespace MinhasFinancas.API.DTOs.TransacaoFinanceira;
+namespace MinhasFinancas.Domain.DTOs.TransacaoFinanceira;
 
-public class ReadTransacaoDTO
+public class UpdateTransacaoDTO
 {
-    public long Id { get; set; }
-    
+    [Required]
     public string Descricao { get; set; }
     
+    [Required]
     public DateTime Data { get; set; }
     
+    [Required]
     public double Valor { get; set; }
     
+    [Required]
     public TipoTransacao Tipo { get; set; }
     
     [Required] 

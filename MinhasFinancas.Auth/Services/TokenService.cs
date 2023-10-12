@@ -5,9 +5,8 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using MinhasFinancas.Auth.Configurations;
 using MinhasFinancas.Auth.Data;
-using MinhasFinancas.Auth.DTOs;
-using MinhasFinancas.Auth.DTOs.Token;
-using MinhasFinancas.Auth.Models;
+using MinhasFinancas.Domain.DTOs.Token;
+using MinhasFinancas.Domain.Models;
 
 namespace MinhasFinancas.Auth.Services;
 
@@ -56,7 +55,7 @@ public class TokenService
         var chave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.Secret));
         var signinCredentials = new SigningCredentials(chave, SecurityAlgorithms.HmacSha256);
         var token = new JwtSecurityToken(
-            expires: DateTime.Now.AddHours(2), 
+            expires: DateTime.Now.AddHours(1.5), 
             claims: claims, 
             signingCredentials: signinCredentials
         );

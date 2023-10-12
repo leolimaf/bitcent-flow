@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MinhasFinancas.Auth.Data;
-using MinhasFinancas.Auth.DTOs.Token;
-using MinhasFinancas.Auth.DTOs.Usuario;
-using MinhasFinancas.Auth.Models;
 using MinhasFinancas.Auth.Services.Interfaces;
+using MinhasFinancas.Domain.DTOs.Token;
+using MinhasFinancas.Domain.DTOs.Usuario;
+using MinhasFinancas.Domain.Models;
 
 namespace MinhasFinancas.Auth.Services;
 

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
-using MinhasFinancas.Auth.DTOs;
-using MinhasFinancas.Auth.DTOs.Usuario;
-using MinhasFinancas.Auth.Models;
+using MinhasFinancas.Domain.DTOs.Usuario;
+using MinhasFinancas.Domain.Models;
 
 namespace MinhasFinancas.Auth.Profiles;
 

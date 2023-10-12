@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using MinhasFinancas.API.DTOs.TransacaoFinanceira;
-using MinhasFinancas.API.Models;
 using MinhasFinancas.API.Services.Interfaces;
+using MinhasFinancas.Domain.DTOs.TransacaoFinanceira;
+using MinhasFinancas.Domain.Models;
 
 namespace MinhasFinancas.Test.Services;
 

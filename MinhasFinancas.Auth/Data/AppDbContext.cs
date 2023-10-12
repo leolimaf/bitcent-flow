@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MinhasFinancas.Auth.Models;
+using MinhasFinancas.Domain.Models;
 
 namespace MinhasFinancas.Auth.Data;
 
