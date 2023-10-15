@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MyFinances.Auth.IdentityData;
 using MyFinances.Domain.DTOs.Token;
 using MyFinances.Domain.DTOs.Usuario;
 using MyFinances.Auth.Services.Interfaces;
@@ -31,6 +33,8 @@ public class UsuarioController : ControllerBase
         return CreatedAtAction(nameof(ObterPorId), readUsuarioDto.Id, readUsuarioDto);
     }
     
+    [Authorize(Policy = "Admin")]
+    [RequiresClaim(ClaimTypes.Role, "Administrator")]
     [HttpGet, Route("obter-por-id")]
     public async Task<IActionResult> ObterPorId(long id)
     {
@@ -38,9 +42,6 @@ public class UsuarioController : ControllerBase
 
         if (readUsuarioDto is null)
             return NotFound(readUsuarioDto);
-
-        if (readUsuarioDto.Nome != User.Identity.Name) // TODO: Verificar como validar a partir das claims
-            return Forbid();
         
         return Ok(readUsuarioDto);
     }

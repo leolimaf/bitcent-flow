@@ -32,6 +32,9 @@ public class Usuario
     [Column("VALIDADE_TOKEN")]
     public DateTime? ValidadeToken { get; set; }
     
+    [Column("ADMINISTRADOR")] 
+    public bool IsAdministrador { get; set; }
+    
     public virtual List<TransacaoFinanceira> TransacaoFinanceiras { get; set; }
 
 }

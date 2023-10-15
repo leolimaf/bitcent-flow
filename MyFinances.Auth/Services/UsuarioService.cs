@@ -21,7 +21,7 @@ public class UsuarioService : IUsuarioService
         _context = context;
     }
 
-    public async Task<ReadUsuarioDTO> CadastrarUsuario(CreateUsuarioDTO usuarioDto)
+    public async Task<ReadUsuarioDTO> CadastrarUsuario(CreateUsuarioDTO usuarioDto, bool isAdmin = false)
     {
         if (await _context.Usuarios.AnyAsync(x => x.Nome == usuarioDto.Nome))
             return new ReadUsuarioDTO{Message = "Nome de usuário já cadastrado."};

@@ -25,7 +25,7 @@ public class TokenService
     {
         Claim[] claims = {
             new(JwtRegisteredClaimNames.UniqueName, usuario.Nome),
-            new Claim(ClaimTypes.Role, "UsuarioComum"),
+            new Claim(ClaimTypes.Role, !usuario.IsAdministrador ? "StandardUser" : "Administrator"),
             new("id", usuario.Id.ToString()),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N"))
         };

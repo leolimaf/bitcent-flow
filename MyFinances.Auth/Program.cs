@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -7,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MyFinances.Auth.Configurations;
 using MyFinances.Auth.Data;
+using MyFinances.Auth.IdentityData;
 using MyFinances.Auth.Services;
 using MyFinances.Auth.Services.Interfaces;
 
@@ -46,10 +48,14 @@ builder.Services.AddAuthentication(opts =>
 });
 builder.Services.AddAuthorization(auth =>
 {
-    auth.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
-        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-        .RequireAuthenticatedUser()
-        .Build());
+    auth.AddPolicy("Bearer", 
+        new AuthorizationPolicyBuilder()
+                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                    .RequireAuthenticatedUser()
+                    .Build());
+    
+    auth.AddPolicy(IdentityData.AdminUserPolicyName, p=> 
+        p.RequireClaim(ClaimTypes.Role, IdentityData.AdminUserClaimName));
 });
 
 builder.Services.AddControllers();
