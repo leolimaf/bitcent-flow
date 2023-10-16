@@ -9,7 +9,7 @@ public class TransacaoFinanceira
     [Key]
     [Required]
     [Column("ID")]
-    public long Id { get; set; }
+    public Guid Id { get; set; }
     
     [Required]
     [Column("DESCRICAO")]
@@ -31,7 +31,7 @@ public class TransacaoFinanceira
 
     [Required] 
     [Column("ID_USUARIO")]
-    public long IdUsuario { get; set; }
+    public Guid IdUsuario { get; set; }
 }
 
 public enum TipoTransacao

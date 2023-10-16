@@ -44,22 +44,22 @@ public class TransacaoFinanceiraServiceTest : IClassFixture<TestFixture>
     [Fact]
     public void TestarObterTransacaoPorId()
     {
-        var transacao = _transacaoFinanceiraService.ObterTransacaoPorId(1);
+        var transacao = _transacaoFinanceiraService.ObterTransacaoPorId(Guid.NewGuid());
         Assert.NotNull(transacao);
     }
     
     [Theory]
-    [InlineData(1), InlineData(2), InlineData(3)]
-    public void TestarObterTransacaoPorVariosIds(int id)
+    [InlineData("35d036d0-429e-4102-88ac-08a7af2ba92f"), InlineData("6ada8c22-0235-4595-8fde-34bfab840ce2"), InlineData("2b26dbba-6e17-468e-a411-ff77c0ca2a68")]
+    public void TestarObterTransacaoPorVariosIds(string id)
     {
-        var transacao = _transacaoFinanceiraService.ObterTransacaoPorId(id);
+        var transacao = _transacaoFinanceiraService.ObterTransacaoPorId(new Guid(id));
         Assert.NotNull(transacao);
     }
     
     [Fact]
     public void TestarAtualizarTransacao()
     {
-        var transacao = _transacaoFinanceiraService.ObterTransacaoPorId(1);
+        var transacao = _transacaoFinanceiraService.ObterTransacaoPorId(new Guid("35d036d0-429e-4102-88ac-08a7af2ba92f"));
         
         var transacaoDto = new UpdateTransacaoDTO
         {
@@ -69,14 +69,14 @@ public class TransacaoFinanceiraServiceTest : IClassFixture<TestFixture>
             Tipo = transacao.Tipo
         };
 
-        var result = _transacaoFinanceiraService.AtualizarTransacao(1, transacaoDto);
+        var result = _transacaoFinanceiraService.AtualizarTransacao(new Guid("35d036d0-429e-4102-88ac-08a7af2ba92f"), transacaoDto);
         Assert.True(result.IsSuccess);
     }
 
     [Fact]
     public void TestarRemoverTransacao()
     {
-        var result = _transacaoFinanceiraService.RemoverTransacao(3);
+        var result = _transacaoFinanceiraService.RemoverTransacao(new Guid("35d036d0-429e-4102-88ac-08a7af2ba92f"));
         Assert.True(result.IsSuccess);
         
     }

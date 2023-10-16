@@ -26,7 +26,7 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
         return _mapper.Map<ReadTransacaoDTO>(transacao);
     }
 
-    public ReadTransacaoDTO ObterTransacaoPorId(long id)
+    public ReadTransacaoDTO ObterTransacaoPorId(Guid id)
     {
         var transacao = _context.TransacoesFinanceiras.FirstOrDefault(t => t.Id == id);
         
@@ -42,7 +42,7 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
         return _mapper.Map<List<ReadTransacaoDTO>>(transacoes);
     }
 
-    public Result AtualizarTransacao(long id, UpdateTransacaoDTO transacaoDto)
+    public Result AtualizarTransacao(Guid id, UpdateTransacaoDTO transacaoDto)
     {
         var transacao = _context.TransacoesFinanceiras.FirstOrDefault(t => t.Id == id);
 
@@ -54,7 +54,7 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
         return Result.Ok();
     }
 
-    public Result RemoverTransacao(long id)
+    public Result RemoverTransacao(Guid id)
     {
         var transacao = _context.TransacoesFinanceiras.FirstOrDefault(t => t.Id == id);
 

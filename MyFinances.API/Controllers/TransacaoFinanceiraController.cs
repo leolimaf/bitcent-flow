@@ -39,7 +39,7 @@ public class TransacaoFinanceiraController : ControllerBase
     [HttpGet, Route("obter-por-id")]
     [ProducesResponseType(200, Type = typeof(ReadTransacaoDTO))]
     [ProducesResponseType(404, Type = null!)]
-    public IActionResult ObterTransacaoPorId(long id)
+    public IActionResult ObterTransacaoPorId(Guid id)
     {
         ReadTransacaoDTO readTransacaoDto = _transacaoFinanceiraService.ObterTransacaoPorId(id);
         if (readTransacaoDto is null) 
@@ -68,7 +68,7 @@ public class TransacaoFinanceiraController : ControllerBase
     [HttpPut, Route("atualizar")]
     [ProducesResponseType(204)]
     [ProducesResponseType(404, Type = null!)]
-    public IActionResult AtualizarTransacao([FromQuery] long id, [FromBody] UpdateTransacaoDTO transacaoDto)
+    public IActionResult AtualizarTransacao([FromQuery] Guid id, [FromBody] UpdateTransacaoDTO transacaoDto)
     {
         Result result = _transacaoFinanceiraService.AtualizarTransacao(id, transacaoDto);
         if (result.IsFailed)
@@ -84,7 +84,7 @@ public class TransacaoFinanceiraController : ControllerBase
     [HttpDelete, Route("remover")]
     [ProducesResponseType(204)]
     [ProducesResponseType(404, Type = null!)]
-    public IActionResult RemoverTransacao([FromQuery] long id)
+    public IActionResult RemoverTransacao([FromQuery] Guid id)
     {
         Result result = _transacaoFinanceiraService.RemoverTransacao(id);
         if (result.IsFailed)

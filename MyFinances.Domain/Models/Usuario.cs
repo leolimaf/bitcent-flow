@@ -12,7 +12,7 @@ public class Usuario
     [Key]
     [Required]
     [Column("ID")]
-    public long Id { get; set; }
+    public Guid Id { get; set; }
     
     [Required,] 
     [Column("NOME")]

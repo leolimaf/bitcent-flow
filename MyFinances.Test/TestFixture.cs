@@ -31,9 +31,9 @@ public class TestFixture : IDisposable
 
     private void SeedData()
     {
-        DbContext.TransacoesFinanceiras.Add(new() {Id = 1, Data = DateTime.Now.AddDays(-1), Descricao = "Conta de luz", Valor = 136.25, Tipo = TipoTransacao.DESPESA, IdUsuario = 1});
-        DbContext.TransacoesFinanceiras.Add(new() {Id = 2, Data = DateTime.Now.AddHours(-6), Descricao = "Salário", Valor = 2575.00, Tipo = TipoTransacao.RECEITA, IdUsuario = 1});
-        DbContext.TransacoesFinanceiras.Add(new() {Id = 3, Data = DateTime.Now, Descricao = "Conta de água", Valor = 83.65, Tipo = TipoTransacao.DESPESA, IdUsuario = 1});
+        DbContext.TransacoesFinanceiras.Add(new() {Id = Guid.NewGuid(), Data = DateTime.Now.AddDays(-1), Descricao = "Conta de luz", Valor = 136.25, Tipo = TipoTransacao.DESPESA, IdUsuario = new Guid("06722053-90c6-416c-adab-3d69fd8f6c0d")});
+        DbContext.TransacoesFinanceiras.Add(new() {Id = Guid.NewGuid(), Data = DateTime.Now.AddHours(-6), Descricao = "Salário", Valor = 2575.00, Tipo = TipoTransacao.RECEITA, IdUsuario = new Guid("06722053-90c6-416c-adab-3d69fd8f6c0d")});
+        DbContext.TransacoesFinanceiras.Add(new() {Id = Guid.NewGuid(), Data = DateTime.Now, Descricao = "Conta de água", Valor = 83.65, Tipo = TipoTransacao.DESPESA, IdUsuario = new Guid("06722053-90c6-416c-adab-3d69fd8f6c0d")});
         DbContext.SaveChanges();
     }
 

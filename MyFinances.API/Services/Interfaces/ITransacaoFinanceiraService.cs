@@ -6,8 +6,8 @@ namespace MyFinances.API.Services.Interfaces;
 public interface ITransacaoFinanceiraService
 {
     ReadTransacaoDTO AdicionarTransacao(CreateTransacaoDTO transacaoDto);
-    ReadTransacaoDTO ObterTransacaoPorId(long id);
+    ReadTransacaoDTO ObterTransacaoPorId(Guid id);
     List<ReadTransacaoDTO> ListarTransacoes();
-    Result AtualizarTransacao(long id, UpdateTransacaoDTO transacaoDto);
-    Result RemoverTransacao(long id);
+    Result AtualizarTransacao(Guid id, UpdateTransacaoDTO transacaoDto);
+    Result RemoverTransacao(Guid id);
 }

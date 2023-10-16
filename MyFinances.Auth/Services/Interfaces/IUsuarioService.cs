@@ -5,8 +5,8 @@ namespace MyFinances.Auth.Services.Interfaces;
 
 public interface IUsuarioService
 {
-    Task<ReadUsuarioDTO> CadastrarUsuario(CreateUsuarioDTO usuarioDto, bool isAdmin = false);
-    Task<ReadUsuarioDTO> ObterUsuarioPorId(long id);
+    Task<ReadUsuarioDTO> CadastrarUsuario(CreateUsuarioDTO usuarioDto);
+    Task<ReadUsuarioDTO> ObterUsuarioPorId(string id);
     Task<TokenDTO?> LogarUsuario(CredenciaisDTO credenciaisDto);
     Task<TokenDTO> LogarUsuario(TokenValueDTO tokenValueDto);
     Task<bool> RevogarToken(string identityName);

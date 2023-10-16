@@ -36,7 +36,7 @@ public class UsuarioController : ControllerBase
     [Authorize(Policy = "Admin")]
     [RequiresClaim(ClaimTypes.Role, "Administrator")]
     [HttpGet, Route("obter-por-id")]
-    public async Task<IActionResult> ObterPorId(long id)
+    public async Task<IActionResult> ObterPorId(string id)
     {
         ReadUsuarioDTO readUsuarioDto = await _usuarioService.ObterUsuarioPorId(id);
 

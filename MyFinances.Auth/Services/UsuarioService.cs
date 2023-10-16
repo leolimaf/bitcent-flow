@@ -21,7 +21,7 @@ public class UsuarioService : IUsuarioService
         _context = context;
     }
 
-    public async Task<ReadUsuarioDTO> CadastrarUsuario(CreateUsuarioDTO usuarioDto, bool isAdmin = false)
+    public async Task<ReadUsuarioDTO> CadastrarUsuario(CreateUsuarioDTO usuarioDto)
     {
         if (await _context.Usuarios.AnyAsync(x => x.Nome == usuarioDto.Nome))
             return new ReadUsuarioDTO{Message = "Nome de usuário já cadastrado."};
@@ -39,9 +39,9 @@ public class UsuarioService : IUsuarioService
         return _mapper.Map<ReadUsuarioDTO>(usuario);
     }
 
-    public async Task<ReadUsuarioDTO> ObterUsuarioPorId(long id)
+    public async Task<ReadUsuarioDTO> ObterUsuarioPorId(string id)
     {
-        var usuario = await _context.Usuarios.FirstOrDefaultAsync(x => x.Id == id);
+        var usuario = await _context.Usuarios.FirstOrDefaultAsync(x => x.Id.ToString() == id);
         
         return _mapper.Map<ReadUsuarioDTO>(usuario);
     }

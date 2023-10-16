@@ -5,7 +5,7 @@ namespace MyFinances.Domain.DTOs.TransacaoFinanceira;
 
 public class ReadTransacaoDTO
 {
-    public long Id { get; set; }
+    public Guid Id { get; set; }
     
     public string Descricao { get; set; }
     
@@ -16,5 +16,5 @@ public class ReadTransacaoDTO
     public TipoTransacao Tipo { get; set; }
     
     [Required] 
-    public long IdUsuario { get; set; }
+    public Guid IdUsuario { get; set; }
 }
