@@ -79,4 +79,10 @@ public class UsuarioController : ControllerBase
         
         return NoContent();
     }
+    
+    [HttpGet, Route("obter-meu-email")]
+    public ActionResult<string> ObterMeuEmail()
+    {
+        return Ok(_usuarioService.ObterMeuEmail());
+    }
 }

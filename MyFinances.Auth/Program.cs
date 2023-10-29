@@ -57,6 +57,7 @@ builder.Services.AddAuthorization(auth =>
 
 builder.Services.AddControllers();
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<TokenService>();

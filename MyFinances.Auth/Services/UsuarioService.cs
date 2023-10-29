@@ -10,15 +10,17 @@ namespace MyFinances.Auth.Services;
 
 public class UsuarioService : IUsuarioService
 {
-    private IMapper _mapper;
-    private TokenService _tokenService;
-    private AppDbContext _context;
+    private readonly IMapper _mapper;
+    private readonly TokenService _tokenService;
+    private readonly AppDbContext _context;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public UsuarioService(IMapper mapper, TokenService tokenService, AppDbContext context)
+    public UsuarioService(IMapper mapper, TokenService tokenService, AppDbContext context, IHttpContextAccessor httpContextAccessor)
     {
         _mapper = mapper;
         _tokenService = tokenService;
         _context = context;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<ReadUsuarioDTO> CadastrarUsuario(CreateUsuarioDTO usuarioDto)
@@ -48,10 +50,10 @@ public class UsuarioService : IUsuarioService
 
     public async Task<TokenDTO?> LogarUsuario(CredenciaisDTO credenciaisDto)
     {
-        var usuario = await  _context.Usuarios.FirstOrDefaultAsync(u => u.Nome == credenciaisDto.Nome || u.Email == credenciaisDto.Email);
+        var usuario = await  _context.Usuarios.FirstOrDefaultAsync(u => u.Email == credenciaisDto.Email);
 
         if (usuario is null || !BCrypt.Net.BCrypt.Verify(credenciaisDto.Senha, usuario.SenhaHash))
-            return new TokenDTO{Message = "Usuário ou senha incorreto."};
+            return new TokenDTO{Message = "Usuário e / ou senha inválido(s)."};
 
         return _tokenService.GerarToken(usuario);
     }
@@ -92,5 +94,19 @@ public class UsuarioService : IUsuarioService
         await _context.SaveChangesAsync();
         
         return true;
+    }
+    
+    public string ObterMeuEmail()
+    {
+        var usuario = string.Empty;
+        // var roles = new List<string>();
+        if (_httpContextAccessor.HttpContext is not null)
+        {
+            usuario = _httpContextAccessor.HttpContext.User.Identity?.Name;
+            // var roleClaims = _httpContextAccessor.HttpContext.User.FindAll(ClaimTypes.Role);
+            // roles = roleClaims.Select(c => c.Value).ToList();
+        }
+        return usuario;
+
     }
 }
