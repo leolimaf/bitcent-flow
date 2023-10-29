@@ -8,7 +8,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MyFinances.Auth.Configurations;
 using MyFinances.Auth.Data;
-using MyFinances.Auth.IdentityData;
 using MyFinances.Auth.Services;
 using MyFinances.Auth.Services.Interfaces;
 
@@ -39,6 +38,7 @@ builder.Services.AddAuthentication(opts =>
     opts.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
+        // TODO: Aprender mais sobre secrets p/ armazena-la fora da aplicação
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenConfigurations.Secret)),
         ValidateAudience = false,
         ValidateIssuer = false,
@@ -53,9 +53,6 @@ builder.Services.AddAuthorization(auth =>
                     .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
                     .RequireAuthenticatedUser()
                     .Build());
-    
-    auth.AddPolicy(IdentityData.AdminUserPolicyName, p=> 
-        p.RequireClaim(ClaimTypes.Role, IdentityData.AdminUserClaimName));
 });
 
 builder.Services.AddControllers();

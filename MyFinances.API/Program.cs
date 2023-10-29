@@ -38,6 +38,7 @@ builder.Services.AddAuthentication(opts =>
     {
         // ValidIssuer = config["TokenConfigurations:Issuer"],
         // ValidAudience = config["TokenConfigurations:Audience"],
+        // TODO: Aprender mais sobre secrets p/ armazena-la fora da aplicação
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenConfigurations:Secret"]!)),
         ValidateIssuer = false,
         ValidateAudience = false,

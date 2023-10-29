@@ -50,11 +50,8 @@ public class UsuarioService : IUsuarioService
     {
         var usuario = await  _context.Usuarios.FirstOrDefaultAsync(u => u.Nome == credenciaisDto.Nome || u.Email == credenciaisDto.Email);
 
-        if (usuario is null)
-            return new TokenDTO{Message = "Usuário / E-mail inválido(s)"};
-
-        if (!BCrypt.Net.BCrypt.Verify(credenciaisDto.Senha, usuario.SenhaHash))
-            return new TokenDTO { Message = "Senha inválida" };
+        if (usuario is null || !BCrypt.Net.BCrypt.Verify(credenciaisDto.Senha, usuario.SenhaHash))
+            return new TokenDTO{Message = "Usuário ou senha incorreto."};
 
         return _tokenService.GerarToken(usuario);
     }

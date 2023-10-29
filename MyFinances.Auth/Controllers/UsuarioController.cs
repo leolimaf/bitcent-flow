@@ -1,7 +1,5 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MyFinances.Auth.IdentityData;
 using MyFinances.Domain.DTOs.Token;
 using MyFinances.Domain.DTOs.Usuario;
 using MyFinances.Auth.Services.Interfaces;
@@ -21,8 +19,7 @@ public class UsuarioController : ControllerBase
         _usuarioService = usuarioService;
     }
 
-    [AllowAnonymous]
-    [HttpPost, Route("cadastrar")]
+    [HttpPost, Route("cadastrar"), AllowAnonymous]
     public async Task<IActionResult> Cadastrar([FromBody] CreateUsuarioDTO usuarioDto)
     {
         ReadUsuarioDTO readUsuarioDto = await _usuarioService.CadastrarUsuario(usuarioDto);
@@ -33,8 +30,7 @@ public class UsuarioController : ControllerBase
         return CreatedAtAction(nameof(ObterPorId), readUsuarioDto.Id, readUsuarioDto);
     }
     
-    [Authorize(Policy = "Admin")]
-    [RequiresClaim(ClaimTypes.Role, "Administrator")]
+    [Authorize(Roles = "Administrator")]
     [HttpGet, Route("obter-por-id")]
     public async Task<IActionResult> ObterPorId(string id)
     {
@@ -46,8 +42,7 @@ public class UsuarioController : ControllerBase
         return Ok(readUsuarioDto);
     }
 
-    [AllowAnonymous]
-    [HttpPost, Route("logar")]
+    [HttpPost, Route("logar"), AllowAnonymous]
     public async Task<IActionResult> Logar([FromBody] CredenciaisDTO usuarioDto)
     {
         var token = await _usuarioService.LogarUsuario(usuarioDto);
@@ -60,7 +55,6 @@ public class UsuarioController : ControllerBase
             Unauthorized();
     }
     
-    [AllowAnonymous]
     [HttpPost, Route("atualizar-token")]
     public async Task<IActionResult> AtualizarToken([FromBody] TokenValueDTO tokenValueDto)
     {
