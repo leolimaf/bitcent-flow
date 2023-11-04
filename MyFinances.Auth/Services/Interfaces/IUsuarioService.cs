@@ -8,7 +8,7 @@ public interface IUsuarioService
     Task<ReadUsuarioDTO> CadastrarUsuario(CreateUsuarioDTO usuarioDto);
     Task<ReadUsuarioDTO> ObterUsuarioPorId(string id);
     Task<TokenDTO?> LogarUsuario(CredenciaisDTO credenciaisDto);
-    Task<TokenDTO> LogarUsuario(TokenValueDTO tokenValueDto);
+    Task<TokenDTO?> LogarUsuario(TokenValueDTO tokenValueDto);
     Task<bool> RevogarToken(string identityName);
     public string ObterMeuEmail();
 

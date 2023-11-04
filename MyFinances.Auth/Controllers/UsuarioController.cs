@@ -66,6 +66,9 @@ public class UsuarioController : ControllerBase
         if (token is null)
             return Unauthorized();
         
+        if (!string.IsNullOrWhiteSpace(token.Message))
+            return Unauthorized(token.Message);
+        
         return Ok(token);
     }
     
@@ -81,6 +84,7 @@ public class UsuarioController : ControllerBase
     }
     
     [HttpGet, Route("obter-meu-email")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public ActionResult<string> ObterMeuEmail()
     {
         return Ok(_usuarioService.ObterMeuEmail());

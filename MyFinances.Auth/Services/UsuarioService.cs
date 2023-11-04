@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using MyFinances.Domain.DTOs.Token;
 using MyFinances.Domain.DTOs.Usuario;
 using MyFinances.Domain.Models;
@@ -58,34 +59,44 @@ public class UsuarioService : IUsuarioService
         return _tokenService.GerarToken(usuario);
     }
     
-    public async Task<TokenDTO> LogarUsuario(TokenValueDTO tokenValueDto)
+    public async Task<TokenDTO?> LogarUsuario(TokenValueDTO tokenValueDto)
     {
-        var principal = _tokenService.GetPrincipalFromExpiredToken(tokenValueDto.AccessToken);
-        var username = principal.Identity?.Name;
+        try
+        {
+            var principal = _tokenService.GetPrincipalFromExpiredToken(tokenValueDto.AccessToken);
+            var username = principal.Identity?.Name;
         
-        var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Nome == username);
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == username);
         
-        if (usuario is null || usuario.Token != tokenValueDto.RefreshToken || usuario.ValidadeToken <= DateTime.Now)
-            return null!;
+            if (usuario is null || usuario.Token != tokenValueDto.RefreshToken || usuario.ValidadeToken <= DateTime.Now)
+                return null;
         
-        var accessToken = _tokenService.GerarAccessToken(principal.Claims);
-        var refreshToken = _tokenService.GerarRefreshToken();
+            var accessToken = _tokenService.GerarAccessToken(principal.Claims);
+            var refreshToken = _tokenService.GerarRefreshToken();
         
-        usuario.Token = refreshToken;
+            usuario.Token = refreshToken;
 
-        var user = await _context.Usuarios.FirstOrDefaultAsync(u => u.Nome == usuario.Nome || u.Email == usuario.Email);
+            var user = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == usuario.Email);
         
         if (user is null)
             return null;
         
-        await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         
-        return _tokenService.RetornarTokenAtualizado(accessToken, refreshToken);
+            return _tokenService.RetornarTokenAtualizado(accessToken, refreshToken);
+        }
+        catch (SecurityTokenExpiredException e)
+        {
+            return new TokenDTO
+            {
+                Message = e.Message
+            };
+        }
     }
 
     public async Task<bool> RevogarToken(string nomeDeUsuario)
     {
-        var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Nome == nomeDeUsuario);
+        var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == nomeDeUsuario);
         
         if (usuario is null)
             return false;
