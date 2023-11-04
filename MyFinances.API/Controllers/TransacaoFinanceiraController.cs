@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using MyFinances.Domain.DTOs.TransacaoFinanceira;
 using MyFinances.API.Services.Interfaces;
@@ -21,7 +22,7 @@ public class TransacaoFinanceiraController : ControllerBase
     }
 
     /// <summary> Adiciona uma transação financeira</summary>
-    /// <remarks>Realiza a entrada das receitas e despesas do usuário autenticado</remarks>
+    /// <remarks>Realiza a entrada das receitas e despesas do usuário autenticado.</remarks>
     /// <response code="201">Requisição realizada com sucesso</response>
     [HttpPost, Route("adicionar")]
     [ProducesResponseType(201, Type = typeof(ReadTransacaoDTO))]
@@ -32,7 +33,7 @@ public class TransacaoFinanceiraController : ControllerBase
     }
     
     /// <summary>Obtem uma transação financeira</summary>
-    /// <remarks>A partir do identificador de uma transação financeira do usuário autenticado, é possível obte-lá</remarks>
+    /// <remarks>A partir do identificador de uma transação financeira do usuário autenticado, é possível obte-lá.</remarks>
     /// <param name="id">Identificador da transação financeira</param>
     /// <response code="200">Requisição realizada com sucesso</response>
     /// <response code="404">A transação não foi encontrada</response>
@@ -49,7 +50,7 @@ public class TransacaoFinanceiraController : ControllerBase
 
     // TODO: Alterar endpoint p/ retornar somente as transações do usuário que estiver autenticado
     /// <summary>Lista todas as transações financeiras</summary>
-    /// <remarks>Retorna todas as transações financeiras do usuário autenticado</remarks>
+    /// <remarks>Retorna todas as transações financeiras do usuário autenticado.</remarks>
     /// <response code="200">Requisição realizada com sucesso</response>
     [HttpGet, Route("listar")]
     [ProducesResponseType(200, Type = typeof(List<ReadTransacaoDTO>))]
@@ -61,7 +62,7 @@ public class TransacaoFinanceiraController : ControllerBase
     }
 
     /// <summary>Atualiza uma transação financeira</summary>
-    /// <remarks>A partir do identificador de uma transação financeira do usuário autenticado, é possível editá-la</remarks>
+    /// <remarks>A partir do identificador de uma transação financeira do usuário autenticado, é possível editá-la.</remarks>
     /// <param name="id">Identificador da transação financeira</param>
     /// <response code="204">Requisição realizada com sucesso</response>
     /// <response code="404">A transação não foi encontrada</response>
@@ -75,9 +76,25 @@ public class TransacaoFinanceiraController : ControllerBase
             return NotFound();
         return NoContent();
     }
+    
+    /// <summary>Atualiza uma transação financeira parcialmente</summary>
+    /// <remarks>A partir do identificador de uma transação financeira do usuário autenticado, é possível atualiza-la  utilizando o verto Patch do Http.</remarks>
+    /// <param name="id">Identificador da transação financeira</param>
+    /// <response code="204">Requisição realizada com sucesso</response>
+    /// <response code="404">A transação não foi encontrada</response>
+    [HttpPatch, Route("atualizar-parcialmente")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(404, Type = null!)]
+    public IActionResult AtualizarTransacaoParcialmente([FromQuery] Guid id, [FromBody] JsonPatchDocument transacaoDto)
+    {
+        Result result = _transacaoFinanceiraService.AtualizarTransacaoParcialmente(id, transacaoDto);
+        if (result.IsFailed)
+            return NotFound();
+        return NoContent();
+    }
 
     /// <summary>Remove uma transação financeira</summary>
-    /// <remarks>A partir do identificador de uma transação financeira do usuário autenticado, é possível apagá-la</remarks>
+    /// <remarks>A partir do identificador de uma transação financeira do usuário autenticado, é possível apagá-la.</remarks>
     /// <param name="id">Identificador da transação financeira</param>
     /// <response code="204">Requisição realizada com sucesso</response>
     /// <response code="404">A transação não foi encontrada</response>

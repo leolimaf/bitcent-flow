@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentResults;
+using Microsoft.AspNetCore.JsonPatch;
 using MyFinances.Domain.DTOs.TransacaoFinanceira;
 using MyFinances.Domain.Models;
 using MyFinances.API.Data;
@@ -50,6 +51,18 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
             return Result.Fail($"A transação financeira de id {id} não foi encontrada");
 
         _mapper.Map(transacaoDto, transacao);
+        _context.SaveChanges();
+        return Result.Ok();
+    }
+
+    public Result AtualizarTransacaoParcialmente(Guid id, JsonPatchDocument transacaoDto)
+    {
+        var transacao = _context.TransacoesFinanceiras.Find(id);
+        
+        if (transacao is null)
+            return Result.Fail($"A transação financeira de id {id} não foi encontrada");
+        
+        transacaoDto.ApplyTo(transacao);
         _context.SaveChanges();
         return Result.Ok();
     }
