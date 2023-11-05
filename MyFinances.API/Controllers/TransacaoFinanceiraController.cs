@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using MyFinances.Domain.DTOs.TransacaoFinanceira;
 using MyFinances.API.Services.Interfaces;
+using Sieve.Models;
 
 namespace MyFinances.API.Controllers;
 
@@ -54,9 +55,9 @@ public class TransacaoFinanceiraController : ControllerBase
     /// <response code="200">Requisição realizada com sucesso</response>
     [HttpGet, Route("listar")]
     [ProducesResponseType(200, Type = typeof(List<ReadTransacaoDTO>))]
-    public IActionResult ListarTransacoes()
+    public IActionResult ListarTransacoes([FromQuery] SieveModel model)
     {
-        List<ReadTransacaoDTO> readTransacaoDtos = _transacaoFinanceiraService.ListarTransacoes();
+        List<ReadTransacaoDTO> readTransacaoDtos = _transacaoFinanceiraService.ListarTransacoes(model);
         
         return Ok(readTransacaoDtos);
     }

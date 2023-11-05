@@ -6,6 +6,8 @@ using MyFinances.Domain.DTOs.TransacaoFinanceira;
 using MyFinances.Domain.Models;
 using MyFinances.API.Data;
 using MyFinances.API.Services.Interfaces;
+using Sieve.Models;
+using Sieve.Services;
 
 namespace MyFinances.API.Services;
 
@@ -14,12 +16,14 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
     private readonly AppDbContext _context;
     private readonly IMapper _mapper;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly SieveProcessor _sieveProcessor;
 
-    public TransacaoFinanceiraService(AppDbContext context, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+    public TransacaoFinanceiraService(AppDbContext context, IMapper mapper, IHttpContextAccessor httpContextAccessor, SieveProcessor sieveProcessor)
     {
         _context = context;
         _mapper = mapper;
         _httpContextAccessor = httpContextAccessor;
+        _sieveProcessor = sieveProcessor;
     }
 
     public ReadTransacaoDTO AdicionarTransacao(CreateTransacaoDTO transacaoDto)
@@ -41,13 +45,16 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
         return null!;
     }
 
-    public List<ReadTransacaoDTO> ListarTransacoes()
+    public List<ReadTransacaoDTO> ListarTransacoes(SieveModel model)
     {
-        List<TransacaoFinanceira> transacoes = _context.TransacoesFinanceiras
-            .Where(x => x.IdUsuario == ObterIdDoUsuarioAutenticado())
-            .ToList();
+        var transacoes = _context.TransacoesFinanceiras
+            .Where(x => x.IdUsuario == ObterIdDoUsuarioAutenticado());
+
+        var readTransacaoDto = _mapper.Map<List<ReadTransacaoDTO>>(transacoes).AsQueryable();
         
-        return _mapper.Map<List<ReadTransacaoDTO>>(transacoes);
+        readTransacaoDto = _sieveProcessor.Apply(model, readTransacaoDto);
+        
+        return readTransacaoDto.ToList();
     }
 
     public Result AtualizarTransacao(Guid id, UpdateTransacaoDTO transacaoDto)
