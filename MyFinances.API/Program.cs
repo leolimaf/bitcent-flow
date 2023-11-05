@@ -56,6 +56,7 @@ builder.Services.AddAuthorization(opts =>
 });
 
 builder.Services.AddControllers().AddNewtonsoftJson();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ITransacaoFinanceiraService, TransacaoFinanceiraService>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddApiVersioning(opts =>

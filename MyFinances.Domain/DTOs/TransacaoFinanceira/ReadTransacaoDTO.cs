@@ -15,6 +15,5 @@ public class ReadTransacaoDTO
     
     public TipoTransacao Tipo { get; set; }
     
-    [Required] 
     public Guid IdUsuario { get; set; }
 }

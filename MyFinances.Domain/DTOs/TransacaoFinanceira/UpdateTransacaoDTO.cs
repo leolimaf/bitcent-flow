@@ -16,7 +16,4 @@ public class UpdateTransacaoDTO
     
     [Required]
     public TipoTransacao Tipo { get; set; }
-    
-    [Required] 
-    public Guid IdUsuario { get; set; }
 }

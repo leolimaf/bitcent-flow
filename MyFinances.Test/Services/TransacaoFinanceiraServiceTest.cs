@@ -26,8 +26,7 @@ public class TransacaoFinanceiraServiceTest : IClassFixture<TestFixture>
             Descricao = "Aluguel",
             Valor = 930.50,
             Data = DataInterna.ObterHorarioDeBrasilia(),
-            Tipo = TipoTransacao.DESPESA,
-            IdUsuario = new Guid("faae087f-6a08-447e-a311-e43009793f05")
+            Tipo = TipoTransacao.DESPESA
         };
         
         // Act

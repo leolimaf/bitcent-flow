@@ -78,8 +78,8 @@ public class UsuarioService : IUsuarioService
 
             var user = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == usuario.Email);
         
-        if (user is null)
-            return null;
+            if (user is null)
+                return null;
         
             await _context.SaveChangesAsync();
         

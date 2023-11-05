@@ -1,4 +1,5 @@
-﻿using FluentResults;
+﻿using System.ComponentModel.DataAnnotations;
+using FluentResults;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -48,7 +49,6 @@ public class TransacaoFinanceiraController : ControllerBase
         return Ok(readTransacaoDto);
     }
 
-    // TODO: Alterar endpoint p/ retornar somente as transações do usuário que estiver autenticado
     /// <summary>Lista todas as transações financeiras</summary>
     /// <remarks>Retorna todas as transações financeiras do usuário autenticado.</remarks>
     /// <response code="200">Requisição realizada com sucesso</response>
@@ -69,7 +69,7 @@ public class TransacaoFinanceiraController : ControllerBase
     [HttpPut, Route("atualizar")]
     [ProducesResponseType(204)]
     [ProducesResponseType(404, Type = null!)]
-    public IActionResult AtualizarTransacao([FromQuery] Guid id, [FromBody] UpdateTransacaoDTO transacaoDto)
+    public IActionResult AtualizarTransacao([FromQuery, Required] Guid id, [FromBody] UpdateTransacaoDTO transacaoDto)
     {
         Result result = _transacaoFinanceiraService.AtualizarTransacao(id, transacaoDto);
         if (result.IsFailed)
@@ -85,7 +85,7 @@ public class TransacaoFinanceiraController : ControllerBase
     [HttpPatch, Route("atualizar-parcialmente")]
     [ProducesResponseType(204)]
     [ProducesResponseType(404, Type = null!)]
-    public IActionResult AtualizarTransacaoParcialmente([FromQuery] Guid id, [FromBody] JsonPatchDocument transacaoDto)
+    public IActionResult AtualizarTransacaoParcialmente([FromQuery, Required] Guid id, [FromBody] JsonPatchDocument transacaoDto)
     {
         Result result = _transacaoFinanceiraService.AtualizarTransacaoParcialmente(id, transacaoDto);
         if (result.IsFailed)
