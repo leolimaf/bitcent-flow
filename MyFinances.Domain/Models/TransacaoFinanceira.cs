@@ -21,7 +21,8 @@ public class TransacaoFinanceira
     
     [Required]
     [Column("VALOR")]
-    public double Valor { get; set; }
+    [RegularExpression(@"^\d+(\.\d{1,2})?$")]
+    public decimal Valor { get; set; }
     
     [Required]
     [Column("TIPO")]

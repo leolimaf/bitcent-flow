@@ -14,7 +14,7 @@ public class ReadTransacaoDTO
     public DateTime Data { get; set; }
     
     [Sieve(CanFilter = true, CanSort = true)]
-    public double Valor { get; set; }
+    public decimal Valor { get; set; }
     
     public TipoTransacao Tipo { get; set; }
     
