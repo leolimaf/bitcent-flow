@@ -5,6 +5,7 @@ using MyFinances.API.Services.Interfaces;
 using MyFinances.Domain.DTOs.TransacaoFinanceira;
 using MyFinances.Domain.Models;
 using MyFinances.Useful.Date;
+using Sieve.Models;
 
 namespace MyFinances.Test.Services;
 
@@ -24,7 +25,7 @@ public class TransacaoFinanceiraServiceTest : IClassFixture<TestFixture>
         var transacaoDto = new CreateTransacaoDTO
         {
             Descricao = "Aluguel",
-            Valor = 930.50,
+            Valor = 930.50m,
             Data = DataInterna.ObterHorarioDeBrasilia(),
             Tipo = TipoTransacao.DESPESA
         };
@@ -39,14 +40,16 @@ public class TransacaoFinanceiraServiceTest : IClassFixture<TestFixture>
     [Fact]
     public void TestarListarTransacoesTipoDeRetorno()
     {
-        var listaDeTransacoes = _transacaoFinanceiraService.ListarTransacoes();
+        SieveModel model = new SieveModel();
+        var listaDeTransacoes = _transacaoFinanceiraService.ListarTransacoes(model);
         Assert.IsType<List<ReadTransacaoDTO>>(listaDeTransacoes);
     }
     
     [Fact(DisplayName = "Testa se as transações retornadas são apenas do usuário autenticado")]
     public void TestarListarTransacoesDeUmUnicoUsuario()
     {
-        var listaDeTransacoes = _transacaoFinanceiraService.ListarTransacoes();
+        SieveModel model = new SieveModel();
+        var listaDeTransacoes = _transacaoFinanceiraService.ListarTransacoes(model);
 
         var idsUsuarios = listaDeTransacoes
                                     .GroupBy(t => t.IdUsuario)
@@ -92,7 +95,7 @@ public class TransacaoFinanceiraServiceTest : IClassFixture<TestFixture>
         var transacaoDto = new UpdateTransacaoDTO
         {
             Descricao = transacao.Descricao,
-            Valor = 246.75,
+            Valor = 246.75m,
             Data = DateTime.Today,
             Tipo = transacao.Tipo
         };
