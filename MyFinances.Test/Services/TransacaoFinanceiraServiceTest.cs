@@ -18,7 +18,7 @@ public class TransacaoFinanceiraServiceTest : IClassFixture<TestFixture>
         _transacaoFinanceiraService = fixture.DbContext.GetService<ITransacaoFinanceiraService>();
     }
     
-    [Fact]
+    [Fact(DisplayName = "Testa o Adicionar Transação Financeira")]
     public void TestarAdicionarTransacao()
     {
         // Arrange
@@ -37,7 +37,7 @@ public class TransacaoFinanceiraServiceTest : IClassFixture<TestFixture>
         Assert.IsType<ReadTransacaoDTO>(transacao);
     }
 
-    [Fact]
+    [Fact(DisplayName = "Testa o Listar Transações Financeiras: verifica se o tipo do retorno está certo")]
     public void TestarListarTransacoesTipoDeRetorno()
     {
         SieveModel model = new SieveModel();
@@ -45,7 +45,7 @@ public class TransacaoFinanceiraServiceTest : IClassFixture<TestFixture>
         Assert.IsType<List<ReadTransacaoDTO>>(listaDeTransacoes);
     }
     
-    [Fact(DisplayName = "Testa se as transações retornadas são apenas do usuário autenticado")]
+    [Fact(DisplayName = "Testa o Listar Transações Financeiras: verifica se as transações retornadas são apenas do usuário autenticado")]
     public void TestarListarTransacoesDeUmUnicoUsuario()
     {
         SieveModel model = new SieveModel();
@@ -62,23 +62,22 @@ public class TransacaoFinanceiraServiceTest : IClassFixture<TestFixture>
             Assert.True(true);
     }
 
-    [Fact]
+    [Fact(DisplayName = "Testa o Obter Transação Financeira pelo id: verifica se é retornada uma transação financeira que existe para o usuário autenticado")]
     public void TestarObterTransacaoExistentePorId()
     {
-        var transacao = _transacaoFinanceiraService.ObterTransacaoPorId(new Guid("6aee466f-f10e-4fa8-94d8-fe02a4c7613f"));
+        var transacao = _transacaoFinanceiraService.ObterTransacaoPorId(new Guid("a78377f9-ceb7-4aa7-8b5f-34ff35004754"));
         Assert.NotNull(transacao);
     }
     
-    [Fact]
+    [Fact(DisplayName = "Testa o Obter Transação Financeira pelo id: verifica se não é retornada uma transação financeira que não existe para o usuário autenticado")]
     public void TestarObterTransacaoInexistentePorId()
     {
         var transacao = _transacaoFinanceiraService.ObterTransacaoPorId(new Guid("5b411039-b60d-4f8b-bc55-80eb90af53a3"));
         Assert.Null(transacao);
     }
     
-    [Theory]
-    [InlineData("6aee466f-f10e-4fa8-94d8-fe02a4c7613f")]
-    [InlineData("15901a48-f791-4175-bc4a-e7bac7edd065")] 
+    [Theory(DisplayName = "Testa o Obter Transação Financeira pelo id: faz o teste com diferentes ids")]
+    [InlineData("15901a48-f791-4175-bc4a-e7bac7edd065")]
     [InlineData("a78377f9-ceb7-4aa7-8b5f-34ff35004754")]
     public void TestarObterTransacaoExistentePorVariosIds(string id)
     {
@@ -86,11 +85,11 @@ public class TransacaoFinanceiraServiceTest : IClassFixture<TestFixture>
         Assert.NotNull(transacao);
     }
     
-    [Fact]
+    [Fact(DisplayName = "Testa o Atualizar Transação Financeira")]
     public void TestarAtualizarTransacao()
     {
         // ARRANGE
-        var transacao = _transacaoFinanceiraService.ObterTransacaoPorId(new Guid("6aee466f-f10e-4fa8-94d8-fe02a4c7613f"));
+        var transacao = _transacaoFinanceiraService.ObterTransacaoPorId(new Guid("15901a48-f791-4175-bc4a-e7bac7edd065"));
         
         var transacaoDto = new UpdateTransacaoDTO
         {
@@ -101,13 +100,13 @@ public class TransacaoFinanceiraServiceTest : IClassFixture<TestFixture>
         };
 
         // ACT
-        var result = _transacaoFinanceiraService.AtualizarTransacao(new Guid("6aee466f-f10e-4fa8-94d8-fe02a4c7613f"), transacaoDto);
+        var result = _transacaoFinanceiraService.AtualizarTransacao(new Guid("15901a48-f791-4175-bc4a-e7bac7edd065"), transacaoDto);
         
         // ASSERT
         Assert.True(result.IsSuccess);
     }
     
-    [Fact(DisplayName = "Testa o atualizar transações utilizando o verbo patch do Http")]
+    [Fact(DisplayName = "Testa o Atualizar Transação Financeira Parcialmente")]
     public void TestarAtualizarTransacaoParcialmente()
     {
         var transacaoDto = new JsonPatchDocument
@@ -134,7 +133,7 @@ public class TransacaoFinanceiraServiceTest : IClassFixture<TestFixture>
         Assert.True(result.IsSuccess);
     }
 
-    [Fact]
+    [Fact(DisplayName = "Testa o Remover Transação Financeira")]
     public void TestarRemoverTransacao()
     {
         var result = _transacaoFinanceiraService.RemoverTransacao(new Guid("a78377f9-ceb7-4aa7-8b5f-34ff35004754"));

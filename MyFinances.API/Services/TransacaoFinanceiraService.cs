@@ -17,6 +17,8 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
     private readonly IMapper _mapper;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly SieveProcessor _sieveProcessor;
+    private readonly Guid _idUsuarioAutenticado;
+
 
     public TransacaoFinanceiraService(AppDbContext context, IMapper mapper, IHttpContextAccessor httpContextAccessor, SieveProcessor sieveProcessor)
     {
@@ -24,12 +26,13 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
         _mapper = mapper;
         _httpContextAccessor = httpContextAccessor;
         _sieveProcessor = sieveProcessor;
+        _idUsuarioAutenticado = ObterIdDoUsuarioAutenticado();
     }
 
     public ReadTransacaoDTO AdicionarTransacao(CreateTransacaoDTO transacaoDto)
     {
         TransacaoFinanceira transacao = _mapper.Map<TransacaoFinanceira>(transacaoDto);
-        transacao.IdUsuario = ObterIdDoUsuarioAutenticado();
+        transacao.IdUsuario = _idUsuarioAutenticado;
         _context.TransacoesFinanceiras.Add(transacao);
         _context.SaveChanges();
         return _mapper.Map<ReadTransacaoDTO>(transacao);
@@ -39,7 +42,7 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
     {
         var transacao = _context.TransacoesFinanceiras.Find(id);
         
-        if (transacao is not null && transacao.IdUsuario == ObterIdDoUsuarioAutenticado())
+        if (transacao is not null && transacao.IdUsuario == _idUsuarioAutenticado)
             return _mapper.Map<ReadTransacaoDTO>(transacao);
         
         return null!;
@@ -48,7 +51,7 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
     public List<ReadTransacaoDTO> ListarTransacoes(SieveModel model)
     {
         var transacoes = _context.TransacoesFinanceiras
-            .Where(x => x.IdUsuario == ObterIdDoUsuarioAutenticado());
+            .Where(x => x.IdUsuario == _idUsuarioAutenticado);
 
         var readTransacaoDto = _mapper.Map<List<ReadTransacaoDTO>>(transacoes).AsQueryable();
         
@@ -61,7 +64,7 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
     {
         var transacao = _context.TransacoesFinanceiras.Find(id);
         
-        var idUsuario = ObterIdDoUsuarioAutenticado();
+        var idUsuario = _idUsuarioAutenticado;
 
         if (transacao is null || transacao.IdUsuario != idUsuario)
             return Result.Fail($"A transação financeira {id} do usuário {idUsuario} não foi encontrada.");
@@ -77,7 +80,7 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
     {
         var transacao = _context.TransacoesFinanceiras.Find(id);
         
-        var idUsuario = ObterIdDoUsuarioAutenticado();
+        var idUsuario = _idUsuarioAutenticado;
         
         if (transacao is null || transacao.IdUsuario != idUsuario)
             return Result.Fail($"A transação financeira {id} do usuário {idUsuario} não foi encontrada.");
@@ -93,7 +96,7 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
     {
         var transacao = _context.TransacoesFinanceiras.Find(id);
         
-        var idUsuario = ObterIdDoUsuarioAutenticado();
+        var idUsuario = _idUsuarioAutenticado;
 
         if (transacao is null || transacao.IdUsuario != idUsuario)
             return Result.Fail($"A transação financeira {id} do usuário {idUsuario} não foi encontrada.");
