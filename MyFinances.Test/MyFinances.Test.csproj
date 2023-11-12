@@ -27,8 +27,4 @@
       <ProjectReference Include="..\MyFinances.Useful\MyFinances.Useful.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Compile Remove="MinhasFinancasContextoTestes.cs" />
-    </ItemGroup>
-
 </Project>

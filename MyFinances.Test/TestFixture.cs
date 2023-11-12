@@ -57,7 +57,7 @@ public class TestFixture : IDisposable
         {
             DbContext.Usuarios.Add(new()
             {
-                Id = new Guid("faae087f-6a08-447e-a311-e43009793f05"), Nome = "Usuario 1", Email = "usuario1@example.com",
+                Id = new Guid("faae087f-6a08-447e-a311-e43009793f05"), Nome = "Usuario Um", Email = "usuario1@example.com",
                 SenhaHash = "$2a$10$Z33PL3dPB4wCdZapqbP6kO4U7h7IhXk9/AsyhCPRQgYStoiy1fNaa",
                 Token = null,
                 ValidadeToken = null, 
@@ -69,7 +69,7 @@ public class TestFixture : IDisposable
         {
             DbContext.Usuarios.Add(new()
             {
-                Id = new Guid("06722053-90c6-416c-adab-3d69fd8f6c0d"), Nome = "Usuario 2", Email = "usuario2@example.com",
+                Id = new Guid("06722053-90c6-416c-adab-3d69fd8f6c0d"), Nome = "Usuario Dois", Email = "usuario2@example.com",
                 SenhaHash = "$2a$10$Z33PL3dPB4wCdZapqbP6kO4U7h7IhXk9/AsyhCPRQgYStoiy1fNaa",
                 Token = null,
                 ValidadeToken = null,
