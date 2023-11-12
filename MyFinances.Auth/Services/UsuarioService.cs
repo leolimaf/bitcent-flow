@@ -6,6 +6,7 @@ using MyFinances.Domain.DTOs.Usuario;
 using MyFinances.Domain.Models;
 using MyFinances.Auth.Data;
 using MyFinances.Auth.Services.Interfaces;
+using MyFinances.Useful.Exception;
 
 namespace MyFinances.Auth.Services;
 
@@ -27,11 +28,11 @@ public class UsuarioService : IUsuarioService
     public async Task<ReadUsuarioDTO> CadastrarUsuario(CreateUsuarioDTO usuarioDto)
     {
         if (await _context.Usuarios.AnyAsync(x => x.Nome == usuarioDto.Nome))
-            return new ReadUsuarioDTO{Message = "Nome de usuário já cadastrado."};
+            throw new MyFinancesException(nameof(usuarioDto.Nome), MyFinancesExceptionType.DATABASE_EXECUTION, $"The {nameof(usuarioDto.Nome)} field is already registered.");
 
         if (await _context.Usuarios.AnyAsync(x => x.Email == usuarioDto.Email))
-            return new ReadUsuarioDTO{Message = "E-mail já cadastrado."};
-        
+            throw new MyFinancesException(nameof(usuarioDto.Email), MyFinancesExceptionType.DATABASE_EXECUTION, $"The {nameof(usuarioDto.Email)} field is already registered.");
+
         Usuario usuario = _mapper.Map<Usuario>(usuarioDto);
         
         usuario.SenhaHash = BCrypt.Net.BCrypt.HashPassword(usuarioDto.Senha);

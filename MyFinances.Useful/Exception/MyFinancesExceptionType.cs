@@ -1,0 +1,12 @@
+﻿namespace MyFinances.Useful.Exception;
+
+public enum MyFinancesExceptionType
+{
+    INVALID_OPERATION,
+    ARGUMENT_REQUIRED,
+    DATABASE_EXECUTION,
+    RESOURCE_NOT_FOUND,
+    RESOURCE_NOT_ALLOWED,
+    AUTHENTICATION_REQUIRED,
+    INTERNAL_SERVER_ERROR
+}

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MyFinances.Domain.DTOs.Token;
 using MyFinances.Domain.DTOs.Usuario;
 using MyFinances.Auth.Services.Interfaces;
+using MyFinances.Useful.Exception;
 
 namespace MyFinances.Auth.Controllers;
 
@@ -22,12 +23,15 @@ public class UsuarioController : ControllerBase
     [HttpPost, Route("cadastrar"), AllowAnonymous]
     public async Task<IActionResult> Cadastrar([FromBody] CreateUsuarioDTO usuarioDto)
     {
-        ReadUsuarioDTO readUsuarioDto = await _usuarioService.CadastrarUsuario(usuarioDto);
-
-        if (!string.IsNullOrWhiteSpace(readUsuarioDto.Message))
-            return BadRequest(readUsuarioDto.Message);
-        
-        return CreatedAtAction(nameof(ObterPorId), readUsuarioDto.Id, readUsuarioDto);
+        try
+        {
+            ReadUsuarioDTO readUsuarioDto = await _usuarioService.CadastrarUsuario(usuarioDto);
+            return CreatedAtAction(nameof(ObterPorId), readUsuarioDto.Id, readUsuarioDto);
+        }
+        catch (MyFinancesException e)
+        {
+            return BadRequest(e.ToErrorObject());
+        }
     }
     
     [Authorize(Roles = "Administrator")]
