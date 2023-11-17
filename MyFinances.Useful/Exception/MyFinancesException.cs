@@ -21,10 +21,16 @@ public class MyFinancesException : System.Exception
 
     public object ToErrorObject()
     {
-        return new
+        return new ErroDTO
         {
-            errorMessage = Message ?? Param,
-            errorType = ErrorType.ToString()
+            Error = Message ?? Param,
+            Status = (int) ErrorType
         };
     }
+}
+
+public record ErroDTO
+{
+    public string Error { get; init; }
+    public int Status { get; init; }
 }

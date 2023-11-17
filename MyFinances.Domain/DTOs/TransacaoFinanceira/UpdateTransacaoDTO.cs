@@ -3,17 +3,17 @@ using MyFinances.Domain.Models;
 
 namespace MyFinances.Domain.DTOs.TransacaoFinanceira;
 
-public class UpdateTransacaoDTO
+public record UpdateTransacaoDTO
 {
-    [Required]
-    public string Descricao { get; set; }
+    [Required, StringLength(80)]
+    public string Descricao { get; init; }
     
     [Required]
-    public DateTime Data { get; set; }
+    public DateTime Data { get; init; }
     
     [Required]
-    public decimal Valor { get; set; }
+    public decimal Valor { get; init; }
     
     [Required]
-    public TipoTransacao Tipo { get; set; }
+    public TipoTransacao Tipo { get; init; }
 }

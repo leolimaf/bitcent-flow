@@ -28,10 +28,10 @@ public class UsuarioService : IUsuarioService
     public async Task<ReadUsuarioDTO> CadastrarUsuario(CreateUsuarioDTO usuarioDto)
     {
         if (await _context.Usuarios.AnyAsync(x => x.Nome == usuarioDto.Nome))
-            throw new MyFinancesException(nameof(usuarioDto.Nome), MyFinancesExceptionType.DATABASE_EXECUTION, $"The {nameof(usuarioDto.Nome)} field is already registered.");
+            throw new MyFinancesException(nameof(usuarioDto.Nome), MyFinancesExceptionType.CONFLICT, $"The {nameof(usuarioDto.Nome)} field is already registered.");
 
         if (await _context.Usuarios.AnyAsync(x => x.Email == usuarioDto.Email))
-            throw new MyFinancesException(nameof(usuarioDto.Email), MyFinancesExceptionType.DATABASE_EXECUTION, $"The {nameof(usuarioDto.Email)} field is already registered.");
+            throw new MyFinancesException(nameof(usuarioDto.Email), MyFinancesExceptionType.CONFLICT, $"The {nameof(usuarioDto.Email)} field is already registered.");
 
         Usuario usuario = _mapper.Map<Usuario>(usuarioDto);
         
