@@ -6,6 +6,7 @@ using MyFinances.Domain.DTOs.Usuario;
 using MyFinances.Domain.Models;
 using MyFinances.Auth.Data;
 using MyFinances.Auth.Services.Interfaces;
+using MyFinances.Useful.Date;
 using MyFinances.Useful.Exception;
 
 namespace MyFinances.Auth.Services;
@@ -15,23 +16,18 @@ public class UsuarioService : IUsuarioService
     private readonly IMapper _mapper;
     private readonly TokenService _tokenService;
     private readonly AppDbContext _context;
-    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public UsuarioService(IMapper mapper, TokenService tokenService, AppDbContext context, IHttpContextAccessor httpContextAccessor)
+    public UsuarioService(IMapper mapper, TokenService tokenService, AppDbContext context)
     {
         _mapper = mapper;
         _tokenService = tokenService;
         _context = context;
-        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<ReadUsuarioDTO> CadastrarUsuario(CreateUsuarioDTO usuarioDto)
     {
-        if (await _context.Usuarios.AnyAsync(x => x.Nome == usuarioDto.Nome))
-            throw new MyFinancesException(nameof(usuarioDto.Nome), MyFinancesExceptionType.CONFLICT, $"The {nameof(usuarioDto.Nome)} field is already registered.");
-
         if (await _context.Usuarios.AnyAsync(x => x.Email == usuarioDto.Email))
-            throw new MyFinancesException(nameof(usuarioDto.Email), MyFinancesExceptionType.CONFLICT, $"The {nameof(usuarioDto.Email)} field is already registered.");
+            throw new MyFinancesException(nameof(usuarioDto.Email), MyFinancesExceptionType.CONFLICT, "E-mail já cadastrado.");
 
         Usuario usuario = _mapper.Map<Usuario>(usuarioDto);
         
@@ -46,6 +42,9 @@ public class UsuarioService : IUsuarioService
     public async Task<ReadUsuarioDTO> ObterUsuarioPorId(string id)
     {
         var usuario = await _context.Usuarios.FirstOrDefaultAsync(x => x.Id.ToString() == id);
+
+        if (usuario is null)
+            throw new MyFinancesException(nameof(id), MyFinancesExceptionType.NOT_FOUND, "Usuário não encontrado.");
         
         return _mapper.Map<ReadUsuarioDTO>(usuario);
     }
@@ -54,45 +53,33 @@ public class UsuarioService : IUsuarioService
     {
         var usuario = await  _context.Usuarios.FirstOrDefaultAsync(u => u.Email == credenciaisDto.Email);
 
-        if (usuario is null || !BCrypt.Net.BCrypt.Verify(credenciaisDto.Senha, usuario.SenhaHash))
-            return new TokenDTO{Message = "Usuário e / ou senha inválido(s)."};
+        if (usuario is null)
+            throw new MyFinancesException(nameof(credenciaisDto.Email), MyFinancesExceptionType.BAD_REQUEST, "E-mail inválido.");
+
+        if (!BCrypt.Net.BCrypt.Verify(credenciaisDto.Senha, usuario.SenhaHash))
+            throw new MyFinancesException("Senha inválida.", MyFinancesExceptionType.UNAUTHORIZED);
 
         return _tokenService.GerarToken(usuario);
     }
     
     public async Task<TokenDTO?> LogarUsuario(TokenValueDTO tokenValueDto)
     {
-        try
-        {
-            var principal = _tokenService.GetPrincipalFromExpiredToken(tokenValueDto.AccessToken);
-            var username = principal.Identity?.Name;
-        
-            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == username);
-        
-            if (usuario is null || usuario.Token != tokenValueDto.RefreshToken || usuario.ValidadeToken <= DateTime.Now)
-                return null;
-        
-            var accessToken = _tokenService.GerarAccessToken(principal.Claims);
-            var refreshToken = _tokenService.GerarRefreshToken();
-        
-            usuario.Token = refreshToken;
+        var principal = _tokenService.GetPrincipalFromExpiredToken(tokenValueDto.AccessToken);
+        var username = principal.Identity?.Name;
 
-            var user = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == usuario.Email);
-        
-            if (user is null)
-                return null;
-        
-            await _context.SaveChangesAsync();
-        
-            return _tokenService.RetornarTokenAtualizado(accessToken, refreshToken);
-        }
-        catch (SecurityTokenExpiredException e)
-        {
-            return new TokenDTO
-            {
-                Message = e.Message
-            };
-        }
+        var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == username);
+
+        if (usuario is null || usuario.Token != tokenValueDto.RefreshToken || usuario.ValidadeToken <= DataInterna.ObterHorarioDeBrasilia())
+            throw new MyFinancesException(nameof(tokenValueDto.RefreshToken), MyFinancesExceptionType.UNAUTHORIZED, "Refresh Token inválido.");
+
+        var accessToken = _tokenService.GerarAccessToken(principal.Claims);
+        var refreshToken = _tokenService.GerarRefreshToken();
+
+        usuario.Token = refreshToken;
+
+        await _context.SaveChangesAsync();
+
+        return _tokenService.RetornarTokenAtualizado(accessToken, refreshToken);
     }
 
     public async Task<bool> RevogarToken(string nomeDeUsuario)
@@ -100,25 +87,11 @@ public class UsuarioService : IUsuarioService
         var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == nomeDeUsuario);
         
         if (usuario is null)
-            return false;
+            throw new MyFinancesException(nameof(nomeDeUsuario), MyFinancesExceptionType.NOT_FOUND);
         
         usuario.Token = null;
         await _context.SaveChangesAsync();
         
         return true;
-    }
-    
-    public string ObterMeuEmail()
-    {
-        var usuario = string.Empty;
-        // var roles = new List<string>();
-        if (_httpContextAccessor.HttpContext is not null)
-        {
-            usuario = _httpContextAccessor.HttpContext.User.Identity?.Name;
-            // var roleClaims = _httpContextAccessor.HttpContext.User.FindAll(ClaimTypes.Role);
-            // roles = roleClaims.Select(c => c.Value).ToList();
-        }
-        return usuario;
-
     }
 }

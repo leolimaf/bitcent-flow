@@ -10,6 +10,4 @@ public interface IUsuarioService
     Task<TokenDTO?> LogarUsuario(CredenciaisDTO credenciaisDto);
     Task<TokenDTO?> LogarUsuario(TokenValueDTO tokenValueDto);
     Task<bool> RevogarToken(string identityName);
-    public string ObterMeuEmail();
-
 }

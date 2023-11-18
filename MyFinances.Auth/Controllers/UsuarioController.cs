@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyFinances.Domain.DTOs.Token;
 using MyFinances.Domain.DTOs.Usuario;
@@ -21,7 +22,7 @@ public class UsuarioController : ControllerBase
     }
 
     [HttpPost, Route("cadastrar"), AllowAnonymous]
-    public async Task<IActionResult> Cadastrar([FromBody] CreateUsuarioDTO usuarioDto)
+    public async Task<IActionResult> Cadastrar([FromBody, Required] CreateUsuarioDTO usuarioDto)
     {
         try
         {
@@ -30,67 +31,61 @@ public class UsuarioController : ControllerBase
         }
         catch (MyFinancesException e)
         {
-            return BadRequest(e.ToErrorObject());
+            return StatusCode((int) e.ErrorType, e.ToErrorObject());
         }
     }
     
     [Authorize(Roles = "Administrator")]
     [HttpGet, Route("obter-por-id")]
-    public async Task<IActionResult> ObterPorId(string id)
+    public async Task<IActionResult> ObterPorId([Required] string id)
     {
-        ReadUsuarioDTO readUsuarioDto = await _usuarioService.ObterUsuarioPorId(id);
-
-        if (readUsuarioDto is null)
-            return NotFound(readUsuarioDto);
-        
-        return Ok(readUsuarioDto);
+        try
+        {
+            return Ok(await _usuarioService.ObterUsuarioPorId(id));
+        }
+        catch (MyFinancesException e)
+        {
+            return StatusCode((int) e.ErrorType, e.ToErrorObject());
+        }
     }
 
     [HttpPost, Route("logar"), AllowAnonymous]
-    public async Task<IActionResult> Logar([FromBody] CredenciaisDTO usuarioDto)
+    public async Task<IActionResult> Logar([FromBody, Required] CredenciaisDTO usuarioDto)
     {
-        var token = await _usuarioService.LogarUsuario(usuarioDto);
-
-        if (token is not null && !string.IsNullOrWhiteSpace(token.Message))
-            return Unauthorized(token.Message);
-
-        return token is not null ? 
-            Ok(token) : 
-            Unauthorized();
+        try
+        {
+            return Ok(await _usuarioService.LogarUsuario(usuarioDto));
+        }
+        catch (MyFinancesException e)
+        {
+            return StatusCode((int) e.ErrorType, e.ToErrorObject());
+        }
     }
     
     [HttpPost, Route("atualizar-token")]
-    public async Task<IActionResult> AtualizarToken([FromBody] TokenValueDTO tokenValueDto)
+    public async Task<IActionResult> AtualizarToken([FromBody, Required] TokenValueDTO tokenValueDto)
     {
-        if (string.IsNullOrWhiteSpace(tokenValueDto.AccessToken) || string.IsNullOrWhiteSpace(tokenValueDto.RefreshToken))
-            return BadRequest();
-
-        var token = await _usuarioService.LogarUsuario(tokenValueDto);
-
-        if (token is null)
-            return Unauthorized();
-        
-        if (!string.IsNullOrWhiteSpace(token.Message))
-            return Unauthorized(token.Message);
-        
-        return Ok(token);
+        try
+        {
+            return Ok(await _usuarioService.LogarUsuario(tokenValueDto));
+        }
+        catch (MyFinancesException e)
+        {
+            return StatusCode((int) e.ErrorType, e.ToErrorObject());
+        }
     }
     
     [HttpPost, Route("deslogar")]
     public async Task<IActionResult> Deslogar()
     {
-        var result = await _usuarioService.RevogarToken(User.Identity.Name);
-
-        if (!result)
-            return BadRequest();
-        
-        return NoContent();
-    }
-    
-    [HttpGet, Route("obter-meu-email")]
-    [ApiExplorerSettings(IgnoreApi = true)]
-    public ActionResult<string> ObterMeuEmail()
-    {
-        return Ok(_usuarioService.ObterMeuEmail());
+        try
+        {
+            await _usuarioService.RevogarToken(User.Identity.Name);
+            return NoContent();
+        }
+        catch (MyFinancesException e)
+        {
+            return StatusCode((int) e.ErrorType, e.ToErrorObject());
+        }
     }
 }
