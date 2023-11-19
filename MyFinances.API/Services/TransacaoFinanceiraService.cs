@@ -44,7 +44,7 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
         var transacao = _context.TransacoesFinanceiras.Find(id);
 
         if (transacao is null)
-            throw new MyFinancesException(nameof(id), MyFinancesExceptionType.NOT_FOUND, "A transação financeira não foi encontrada.");
+            throw new MyFinancesException(nameof(id), MyFinancesExceptionType.NOT_FOUND, "Transação financeira não encontrada.");
             
         return _mapper.Map<ReadTransacaoDTO>(transacao);
     }
@@ -66,7 +66,7 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
         var transacao = _context.TransacoesFinanceiras.Find(id);
         
         if (transacao is null)
-            throw new MyFinancesException(nameof(id), MyFinancesExceptionType.NOT_FOUND, "A transação financeira não foi encontrada.");
+            throw new MyFinancesException(nameof(id), MyFinancesExceptionType.NOT_FOUND, "Transação financeira não encontrada.");
         
         transacao.IdUsuario = _idUsuarioAutenticado;
 
@@ -82,7 +82,7 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
         var idUsuario = _idUsuarioAutenticado;
         
         if (transacao is null)
-            return Result.Fail("A transação financeira não foi encontrada.");
+            throw new MyFinancesException("Transação financeira não encontrada.");
         
         transacao.IdUsuario = idUsuario;
         
@@ -96,7 +96,7 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
         var transacao = _context.TransacoesFinanceiras.Find(id);
 
         if (transacao is null)
-            throw new MyFinancesException(nameof(id), MyFinancesExceptionType.NOT_FOUND, "A transação financeira não foi encontrada.");
+            throw new MyFinancesException(nameof(id), MyFinancesExceptionType.NOT_FOUND, "Transação financeira não encontrada.");
         
         transacao.IdUsuario = _idUsuarioAutenticado;
 

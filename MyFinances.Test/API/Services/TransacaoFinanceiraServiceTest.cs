@@ -5,6 +5,7 @@ using MyFinances.API.Services.Interfaces;
 using MyFinances.Domain.DTOs.TransacaoFinanceira;
 using MyFinances.Domain.Models;
 using MyFinances.Useful.Date;
+using MyFinances.Useful.Exception;
 using Sieve.Models;
 
 namespace MyFinances.Test.API.Services;
@@ -72,8 +73,14 @@ public class TransacaoFinanceiraServiceTest : IClassFixture<TestFixture>
     [Fact(DisplayName = "Obter Transação Financeira pelo id: verifica se não é retornada uma transação financeira que não existe para o usuário autenticado")]
     public void TestarObterTransacaoInexistentePorId()
     {
-        var transacao = _transacaoFinanceiraService.ObterTransacaoPorId(new Guid("5b411039-b60d-4f8b-bc55-80eb90af53a3"));
-        Assert.Null(transacao);
+        // ARRANGE
+        Action action = () => _transacaoFinanceiraService.ObterTransacaoPorId(new Guid("5b411039-b60d-4f8b-bc55-80eb90af53a3"));
+        
+        // ACT
+        MyFinancesException exception = Assert.Throws<MyFinancesException>(action);
+        
+        // ASSERT
+        Assert.Equal(MyFinancesExceptionType.NOT_FOUND, exception.ErrorType);
     }
     
     [Theory(DisplayName = "Obter Transação Financeira pelo id: faz o teste com diferentes ids")]
@@ -136,7 +143,7 @@ public class TransacaoFinanceiraServiceTest : IClassFixture<TestFixture>
     [Fact(DisplayName = "Remover Transação Financeira")]
     public void TestarRemoverTransacao()
     {
-        var result = _transacaoFinanceiraService.RemoverTransacao(new Guid("a78377f9-ceb7-4aa7-8b5f-34ff35004754"));
+        var result = _transacaoFinanceiraService.RemoverTransacao(new Guid("6aee466f-f10e-4fa8-94d8-fe02a4c7613f"));
         Assert.True(result.IsSuccess);
     }
 }
