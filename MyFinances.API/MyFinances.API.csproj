@@ -41,10 +41,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\MyFinances.Domain\MyFinances.Domain.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Migrations\" />
+      <ProjectReference Include="..\MyFinances.Useful\MyFinances.Useful.csproj" />
     </ItemGroup>
 
 </Project>

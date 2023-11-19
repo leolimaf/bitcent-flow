@@ -7,6 +7,8 @@ using MyFinances.Domain.DTOs.Token;
 using MyFinances.Domain.Models;
 using MyFinances.Auth.Configurations;
 using MyFinances.Auth.Data;
+using MyFinances.Useful.Date;
+using MyFinances.Useful.Exception;
 
 namespace MyFinances.Auth.Services;
 
@@ -34,11 +36,11 @@ public class TokenService
         var refreshToken = GerarRefreshToken();
         
         usuario.Token = refreshToken;
-        usuario.ValidadeToken = DateTime.Now.AddDays(_configuration.DaysToExpiry);
+        usuario.ValidadeToken = DataInterna.ObterHorarioDeBrasilia().AddDays(_configuration.DaysToExpiry);
 
         _context.SaveChanges();
 
-        var dataCriacao = DateTime.Now;
+        var dataCriacao = DataInterna.ObterHorarioDeBrasilia();
         var dataExpiracao = dataCriacao.AddMinutes(_configuration.Minutes);
         
         return new TokenDTO(
@@ -67,11 +69,9 @@ public class TokenService
     public string GerarRefreshToken()
     {
         var randomNumber = new byte[32];
-        using (var rng = RandomNumberGenerator.Create())
-        {
-            rng.GetBytes(randomNumber);
-            return Convert.ToBase64String(randomNumber);
-        }
+        using var rng = RandomNumberGenerator.Create();
+        rng.GetBytes(randomNumber);
+        return Convert.ToBase64String(randomNumber);
     }
     
     public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
@@ -87,20 +87,17 @@ public class TokenService
         SecurityToken securityToken;
 
         var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
-        var jwtSecurityToken = securityToken as JwtSecurityToken;
-        if (jwtSecurityToken == null ||
-            !jwtSecurityToken.Header.Alg.Equals(
-                SecurityAlgorithms.HmacSha256,
-                StringComparison.InvariantCulture))
-            throw new SecurityTokenException("Invalid Token");
+        if (securityToken is not JwtSecurityToken jwtSecurityToken ||
+            !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCulture))
+            throw new MyFinancesException(nameof(token), MyFinancesExceptionType.UNAUTHORIZED, "Access Token inválido.");
 
         return principal;
     }
 
     public TokenDTO RetornarTokenAtualizado(string accessToken, string refreshToken)
     {
-        DateTime dataCriacao = DateTime.Now;
-        DateTime dataExpiracao = dataCriacao.AddMinutes(_configuration.Minutes);
+        var dataCriacao = DataInterna.ObterHorarioDeBrasilia();
+        var dataExpiracao = dataCriacao.AddMinutes(_configuration.Minutes);
         
         return new TokenDTO(
             true, 

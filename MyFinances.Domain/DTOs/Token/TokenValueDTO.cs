@@ -1,7 +1,12 @@
-﻿namespace MyFinances.Domain.DTOs.Token;
+﻿using System.ComponentModel.DataAnnotations;
 
-public class TokenValueDTO
+namespace MyFinances.Domain.DTOs.Token;
+
+public record TokenValueDTO
 {
-    public string AccessToken { get; set; }
-    public string RefreshToken { get; set; }
+    [Required]
+    public string AccessToken { get; init; }
+    
+    [Required]
+    public string RefreshToken { get; init; }
 }

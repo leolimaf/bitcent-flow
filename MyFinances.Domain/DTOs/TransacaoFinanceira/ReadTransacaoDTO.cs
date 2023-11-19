@@ -3,20 +3,21 @@ using Sieve.Attributes;
 
 namespace MyFinances.Domain.DTOs.TransacaoFinanceira;
 
-public class ReadTransacaoDTO
+public record ReadTransacaoDTO
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; init; }
     
     [Sieve(CanFilter = true, CanSort = true)]
-    public string Descricao { get; set; }
+    public string Descricao { get; init; }
     
     [Sieve(CanFilter = true, CanSort = true)]
-    public DateTime Data { get; set; }
+    public DateTime Data { get; init; }
     
     [Sieve(CanFilter = true, CanSort = true)]
-    public decimal Valor { get; set; }
+    public decimal Valor { get; init; }
     
-    public TipoTransacao Tipo { get; set; }
+    [Sieve(CanFilter = true)]
+    public TipoTransacao Tipo { get; init; }
     
-    public Guid IdUsuario { get; set; }
+    public Guid IdUsuario { get; init; }
 }

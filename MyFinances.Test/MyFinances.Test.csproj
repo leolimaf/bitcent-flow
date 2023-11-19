@@ -23,11 +23,8 @@
 
     <ItemGroup>
       <ProjectReference Include="..\MyFinances.API\MyFinances.API.csproj" />
+      <ProjectReference Include="..\MyFinances.Auth\MyFinances.Auth.csproj" />
       <ProjectReference Include="..\MyFinances.Useful\MyFinances.Useful.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Remove="MinhasFinancasContextoTestes.cs" />
     </ItemGroup>
 
 </Project>

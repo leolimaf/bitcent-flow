@@ -2,11 +2,11 @@
 
 namespace MyFinances.Domain.DTOs.Usuario;
 
-public class CredenciaisDTO
+public record CredenciaisDTO
 {
-    [DataType(DataType.EmailAddress)]
-    public string? Email { get; set; }
+    [Required, DataType(DataType.EmailAddress)]
+    public string Email { get; init; }
     
     [Required,  DataType(DataType.Password)]
-    public string Senha { get; set; }
+    public string Senha { get; init; }
 }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using MyFinances.Domain.DTOs.TransacaoFinanceira;
 using MyFinances.API.Services.Interfaces;
+using MyFinances.Useful.Exception;
 using Sieve.Models;
 
 namespace MyFinances.API.Controllers;
@@ -28,10 +29,18 @@ public class TransacaoFinanceiraController : ControllerBase
     /// <response code="201">Requisição realizada com sucesso</response>
     [HttpPost, Route("adicionar")]
     [ProducesResponseType(201, Type = typeof(ReadTransacaoDTO))]
-    public IActionResult AdicionarTransacaoFinanceira([FromBody] CreateTransacaoDTO transacaoDto)
+    [ProducesResponseType(400, Type = typeof(ErroDTO))]
+    public IActionResult AdicionarTransacaoFinanceira([FromBody, Required] CreateTransacaoDTO transacaoDto)
     {
-        ReadTransacaoDTO readTransacaoDto = _transacaoFinanceiraService.AdicionarTransacao(transacaoDto);
-        return CreatedAtAction(nameof(ObterTransacaoPorId), new {version = HttpContext.GetRequestedApiVersion()!.ToString(), readTransacaoDto.Id} , readTransacaoDto);
+        try
+        {
+            ReadTransacaoDTO readTransacaoDto = _transacaoFinanceiraService.AdicionarTransacao(transacaoDto);
+            return CreatedAtAction(nameof(ObterTransacaoPorId), new {version = HttpContext.GetRequestedApiVersion()!.ToString(), readTransacaoDto.Id} , readTransacaoDto);
+        }
+        catch (MyFinancesException e)
+        {
+            return StatusCode((int) e.ErrorType, e.ToErrorObject());
+        }
     }
     
     /// <summary>Obtem uma transação financeira</summary>
@@ -41,13 +50,18 @@ public class TransacaoFinanceiraController : ControllerBase
     /// <response code="404">A transação não foi encontrada</response>
     [HttpGet, Route("obter-por-id")]
     [ProducesResponseType(200, Type = typeof(ReadTransacaoDTO))]
-    [ProducesResponseType(404, Type = null!)]
-    public IActionResult ObterTransacaoPorId(Guid id)
+    [ProducesResponseType(404, Type = typeof(ErroDTO))]
+    public IActionResult ObterTransacaoPorId([Required] Guid id)
     {
-        ReadTransacaoDTO readTransacaoDto = _transacaoFinanceiraService.ObterTransacaoPorId(id);
-        if (readTransacaoDto is null) 
-            return NotFound(readTransacaoDto);
-        return Ok(readTransacaoDto);
+        try
+        {
+            ReadTransacaoDTO readTransacaoDto = _transacaoFinanceiraService.ObterTransacaoPorId(id);
+            return Ok(readTransacaoDto);
+        }
+        catch (MyFinancesException e)
+        {
+            return StatusCode((int) e.ErrorType, e.ToErrorObject());
+        }
     }
 
     /// <summary>Lista todas as transações financeiras</summary>
@@ -57,9 +71,16 @@ public class TransacaoFinanceiraController : ControllerBase
     [ProducesResponseType(200, Type = typeof(List<ReadTransacaoDTO>))]
     public IActionResult ListarTransacoes([FromQuery] SieveModel model)
     {
-        List<ReadTransacaoDTO> readTransacaoDtos = _transacaoFinanceiraService.ListarTransacoes(model);
+        try
+        {
+            List<ReadTransacaoDTO> readTransacaoDtos = _transacaoFinanceiraService.ListarTransacoes(model);
+            return Ok(readTransacaoDtos);
+        }
+        catch (MyFinancesException e)
+        {
+            return StatusCode((int) e.ErrorType, e.ToErrorObject());
+        }
         
-        return Ok(readTransacaoDtos);
     }
 
     /// <summary>Atualiza uma transação financeira</summary>
@@ -69,13 +90,18 @@ public class TransacaoFinanceiraController : ControllerBase
     /// <response code="404">A transação não foi encontrada</response>
     [HttpPut, Route("atualizar")]
     [ProducesResponseType(204)]
-    [ProducesResponseType(404, Type = null!)]
-    public IActionResult AtualizarTransacao([FromQuery, Required] Guid id, [FromBody] UpdateTransacaoDTO transacaoDto)
+    [ProducesResponseType(404, Type = typeof(ErroDTO))]
+    public IActionResult AtualizarTransacao([FromQuery, Required] Guid id, [FromBody, Required] UpdateTransacaoDTO transacaoDto)
     {
-        Result result = _transacaoFinanceiraService.AtualizarTransacao(id, transacaoDto);
-        if (result.IsFailed)
-            return NotFound();
-        return NoContent();
+        try
+        {
+            _transacaoFinanceiraService.AtualizarTransacao(id, transacaoDto);
+            return NoContent();
+        }
+        catch (MyFinancesException e)
+        {
+            return StatusCode((int) e.ErrorType, e.ToErrorObject());
+        }
     }
     
     /// <summary>Atualiza uma transação financeira parcialmente</summary>
@@ -85,13 +111,18 @@ public class TransacaoFinanceiraController : ControllerBase
     /// <response code="404">A transação não foi encontrada</response>
     [HttpPatch, Route("atualizar-parcialmente")]
     [ProducesResponseType(204)]
-    [ProducesResponseType(404, Type = null!)]
+    [ProducesResponseType(404, Type = typeof(ErroDTO))]
     public IActionResult AtualizarTransacaoParcialmente([FromQuery, Required] Guid id, [FromBody] JsonPatchDocument transacaoDto)
     {
-        Result result = _transacaoFinanceiraService.AtualizarTransacaoParcialmente(id, transacaoDto);
-        if (result.IsFailed)
-            return NotFound();
-        return NoContent();
+        try
+        {
+            _transacaoFinanceiraService.AtualizarTransacaoParcialmente(id, transacaoDto);
+            return NoContent();
+        }
+        catch (MyFinancesException e)
+        {
+            return StatusCode((int) e.ErrorType, e.ToErrorObject());
+        }
     }
 
     /// <summary>Remove uma transação financeira</summary>
@@ -101,12 +132,17 @@ public class TransacaoFinanceiraController : ControllerBase
     /// <response code="404">A transação não foi encontrada</response>
     [HttpDelete, Route("remover")]
     [ProducesResponseType(204)]
-    [ProducesResponseType(404, Type = null!)]
-    public IActionResult RemoverTransacao([FromQuery] Guid id)
+    [ProducesResponseType(404, Type = typeof(ErroDTO))]
+    public IActionResult RemoverTransacao([FromQuery, Required] Guid id)
     {
-        Result result = _transacaoFinanceiraService.RemoverTransacao(id);
-        if (result.IsFailed)
-            return NotFound();
-        return NoContent();
+        try
+        {
+            _transacaoFinanceiraService.RemoverTransacao(id);
+            return NoContent();
+        }
+        catch (MyFinancesException e)
+        {
+            return StatusCode((int) e.ErrorType, e.ToErrorObject());
+        }
     }
 }

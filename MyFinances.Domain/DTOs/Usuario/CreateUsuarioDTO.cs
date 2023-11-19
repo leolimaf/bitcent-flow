@@ -2,14 +2,14 @@
 
 namespace MyFinances.Domain.DTOs.Usuario;
 
-public class CreateUsuarioDTO
+public record CreateUsuarioDTO
 {
-    [Required]
-    public string Nome { get; set; }
+    [Required, MinLength(8), MaxLength(80)]
+    public string Nome { get; init; }
     
     [Required, DataType(DataType.EmailAddress)]
-    public string Email { get; set; }
+    public string Email { get; init; }
     
-    [Required, DataType(DataType.Password)]
-    public string Senha { get; set; }
+    [Required, MinLength(7), MaxLength(40), DataType(DataType.Password)]
+    public string Senha { get; init; }
 }

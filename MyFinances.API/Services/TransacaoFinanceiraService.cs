@@ -6,6 +6,7 @@ using MyFinances.Domain.DTOs.TransacaoFinanceira;
 using MyFinances.Domain.Models;
 using MyFinances.API.Data;
 using MyFinances.API.Services.Interfaces;
+using MyFinances.Useful.Exception;
 using Sieve.Models;
 using Sieve.Services;
 
@@ -17,6 +18,8 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
     private readonly IMapper _mapper;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly SieveProcessor _sieveProcessor;
+    private readonly Guid _idUsuarioAutenticado;
+
 
     public TransacaoFinanceiraService(AppDbContext context, IMapper mapper, IHttpContextAccessor httpContextAccessor, SieveProcessor sieveProcessor)
     {
@@ -24,12 +27,13 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
         _mapper = mapper;
         _httpContextAccessor = httpContextAccessor;
         _sieveProcessor = sieveProcessor;
+        _idUsuarioAutenticado = ObterIdDoUsuarioAutenticado();
     }
 
     public ReadTransacaoDTO AdicionarTransacao(CreateTransacaoDTO transacaoDto)
     {
         TransacaoFinanceira transacao = _mapper.Map<TransacaoFinanceira>(transacaoDto);
-        transacao.IdUsuario = ObterIdDoUsuarioAutenticado();
+        transacao.IdUsuario = _idUsuarioAutenticado;
         _context.TransacoesFinanceiras.Add(transacao);
         _context.SaveChanges();
         return _mapper.Map<ReadTransacaoDTO>(transacao);
@@ -38,17 +42,17 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
     public ReadTransacaoDTO ObterTransacaoPorId(Guid id)
     {
         var transacao = _context.TransacoesFinanceiras.Find(id);
-        
-        if (transacao is not null && transacao.IdUsuario == ObterIdDoUsuarioAutenticado())
-            return _mapper.Map<ReadTransacaoDTO>(transacao);
-        
-        return null!;
+
+        if (transacao is null)
+            throw new MyFinancesException(nameof(id), MyFinancesExceptionType.NOT_FOUND, "Transação financeira não encontrada.");
+            
+        return _mapper.Map<ReadTransacaoDTO>(transacao);
     }
 
     public List<ReadTransacaoDTO> ListarTransacoes(SieveModel model)
     {
         var transacoes = _context.TransacoesFinanceiras
-            .Where(x => x.IdUsuario == ObterIdDoUsuarioAutenticado());
+            .Where(x => x.IdUsuario == _idUsuarioAutenticado);
 
         var readTransacaoDto = _mapper.Map<List<ReadTransacaoDTO>>(transacoes).AsQueryable();
         
@@ -61,12 +65,10 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
     {
         var transacao = _context.TransacoesFinanceiras.Find(id);
         
-        var idUsuario = ObterIdDoUsuarioAutenticado();
-
-        if (transacao is null || transacao.IdUsuario != idUsuario)
-            return Result.Fail($"A transação financeira {id} do usuário {idUsuario} não foi encontrada.");
+        if (transacao is null)
+            throw new MyFinancesException(nameof(id), MyFinancesExceptionType.NOT_FOUND, "Transação financeira não encontrada.");
         
-        transacao.IdUsuario = idUsuario;
+        transacao.IdUsuario = _idUsuarioAutenticado;
 
         _mapper.Map(transacaoDto, transacao);
         _context.SaveChanges();
@@ -77,10 +79,10 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
     {
         var transacao = _context.TransacoesFinanceiras.Find(id);
         
-        var idUsuario = ObterIdDoUsuarioAutenticado();
+        var idUsuario = _idUsuarioAutenticado;
         
-        if (transacao is null || transacao.IdUsuario != idUsuario)
-            return Result.Fail($"A transação financeira {id} do usuário {idUsuario} não foi encontrada.");
+        if (transacao is null)
+            throw new MyFinancesException("Transação financeira não encontrada.");
         
         transacao.IdUsuario = idUsuario;
         
@@ -92,13 +94,11 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
     public Result RemoverTransacao(Guid id)
     {
         var transacao = _context.TransacoesFinanceiras.Find(id);
-        
-        var idUsuario = ObterIdDoUsuarioAutenticado();
 
-        if (transacao is null || transacao.IdUsuario != idUsuario)
-            return Result.Fail($"A transação financeira {id} do usuário {idUsuario} não foi encontrada.");
+        if (transacao is null)
+            throw new MyFinancesException(nameof(id), MyFinancesExceptionType.NOT_FOUND, "Transação financeira não encontrada.");
         
-        transacao.IdUsuario = idUsuario;
+        transacao.IdUsuario = _idUsuarioAutenticado;
 
         _context.Remove(transacao);
         _context.SaveChanges();
@@ -109,7 +109,10 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
     {
         var idUsuario = _httpContextAccessor.HttpContext?.User.Claims
             .FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+        if (idUsuario is null)
+            throw new MyFinancesException(nameof(idUsuario), MyFinancesExceptionType.UNAUTHORIZED);
         
-        return idUsuario is not null ? new Guid(idUsuario) : default;
+        return new Guid(idUsuario);
     }
 }
