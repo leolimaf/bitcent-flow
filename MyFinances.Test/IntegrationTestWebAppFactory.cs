@@ -34,10 +34,8 @@ public class IntegrationTestWebAppFactory
             services.AddDbContext<AppDbContext>(options => 
                 options.UseSqlServer(_dbContainer.GetConnectionString()));
 
+            // TODO: Descobrir forma mais eficiente de adicionar o HttpContextAccessor
             services.AddSingleton<IHttpContextAccessor, TestHttpContextAccessor>();
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-
         });
     }
 
