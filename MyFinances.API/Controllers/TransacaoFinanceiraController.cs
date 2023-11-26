@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using MyFinances.Application.Services.Interfaces;
 using MyFinances.Domain.DTOs.TransacaoFinanceira;
-using MyFinances.API.Services.Interfaces;
-using MyFinances.Useful.Exception;
+using MyFinances.Domain.Exception;
 using Sieve.Models;
 
 namespace MyFinances.API.Controllers;
