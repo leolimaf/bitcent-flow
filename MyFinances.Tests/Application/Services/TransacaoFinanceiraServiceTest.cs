@@ -3,9 +3,10 @@ using Microsoft.AspNetCore.JsonPatch.Operations;
 using MyFinances.Domain.DTOs.TransacaoFinanceira;
 using MyFinances.Domain.Exception;
 using MyFinances.Domain.Models;
+using MyFinances.Tests.Fixtures;
 using Sieve.Models;
 
-namespace MyFinances.Test.API.Services;
+namespace MyFinances.Tests.Application.Services;
 
 public class TransacaoFinanceiraServiceTest : BaseIntegrationTest
 {

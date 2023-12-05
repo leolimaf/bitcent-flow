@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFinances.API", "MyFinance
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFinances.Auth", "MyFinances.Auth\MyFinances.Auth.csproj", "{2F6406DD-2481-4370-AC6D-55BA4848F8D5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFinances.Test", "MyFinances.Test\MyFinances.Test.csproj", "{9DAD8BEF-1B2F-4D5E-94C7-2BD9BA40117D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFinances.Tests", "MyFinances.Tests\MyFinances.Tests.csproj", "{9DAD8BEF-1B2F-4D5E-94C7-2BD9BA40117D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFinances.Domain", "MyFinances.Domain\MyFinances.Domain.csproj", "{76EA79A6-C9B6-46D0-8538-227FE2567388}"
 EndProject

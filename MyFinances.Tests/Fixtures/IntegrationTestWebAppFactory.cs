@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MyFinances.Application.Data;
 using Testcontainers.MsSql;
 
-namespace MyFinances.Test;
+namespace MyFinances.Tests.Fixtures;
 
 public class IntegrationTestWebAppFactory
     : WebApplicationFactory<Program>,

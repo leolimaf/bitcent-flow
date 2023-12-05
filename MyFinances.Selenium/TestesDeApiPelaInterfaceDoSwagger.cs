@@ -3,11 +3,11 @@ using OpenQA.Selenium;
 
 namespace MyFinances.Selenium;
 
-public class UnitTest1 : IClassFixture<TestFixture>
+public class TestesDeApiPelaInterfaceDoSwagger : IClassFixture<TestFixture>
 {
     private IWebDriver _driver;
 
-    public UnitTest1(TestFixture fixture)
+    public TestesDeApiPelaInterfaceDoSwagger(TestFixture fixture)
     {
         _driver = fixture.Driver;
     }

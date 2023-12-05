@@ -6,7 +6,7 @@ using MyFinances.Application.Data;
 using MyFinances.Application.Services.Interfaces;
 using MyFinances.Domain.Models;
 
-namespace MyFinances.Test;
+namespace MyFinances.Tests.Fixtures;
 
 public abstract class BaseIntegrationTest
     : IClassFixture<IntegrationTestWebAppFactory>,
