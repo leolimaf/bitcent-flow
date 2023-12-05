@@ -3,21 +3,19 @@ using System.Reflection;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using MyFinances.API.Data;
-using MyFinances.API.Services;
-using MyFinances.API.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MyFinances.Application;
+using MyFinances.Application.Data;
+using MyFinances.Infrastructure;
 using Sieve.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
 // Add services to the container.
-
-// builder.Services.AddDbContext<AppDbContext>(opts => opts.UseInMemoryDatabase("InMemory"));
 
 builder.Services.AddDbContext<AppDbContext>(opts =>
 {
@@ -37,10 +35,9 @@ builder.Services.AddAuthentication(opts =>
 {
     opts.TokenValidationParameters = new TokenValidationParameters
     {
-        // ValidIssuer = config["TokenConfigurations:Issuer"],
-        // ValidAudience = config["TokenConfigurations:Audience"],
-        // TODO: Aprender mais sobre secrets p/ armazena-la fora da aplicação
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenConfigurations:Secret"]!)),
+        // ValidIssuer = config["JwtSettings:Issuer"],
+        // ValidAudience = config["JwtSettings:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JwtSettings:Secret"]!)),
         ValidateIssuer = false,
         ValidateAudience = false,
         ValidateLifetime = true,
@@ -58,7 +55,7 @@ builder.Services.AddAuthorization(opts =>
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<ITransacaoFinanceiraService, TransacaoFinanceiraService>();
+builder.Services.AddApplication().AddInfrastructure(builder.Configuration);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddApiVersioning(opts =>
 {

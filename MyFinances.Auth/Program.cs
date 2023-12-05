@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -6,46 +5,41 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using MyFinances.Auth.Configurations;
-using MyFinances.Auth.Data;
-using MyFinances.Auth.Services;
-using MyFinances.Auth.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-builder.Services.AddDbContext<AppDbContext>(opts =>
-{
-    opts.UseSqlServer(
-        builder.Configuration["ConnectionStrings:MyFinancesConnection"]
-    );
-});
+//
+// builder.Services.AddDbContext<AppDbContext>(opts =>
+// {
+//     opts.UseSqlServer(
+//         builder.Configuration["ConnectionStrings:MyFinancesConnection"]
+//     );
+// });
 
 builder.Services.AddCors();
 
-var tokenConfigurations = new TokenConfiguration();
-new ConfigureFromConfigurationOptions<TokenConfiguration>(builder.Configuration.GetSection("TokenConfigurations")).Configure(tokenConfigurations);
-builder.Services.AddSingleton(tokenConfigurations);
+// var tokenConfigurations = new TokenConfiguration();
+// new ConfigureFromConfigurationOptions<TokenConfiguration>(builder.Configuration.GetSection("TokenConfigurations")).Configure(tokenConfigurations);
+// builder.Services.AddSingleton(tokenConfigurations);
 
-builder.Services.AddAuthentication(opts =>
-{
-    opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    opts.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    opts.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(opts =>
-{
-    opts.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuerSigningKey = true,
-        // TODO: Aprender mais sobre secrets p/ armazena-la fora da aplicação
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenConfigurations.Secret)),
-        ValidateAudience = false,
-        ValidateIssuer = false,
-        ValidateLifetime = true,
-        ClockSkew = TimeSpan.Zero
-    };
-});
+// builder.Services.AddAuthentication(opts =>
+// {
+//     opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//     opts.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//     opts.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+// }).AddJwtBearer(opts =>
+// {
+//     opts.TokenValidationParameters = new TokenValidationParameters
+//     {
+//         ValidateIssuerSigningKey = true,
+//         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenConfigurations.Secret)),
+//         ValidateAudience = false,
+//         ValidateIssuer = false,
+//         ValidateLifetime = true,
+//         ClockSkew = TimeSpan.Zero
+//     };
+// });
 builder.Services.AddAuthorization(auth =>
 {
     auth.AddPolicy("Bearer", 
@@ -59,8 +53,6 @@ builder.Services.AddControllers();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddScoped<IUsuarioService, UsuarioService>();
-builder.Services.AddScoped<TokenService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

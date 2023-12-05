@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using MyFinances.Domain.DTOs.TransacaoFinanceira;
+using MyFinances.Domain.Exception;
 using MyFinances.Domain.Models;
-using MyFinances.Useful.Date;
-using MyFinances.Useful.Exception;
 using Sieve.Models;
 
 namespace MyFinances.Test.API.Services;
@@ -22,7 +21,7 @@ public class TransacaoFinanceiraServiceTest : BaseIntegrationTest
         {
             Descricao = "Aluguel",
             Valor = 930.50m,
-            Data = DataInterna.ObterHorarioDeBrasilia(),
+            Data = DateTime.Now,
             Tipo = TipoTransacao.DESPESA
         };
         

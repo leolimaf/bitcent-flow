@@ -2,10 +2,9 @@
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.DependencyInjection;
-using MyFinances.API.Data;
-using MyFinances.API.Services.Interfaces;
+using MyFinances.Application.Data;
+using MyFinances.Application.Services.Interfaces;
 using MyFinances.Domain.Models;
-using MyFinances.Useful.Date;
 
 namespace MyFinances.Test;
 
@@ -65,7 +64,7 @@ public abstract class BaseIntegrationTest
         {
             _dbContext.TransacoesFinanceiras.Add(new()
             {
-                Id = new Guid("6aee466f-f10e-4fa8-94d8-fe02a4c7613f"), Data = DataInterna.ObterHorarioDeBrasilia().AddDays(-1),
+                Id = new Guid("6aee466f-f10e-4fa8-94d8-fe02a4c7613f"), Data = DateTime.Now.AddDays(-1),
                 Descricao = "Conta de luz", Valor = 136.25m, Tipo = TipoTransacao.DESPESA,
                 IdUsuario = new Guid("faae087f-6a08-447e-a311-e43009793f05")
             });
@@ -76,7 +75,7 @@ public abstract class BaseIntegrationTest
             _dbContext.TransacoesFinanceiras.Add(new()
             {
                 Id = new Guid("15901a48-f791-4175-bc4a-e7bac7edd065"),
-                Data = DataInterna.ObterHorarioDeBrasilia().AddDays(-1),
+                Data = DateTime.Now.AddDays(-1),
                 Descricao = "Almoço", Valor = 26.15m, Tipo = TipoTransacao.DESPESA,
                 IdUsuario = new Guid("06722053-90c6-416c-adab-3d69fd8f6c0d")
             });
@@ -86,7 +85,7 @@ public abstract class BaseIntegrationTest
         {
             _dbContext.TransacoesFinanceiras.Add(new()
             {
-                Id = new Guid("a78377f9-ceb7-4aa7-8b5f-34ff35004754"), Data = DataInterna.ObterHorarioDeBrasilia().AddDays(-1),
+                Id = new Guid("a78377f9-ceb7-4aa7-8b5f-34ff35004754"), Data = DateTime.Now.AddDays(-1),
                 Descricao = "Academia", Valor = 110.00m, Tipo = TipoTransacao.DESPESA,
                 IdUsuario = new Guid("06722053-90c6-416c-adab-3d69fd8f6c0d")
             });
@@ -94,12 +93,12 @@ public abstract class BaseIntegrationTest
 
         _dbContext.TransacoesFinanceiras.Add(new()
         {
-            Id = Guid.NewGuid(), Data = DataInterna.ObterHorarioDeBrasilia().AddHours(-6), Descricao = "Salário", Valor = 2575.00m,
+            Id = Guid.NewGuid(), Data = DateTime.Now.AddHours(-6), Descricao = "Salário", Valor = 2575.00m,
             Tipo = TipoTransacao.RECEITA, IdUsuario = new Guid("06722053-90c6-416c-adab-3d69fd8f6c0d")
         });
         _dbContext.TransacoesFinanceiras.Add(new()
         {
-            Id = Guid.NewGuid(), Data = DataInterna.ObterHorarioDeBrasilia(), Descricao = "Conta de água", Valor = 83.65m,
+            Id = Guid.NewGuid(), Data = DateTime.Now, Descricao = "Conta de água", Valor = 83.65m,
             Tipo = TipoTransacao.DESPESA, IdUsuario = new Guid("06722053-90c6-416c-adab-3d69fd8f6c0d")
         });
         
