@@ -9,16 +9,18 @@ using MyFinances.Domain.Models;
 namespace MyFinances.Tests.Fixtures;
 
 public abstract class BaseIntegrationTest
-    : IClassFixture<IntegrationTestWebAppFactory>,
+    : IClassFixture<WebApplicationFactoryFixture>,
         IDisposable
 {
     private readonly IServiceScope _scope;
     private readonly AppDbContext _dbContext;
     protected readonly ITransacaoFinanceiraService TransacaoFinanceiraService;
 
-    protected BaseIntegrationTest(IntegrationTestWebAppFactory factory)
+    private static int QunatidadeInicialDeUsuarios => 2;
+
+    protected BaseIntegrationTest(WebApplicationFactoryFixture factoryFixture)
     {
-        _scope = factory.Services.CreateScope();
+        _scope = factoryFixture.Services.CreateScope();
         
         _dbContext = _scope.ServiceProvider
             .GetRequiredService<AppDbContext>();
@@ -29,6 +31,7 @@ public abstract class BaseIntegrationTest
 
         TransacaoFinanceiraService = _scope.ServiceProvider.GetRequiredService<ITransacaoFinanceiraService>();
 
+        _dbContext.Usuarios.AddRangeAsync(DataFixture.GetUsers(QunatidadeInicialDeUsuarios));
         SeedData();
     }
 

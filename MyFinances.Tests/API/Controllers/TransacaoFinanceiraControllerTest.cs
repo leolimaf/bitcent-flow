@@ -6,11 +6,11 @@ using MyFinances.Domain.Models;
 using MyFinances.Tests.Fixtures;
 using Sieve.Models;
 
-namespace MyFinances.Tests.Application.Services;
+namespace MyFinances.Tests.API.Controllers;
 
-public class TransacaoFinanceiraServiceTest : BaseIntegrationTest
+public class TransacaoFinanceiraControllerTest : BaseIntegrationTest
 {
-    public TransacaoFinanceiraServiceTest(IntegrationTestWebAppFactory factory) : base(factory)
+    public TransacaoFinanceiraControllerTest(WebApplicationFactoryFixture factory) : base(factory)
     {
     }
     

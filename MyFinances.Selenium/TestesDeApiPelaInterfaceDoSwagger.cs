@@ -12,7 +12,7 @@ public class TestesDeApiPelaInterfaceDoSwagger : IClassFixture<TestFixture>
         _driver = fixture.Driver;
     }
 
-    [Fact]
+    [Fact(Skip = "Realizar os testes de UI através da interface que for desenvolvida.")]
     public void Test1()
     {
         // Given
