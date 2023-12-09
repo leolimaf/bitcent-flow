@@ -28,7 +28,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\MyFinances.API\MyFinances.API.csproj" />
-      <ProjectReference Include="..\MyFinances.Auth\MyFinances.Auth.csproj" />
     </ItemGroup>
 
 </Project>
