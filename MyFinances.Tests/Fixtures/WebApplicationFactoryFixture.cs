@@ -50,7 +50,7 @@ public class WebApplicationFactoryFixture
         
         var dbContext = scopedService.GetRequiredService<AppDbContext>();
         await dbContext.Database.EnsureCreatedAsync();
-        await dbContext.Usuarios.AddRangeAsync(DataFixture.GetUsers(QunatidadeInicialDeUsuarios));
+        await dbContext.Usuarios.AddRangeAsync(DataFixture.ObterUsuarios(QunatidadeInicialDeUsuarios));
         await dbContext.SaveChangesAsync();
     }
 

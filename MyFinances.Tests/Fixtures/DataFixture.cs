@@ -5,22 +5,16 @@ namespace MyFinances.Tests.Fixtures;
 
 public class DataFixture
 {
-
-    public static Usuario GetUser(bool useNewSeed = false)
+    public static List<Usuario> ObterUsuarios(int quantidade, bool useNovoUsuario = false)
     {
-        return GetUsers(1, useNewSeed).First();
-    }
-    
-    public static List<Usuario> GetUsers(int count, bool useNewSeed = false)
-    {
-        return GetUsersFaker(useNewSeed).Generate(count);
+        return ObterUsuariosFalsos(useNovoUsuario).Generate(quantidade);
     }
 
-    private static Faker<Usuario> GetUsersFaker(bool useNewSeed)
+    private static Faker<Usuario> ObterUsuariosFalsos(bool useNovoUsuario)
     {
         var seed = 0;
         
-        if (useNewSeed)
+        if (useNovoUsuario)
             seed = Random.Shared.Next(10, int.MaxValue);
         
         return new Faker<Usuario>()
@@ -31,7 +25,29 @@ public class DataFixture
             .RuleFor(u => u.Token, () => null)
             .RuleFor(u => u.ValidadeToken, () => null)
             .RuleFor(u => u.IsAdministrador, () => false)
-            .UseSeed(seed);;
+            .UseSeed(seed);
             
+    }
+    
+    public static List<TransacaoFinanceira> ObterTransacoes(int quantidade, bool useNovaTransacao = false)
+    {
+        return ObterTransacoesFalsas(useNovaTransacao).Generate(quantidade);
+    }
+
+    private static Faker<TransacaoFinanceira> ObterTransacoesFalsas(bool useNovaTransacao)
+    {
+        var seed = 0;
+        
+        if (useNovaTransacao)
+            seed = Random.Shared.Next(10, int.MaxValue);
+        
+        return new Faker<TransacaoFinanceira>()
+            .RuleFor(t => t.Id, () => new Guid())
+            .RuleFor(t => t.Descricao, faker => faker.Lorem.Text())
+            .RuleFor(t => t.Data, faker => faker.Date.Past())
+            .RuleFor(t => t.Valor, faker => faker.Finance.Amount(0.01m))
+            .RuleFor(t => t.Tipo, faker => faker.Random.Enum<TipoTransacao>())
+            .RuleFor(t => t.IdUsuario, ObterUsuarios(1,true).First().Id) // TODO: NECESSÁRIO AJUSTAR
+            .UseSeed(seed);
     }
 }

@@ -31,7 +31,6 @@ public abstract class BaseIntegrationTest
 
         TransacaoFinanceiraService = _scope.ServiceProvider.GetRequiredService<ITransacaoFinanceiraService>();
 
-        _dbContext.Usuarios.AddRangeAsync(DataFixture.GetUsers(QunatidadeInicialDeUsuarios));
         SeedData();
     }
 

@@ -4,7 +4,6 @@ using AutoMapper;
 using FluentAssertions;
 using MyFinances.Domain.Authentication.Requests;
 using MyFinances.Domain.Authentication.Responses;
-using MyFinances.Domain.Models;
 using MyFinances.Tests.Fixtures;
 using MyFinances.Tests.Helpers.HttpHelper;
 
@@ -27,21 +26,21 @@ public class AutenticacaoControllerTest : IClassFixture<WebApplicationFactoryFix
     public async Task TestarCadastrarUsuario()
     {
         // ARRANGE
-        var novoUsuario = DataFixture.GetUser(true);
-        var novoUsuarioRequest = _mapper.Map<RegistroUsuarioRequest>(novoUsuario);
+        var novoUsuario = DataFixture.ObterUsuarios(1, true).First();
+        
+        var usuarioRequest = _mapper.Map<RegistroUsuarioRequest>(novoUsuario);
         
         // ACT
-        var request = await _client.PostAsync(HttpHelper.UrlsUsuario.Cadastrar, HttpHelper.GetJsonHttpContent(novoUsuarioRequest));
-        
-        var resultado = await request.Content.ReadFromJsonAsync<RegistroUsuarioResponse>();
+        var requisicao = await _client.PostAsync(HttpHelper.UrlsUsuario.Cadastrar, HttpHelper.GetJsonHttpContent(usuarioRequest));
+        var retorno = await requisicao.Content.ReadFromJsonAsync<RegistroUsuarioResponse>();
         
         // ASSERT
-        request.StatusCode.Should().Be(HttpStatusCode.Created);
+        requisicao.StatusCode.Should().Be(HttpStatusCode.Created);
         
-        Assert.NotNull(resultado);
+        Assert.NotNull(retorno);
 
-        resultado.Nome.Should().Be(novoUsuario.Nome);
-        resultado.Email.Should().Be(novoUsuario.Email);
+        retorno.Nome.Should().Be(novoUsuario.Nome);
+        retorno.Email.Should().Be(novoUsuario.Email);
         
     }
 }
