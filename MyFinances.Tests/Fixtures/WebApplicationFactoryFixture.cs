@@ -35,9 +35,6 @@ public class WebApplicationFactoryFixture
 
             services.AddDbContext<AppDbContext>(options => 
                 options.UseSqlServer(_dbContainer.GetConnectionString()));
-
-            // TODO: Descobrir forma mais eficiente de adicionar o HttpContextAccessor ou se livrar dele
-            services.AddSingleton<IHttpContextAccessor, TestHttpContextAccessor>();
         });
     }
 
@@ -71,26 +68,5 @@ public class WebApplicationFactoryFixture
     }
 }
 
-class TestHttpContextAccessor : IHttpContextAccessor {
-    public HttpContext? HttpContext { get; set; }
-    
-    public TestHttpContextAccessor()
-    {
-        // Simula um token JWT no HttpContext para testes
-        var claims = new List<Claim>
-        {
-            new(JwtRegisteredClaimNames.UniqueName, "usuario2@example.com"),
-            new Claim(ClaimTypes.Role, "StandardUser"),
-            new(ClaimTypes.NameIdentifier, "06722053-90c6-416c-adab-3d69fd8f6c0d"),
-            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
-        };
-    
-        var identity = new ClaimsIdentity(claims, "TestAuth");
-        var claimsPrincipal = new ClaimsPrincipal(identity);
-    
-        HttpContext = new DefaultHttpContext
-        {
-            User = claimsPrincipal
-        };
-    }
-}
+[CollectionDefinition("Collection Fixture")]
+public class CollectionFixture : ICollectionFixture<WebApplicationFactoryFixture> { }

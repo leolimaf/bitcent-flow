@@ -8,7 +8,8 @@ using MyFinances.Tests.Helpers.HttpHelper;
 
 namespace MyFinances.Tests.API.Controllers;
 
-public class TransacaoFinanceiraControllerTest : IClassFixture<WebApplicationFactoryFixture>
+[Collection("Collection Fixture")]
+public class TransacaoFinanceiraControllerTest
 {
     
     private readonly WebApplicationFactoryFixture _factory;
