@@ -9,6 +9,8 @@ public class TransacaoFinanceiraProfile : Profile
     public TransacaoFinanceiraProfile()
     {
         CreateMap<CreateTransacaoDTO, TransacaoFinanceira>();
+        CreateMap<TransacaoFinanceira, CreateTransacaoDTO>();
+        
         CreateMap<TransacaoFinanceira, ReadTransacaoDTO>();
         CreateMap<UpdateTransacaoDTO, TransacaoFinanceira>();
     }
