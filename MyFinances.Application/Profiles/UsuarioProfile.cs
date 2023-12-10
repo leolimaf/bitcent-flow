@@ -9,11 +9,7 @@ public class UsuarioProfile : Profile
 {
     public UsuarioProfile()
     {
-        CreateMap<RegistroUsuarioRequest, Usuario>()
-            .ForMember(u => u.SenhaHash, x => x.MapFrom(s => s.Senha));
-        CreateMap<Usuario, RegistroUsuarioRequest>()
-            .ForMember(u => u.Senha, x => x.MapFrom(s => s.SenhaHash));
-
+        CreateMap<RegistroUsuarioRequest, Usuario>();
         CreateMap<Usuario, RegistroUsuarioResponse>();
     }
 }

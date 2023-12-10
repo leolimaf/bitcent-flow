@@ -14,13 +14,11 @@ public class TransacaoFinanceiraControllerTest
     
     private readonly WebApplicationFactoryFixture _factory;
     private readonly HttpClient _client;
-    private readonly IMapper _mapper;
     
     public TransacaoFinanceiraControllerTest(WebApplicationFactoryFixture factory)
     {
         _factory = factory;
         _client = _factory.CreateClient();
-        _mapper = _factory.ConfigureMapper();
     }
     
     [Fact(DisplayName = "Ao adicionar uma transação financeira, a transação deve ser retornada")]
@@ -28,7 +26,7 @@ public class TransacaoFinanceiraControllerTest
     {
         // ARRANGE
         var novaTransacao = DataFixture.ObterTransacoes(1, true).First();
-        var transacaoDto = _mapper.Map<CreateTransacaoDTO>(novaTransacao);
+        var transacaoDto = new CreateTransacaoDTO();
         
         // ACT
         var requisicao = await _client.PostAsync(HttpHelper.UrlsTransacaoFinanceira.Adicionar, HttpHelper.GetJsonHttpContent(transacaoDto));

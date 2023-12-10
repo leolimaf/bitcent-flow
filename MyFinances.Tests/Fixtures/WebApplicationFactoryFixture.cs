@@ -1,14 +1,9 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using AutoMapper;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MyFinances.Application.Data;
-using MyFinances.Application.Profiles;
 using Testcontainers.MsSql;
 
 namespace MyFinances.Tests.Fixtures;
@@ -17,13 +12,13 @@ public class WebApplicationFactoryFixture
     : WebApplicationFactory<Program>,
         IAsyncLifetime
 {
-    private MsSqlContainer _dbContainer = new MsSqlBuilder()
-        .WithImage("mcr.microsoft.com/mssql/server")
-        .Build();
+    private MsSqlContainer _dbContainer = new MsSqlBuilder().WithImage("mcr.microsoft.com/mssql/server").Build();
     private static int QunatidadeInicialDeUsuarios => 2;
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        var connectionString = _dbContainer.GetConnectionString();
+        
         base.ConfigureWebHost(builder);
         
         builder.ConfigureTestServices(services =>
@@ -34,7 +29,7 @@ public class WebApplicationFactoryFixture
                 services.Remove(descriptor);
 
             services.AddDbContext<AppDbContext>(options => 
-                options.UseSqlServer(_dbContainer.GetConnectionString()));
+                options.UseSqlServer(connectionString));
         });
     }
 
@@ -54,17 +49,6 @@ public class WebApplicationFactoryFixture
     public new async Task DisposeAsync()
     {
         await _dbContainer.StopAsync();
-    }
-    
-    public IMapper ConfigureMapper()
-    {
-        var config = new MapperConfiguration(x =>
-        {
-            x.AddProfile<UsuarioProfile>();
-            x.AddProfile<TransacaoFinanceiraProfile>();
-        });
-        
-        return config.CreateMapper();
     }
 }
 
