@@ -60,4 +60,16 @@ public class AutenticacaoControllerTest
         retorno.AccessToken.Should().NotBeNullOrWhiteSpace();
         retorno.RefreshToken.Should().NotBeNullOrWhiteSpace();
     }
+
+    // [Fact(DisplayName = "Ao atualizar o token do usuário autenticado deve ser retornado o novo access e refresh token")]
+    // public async Task TestarAtualizarToken()
+    // {
+    //     // ARRANGE
+    //     
+    //     
+    //     // ACT
+    //     
+    //     // ASSERT
+    //     
+    // }
 }
