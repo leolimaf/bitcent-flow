@@ -18,6 +18,7 @@ public class AutenticacaoControllerTest
     {
         _factory = factory;
         _client = _factory.CreateClient();
+        _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {_factory.AccessToken}");
     }
 
     [Fact(DisplayName = "Ao cadastrar um usuário deve ser retornado o usuário cadastrado")]
@@ -59,17 +60,33 @@ public class AutenticacaoControllerTest
         retorno.Authenticated.Should().Be(true);
         retorno.AccessToken.Should().NotBeNullOrWhiteSpace();
         retorno.RefreshToken.Should().NotBeNullOrWhiteSpace();
+        
+        // TODO: REMOVER DEPENDÊNCIA ENTRE OS TESTES
+        _factory.AccessToken = retorno.AccessToken;
+        _factory.RefreshToken = retorno.RefreshToken;
     }
 
-    // [Fact(DisplayName = "Ao atualizar o token do usuário autenticado deve ser retornado o novo access e refresh token")]
-    // public async Task TestarAtualizarToken()
-    // {
-    //     // ARRANGE
-    //     
-    //     
-    //     // ACT
-    //     
-    //     // ASSERT
-    //     
-    // }
+    [Fact(DisplayName = "Ao atualizar o token do usuário autenticado deve ser retornado o novo access e refresh token")]
+    public async Task TestarAtualizarToken()
+    {
+        // ARRANGE
+        var atualizacaoTokenRequest = new AtualizacaoTokenRequest(_factory.AccessToken, _factory.RefreshToken);
+
+        // ACT
+        var requisicao = await _client.PostAsync(HttpHelper.UrlsUsuario.AtualizarToken, HttpHelper.GetJsonHttpContent(atualizacaoTokenRequest));
+        var retorno = await requisicao.Content.ReadFromJsonAsync<LoginUsuarioResponse>();
+
+        // ASSERT
+        requisicao.StatusCode.Should().Be(HttpStatusCode.OK);
+        
+        Assert.NotNull(retorno);
+
+        retorno.Authenticated.Should().Be(true);
+        retorno.AccessToken.Should().NotBeEquivalentTo(atualizacaoTokenRequest.AccessToken);
+        retorno.RefreshToken.Should().NotBeEquivalentTo(atualizacaoTokenRequest.RefreshToken);
+        
+        // TODO: REMOVER DEPENDÊNCIA ENTRE OS TESTES
+        _factory.AccessToken = retorno.AccessToken;
+        _factory.RefreshToken = retorno.RefreshToken;
+    }
 }

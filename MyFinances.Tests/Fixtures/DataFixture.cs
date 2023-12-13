@@ -18,7 +18,7 @@ public class DataFixture
             seed = Random.Shared.Next(10, int.MaxValue);
         
         return new Faker<Usuario>()
-            .RuleFor(u => u.Id, () => new Guid())
+            .RuleFor(u => u.Id, Guid.NewGuid)
             .RuleFor(u => u.Nome, faker => faker.Name.FullName())
             .RuleFor(u => u.Email, faker => faker.Internet.Email())
             .RuleFor(u => u.SenhaNaoCriptografada, faker => faker.Internet.Password())
@@ -43,7 +43,7 @@ public class DataFixture
             seed = Random.Shared.Next(10, int.MaxValue);
         
         return new Faker<TransacaoFinanceira>()
-            .RuleFor(t => t.Id, () => new Guid())
+            .RuleFor(t => t.Id, Guid.NewGuid)
             .RuleFor(t => t.Descricao, faker => faker.Lorem.Text())
             .RuleFor(t => t.Data, faker => faker.Date.Past())
             .RuleFor(t => t.Valor, faker => faker.Finance.Amount(0.01m))

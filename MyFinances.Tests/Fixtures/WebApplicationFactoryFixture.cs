@@ -15,7 +15,7 @@ public class WebApplicationFactoryFixture
         IAsyncLifetime
 {
     private MsSqlContainer _dbContainer = new MsSqlBuilder().WithImage("mcr.microsoft.com/mssql/server").Build();
-    private static int QunatidadeInicialDeUsuarios => 2;
+    private static int QuantidadeInicialDeUsuarios => 2;
     
     public string AccessToken { get; set; }
     public string RefreshToken { get; set; }
@@ -49,13 +49,18 @@ public class WebApplicationFactoryFixture
         
         var dbContext = scopedService.GetRequiredService<AppDbContext>();
         await dbContext.Database.EnsureCreatedAsync();
-        await dbContext.Usuarios.AddRangeAsync(DataFixture.ObterUsuarios(QunatidadeInicialDeUsuarios, true));
+
+        var usuariosIniciais = DataFixture.ObterUsuarios(QuantidadeInicialDeUsuarios);
         
         var jwtTokenGenarator = scopedService.GetRequiredService<IJwtTokenGenarator>();
-        var dadosToken = jwtTokenGenarator.GerarToken(DataFixture.ObterUsuarios(1).First());
-        AccessToken = dadosToken.AccessToken;
-        RefreshToken = dadosToken.RefreshToken;
+        var token = jwtTokenGenarator.GerarToken(usuariosIniciais.First());
+
+        usuariosIniciais.First().Token = RefreshToken = token.RefreshToken;
+        usuariosIniciais.First().ValidadeToken = DateTime.Parse(token.Expiration);
+
+        AccessToken = token.AccessToken;
         
+        await dbContext.Usuarios.AddRangeAsync(usuariosIniciais);
         await dbContext.SaveChangesAsync();
     }
 
