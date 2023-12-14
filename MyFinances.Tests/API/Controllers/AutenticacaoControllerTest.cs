@@ -1,14 +1,16 @@
-﻿using System.Net;
+using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
 using MyFinances.Domain.Authentication.Requests;
 using MyFinances.Domain.Authentication.Responses;
 using MyFinances.Tests.Fixtures;
 using MyFinances.Tests.Helpers.HttpHelper;
+using Xunit.Priority;
 
 namespace MyFinances.Tests.API.Controllers;
 
 [Collection("Collection Fixture")]
+[TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
 public class AutenticacaoControllerTest
 {
     private readonly WebApplicationFactoryFixture _factory;
@@ -21,7 +23,7 @@ public class AutenticacaoControllerTest
         _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {_factory.AccessToken}");
     }
 
-    [Fact(DisplayName = "Ao cadastrar um usuário deve ser retornado o usuário cadastrado")]
+    [Fact(DisplayName = "Ao cadastrar um usuário deve ser retornado o usuário cadastrado"), Priority(1)]
     public async Task TestarCadastrarUsuario()
     {
         // ARRANGE
@@ -41,7 +43,7 @@ public class AutenticacaoControllerTest
         retorno.Email.Should().Be(novoUsuario.Email);
     }
 
-    [Fact(DisplayName = "Ao logar um usuário deve ser retornado o access token e o refresh token")]
+    [Fact(DisplayName = "Ao logar um usuário deve ser retornado o access token e o refresh token"), Priority(2)]
     public async Task TestarLogarUsuario()
     {
         // ARRANGE
@@ -66,7 +68,7 @@ public class AutenticacaoControllerTest
         _factory.RefreshToken = retorno.RefreshToken;
     }
 
-    [Fact(DisplayName = "Ao atualizar o token do usuário autenticado deve ser retornado o novo access e refresh token")]
+    [Fact(DisplayName = "Ao atualizar o token do usuário autenticado deve ser retornado o novo access e refresh token"), Priority(3)]
     public async Task TestarAtualizarToken()
     {
         // ARRANGE
