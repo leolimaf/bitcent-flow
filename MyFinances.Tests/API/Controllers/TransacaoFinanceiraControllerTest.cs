@@ -8,7 +8,7 @@ using MyFinances.Tests.Helpers.HttpHelper;
 
 namespace MyFinances.Tests.API.Controllers;
 
-[Collection("Collection Fixture")]
+[Collection(nameof(IntegrationApiTestFixtureCollection))]
 public class TransacaoFinanceiraControllerTest
 {
     

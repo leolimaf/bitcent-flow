@@ -70,5 +70,5 @@ public class WebApplicationFactoryFixture
     }
 }
 
-[CollectionDefinition("Collection Fixture")]
-public class CollectionFixture : ICollectionFixture<WebApplicationFactoryFixture> { }
+[CollectionDefinition(nameof(IntegrationApiTestFixtureCollection))]
+public class IntegrationApiTestFixtureCollection : ICollectionFixture<WebApplicationFactoryFixture> { }

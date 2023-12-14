@@ -9,7 +9,7 @@ using Xunit.Priority;
 
 namespace MyFinances.Tests.API.Controllers;
 
-[Collection("Collection Fixture")]
+[Collection(nameof(IntegrationApiTestFixtureCollection))]
 [TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
 public class AutenticacaoControllerTest
 {
@@ -23,7 +23,8 @@ public class AutenticacaoControllerTest
         _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {_factory.AccessToken}");
     }
 
-    [Fact(DisplayName = "Ao cadastrar um usuário deve ser retornado o usuário cadastrado"), Priority(1)]
+    [Fact(DisplayName = "Ao cadastrar um usuário deve ser retornado o usuário cadastrado")]
+    [Trait("Autenticação e Autorização", "Cadastro"), Priority(1)]
     public async Task TestarCadastrarUsuario()
     {
         // ARRANGE
@@ -43,7 +44,8 @@ public class AutenticacaoControllerTest
         retorno.Email.Should().Be(novoUsuario.Email);
     }
 
-    [Fact(DisplayName = "Ao logar um usuário deve ser retornado o access token e o refresh token"), Priority(2)]
+    [Fact(DisplayName = "Ao logar um usuário deve ser retornado o access token e o refresh token")]
+    [Trait("Autenticação e Autorização", "Login"), Priority(2)]
     public async Task TestarLogarUsuario()
     {
         // ARRANGE
@@ -68,7 +70,8 @@ public class AutenticacaoControllerTest
         _factory.RefreshToken = retorno.RefreshToken;
     }
 
-    [Fact(DisplayName = "Ao atualizar o token do usuário autenticado deve ser retornado o novo access e refresh token"), Priority(3)]
+    [Fact(DisplayName = "Ao atualizar o token do usuário autenticado deve ser retornado o novo access e refresh token")]
+    [Trait("Autenticação e Autorização", "Login"), Priority(3)]
     public async Task TestarAtualizarToken()
     {
         // ARRANGE
