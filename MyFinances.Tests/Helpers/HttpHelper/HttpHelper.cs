@@ -5,11 +5,6 @@ namespace MyFinances.Tests.Helpers.HttpHelper;
 
 public class HttpHelper
 {
-    public static StringContent GetJsonHttpContent(object items)
-    {
-        return new StringContent(JsonConvert.SerializeObject(items), Encoding.UTF8, "application/json");
-    }
-    
     internal static class UrlsUsuario
     {
         public readonly static string Cadastrar = "/v1/autenticacao/cadastrar";
