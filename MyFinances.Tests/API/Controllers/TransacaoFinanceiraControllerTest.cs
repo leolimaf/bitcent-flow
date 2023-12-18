@@ -29,7 +29,7 @@ public class TransacaoFinanceiraControllerTest
         var transacaoDto = new CreateTransacaoDTO();
         
         // ACT
-        var requisicao = await _client.PostAsync(HttpHelper.UrlsTransacaoFinanceira.Adicionar, HttpHelper.GetJsonHttpContent(transacaoDto));
+        var requisicao = await _client.PostAsJsonAsync(HttpHelper.UrlsTransacaoFinanceira.Adicionar, transacaoDto);
         var retorno = await requisicao.Content.ReadFromJsonAsync<ReadTransacaoDTO>();
         
         // ASSERT

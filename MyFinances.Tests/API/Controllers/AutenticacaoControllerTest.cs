@@ -25,17 +25,17 @@ public class AutenticacaoControllerTest
 
     [Fact(DisplayName = "Ao cadastrar um usuário deve ser retornado o usuário cadastrado")]
     [Trait("Autenticação e Autorização", "Cadastro"), Priority(1)]
-    public async Task TestarCadastrarUsuario()
+    public async Task AoCadastrarUsuario()
     {
-        // ARRANGE
+        // GIVEN
         var novoUsuario = DataFixture.ObterUsuarios(1, true).First();
         var usuarioRequest = new RegistroUsuarioRequest(novoUsuario.Nome, novoUsuario.Email, novoUsuario.SenhaNaoCriptografada);
         
-        // ACT
-        var requisicao = await _client.PostAsync(HttpHelper.UrlsUsuario.Cadastrar, HttpHelper.GetJsonHttpContent(usuarioRequest));
+        // WHEN
+        var requisicao = await _client.PostAsJsonAsync(HttpHelper.UrlsUsuario.Cadastrar, usuarioRequest);
         var retorno = await requisicao.Content.ReadFromJsonAsync<RegistroUsuarioResponse>();
         
-        // ASSERT
+        // THEN
         requisicao.StatusCode.Should().Be(HttpStatusCode.Created);
         
         Assert.NotNull(retorno);
@@ -46,17 +46,17 @@ public class AutenticacaoControllerTest
 
     [Fact(DisplayName = "Ao logar um usuário deve ser retornado o access token e o refresh token")]
     [Trait("Autenticação e Autorização", "Login"), Priority(2)]
-    public async Task TestarLogarUsuario()
+    public async Task AoLogarUsuario()
     {
-        // ARRANGE
+        // GIVEN
         var usuario = DataFixture.ObterUsuarios(1).First();
         var usuarioRequest = new LoginUsuarioRequest(usuario.Email, usuario.SenhaNaoCriptografada);
         
-        // ACT
-        var requisicao = await _client.PostAsync(HttpHelper.UrlsUsuario.Logar, HttpHelper.GetJsonHttpContent(usuarioRequest));
+        // WHEN
+        var requisicao = await _client.PostAsJsonAsync(HttpHelper.UrlsUsuario.Logar, usuarioRequest);
         var retorno = await requisicao.Content.ReadFromJsonAsync<LoginUsuarioResponse>();
         
-        // ASSERT
+        // THEN
         requisicao.StatusCode.Should().Be(HttpStatusCode.OK);
         
         Assert.NotNull(retorno);
@@ -72,16 +72,16 @@ public class AutenticacaoControllerTest
 
     [Fact(DisplayName = "Ao atualizar o token do usuário autenticado deve ser retornado o novo access e refresh token")]
     [Trait("Autenticação e Autorização", "Login"), Priority(3)]
-    public async Task TestarAtualizarToken()
+    public async Task AoAtualizarToken()
     {
-        // ARRANGE
+        // GIVEN
         var atualizacaoTokenRequest = new AtualizacaoTokenRequest(_factory.AccessToken, _factory.RefreshToken);
 
-        // ACT
-        var requisicao = await _client.PostAsync(HttpHelper.UrlsUsuario.AtualizarToken, HttpHelper.GetJsonHttpContent(atualizacaoTokenRequest));
+        // WHEN
+        var requisicao = await _client.PostAsJsonAsync(HttpHelper.UrlsUsuario.AtualizarToken, atualizacaoTokenRequest);
         var retorno = await requisicao.Content.ReadFromJsonAsync<LoginUsuarioResponse>();
 
-        // ASSERT
+        // THEN
         requisicao.StatusCode.Should().Be(HttpStatusCode.OK);
         
         Assert.NotNull(retorno);
@@ -94,4 +94,18 @@ public class AutenticacaoControllerTest
         _factory.AccessToken = retorno.AccessToken;
         _factory.RefreshToken = retorno.RefreshToken;
     }
+
+    [Fact(DisplayName = "Ao deslogar o usuário, seu acesso deve ser invalidado")]
+    [Trait("Autenticação e Autorização", "Logoff"), Priority(4)]
+    public async Task AoRevogarToken()
+    {
+        // GIVEN 
+        
+        // WHEN
+        var requisicao = await _client.PostAsJsonAsync(HttpHelper.UrlsUsuario.Deslogar, new {});
+        
+        // THEN
+        requisicao.StatusCode.Should().Be(HttpStatusCode.NoContent);
+    }
+
 }
