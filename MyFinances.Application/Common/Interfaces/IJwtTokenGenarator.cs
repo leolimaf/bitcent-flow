@@ -1,5 +1,5 @@
 ﻿using System.Security.Claims;
-using MyFinances.Application.Services.Authentication.Common.Responses;
+using MyFinances.Application.Authentication.Common.Responses;
 using MyFinances.Domain.Models;
 
 namespace MyFinances.Application.Common.Interfaces;

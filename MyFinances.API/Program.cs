@@ -7,13 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MyFinances.Application;
 using MyFinances.Application.Common;
 using MyFinances.Application.Common.Interfaces;
 using MyFinances.Application.Data;
-using MyFinances.Application.Services;
-using MyFinances.Application.Services.Authentication.Commands;
-using MyFinances.Application.Services.Authentication.Queries;
-using MyFinances.Application.Services.Interfaces;
+using MyFinances.Infrastructure;
 using MyFinances.Infrastructure.Authentication;
 using Sieve.Services;
 
@@ -60,9 +58,7 @@ builder.Services.AddAuthorization(opts =>
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<ITransacaoFinanceiraService, TransacaoFinanceiraService>();
-builder.Services.AddScoped<IAutenticacaoCommandService, AutenticacaoCommandService>();
-builder.Services.AddScoped<IAutenticacaoQueryService, AutenticacaoQueryService>();
+builder.Services.AddApplication();//.AddInfrastructure(builder.Configuration);
 builder.Services.Configure<JwtSettings>(config.GetSection(JwtSettings.SectionName));
 builder.Services.AddScoped<IJwtTokenGenarator,JwtTokenGenarator>();
 builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();

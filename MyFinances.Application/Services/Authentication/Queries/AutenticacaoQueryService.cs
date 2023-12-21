@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using MyFinances.Application.Authentication.Common.Responses;
+using MyFinances.Application.Authentication.Queries.Login;
 using MyFinances.Application.Common.Interfaces;
 using MyFinances.Application.Data;
-using MyFinances.Application.Services.Authentication.Common.Requests;
-using MyFinances.Application.Services.Authentication.Common.Responses;
-using MyFinances.Application.Services.Interfaces;
 using MyFinances.Domain.Exception;
 
 namespace MyFinances.Application.Services.Authentication.Queries;
@@ -32,14 +31,14 @@ public class AutenticacaoQueryService : IAutenticacaoQueryService
         return _mapper.Map<RegistroUsuarioResponse>(usuario);
     }
 
-    public async Task<LoginUsuarioResponse?> LogarUsuario(LoginUsuarioRequest loginUsuarioRequest)
+    public async Task<LoginUsuarioResponse?> LogarUsuario(LoginQuery loginQuery)
     {
-        var usuario = await  _context.Usuarios.FirstOrDefaultAsync(u => u.Email == loginUsuarioRequest.Email);
+        var usuario = await  _context.Usuarios.FirstOrDefaultAsync(u => u.Email == loginQuery.Email);
 
         if (usuario is null)
-            throw new MyFinancesException(nameof(loginUsuarioRequest.Email), MyFinancesExceptionType.BAD_REQUEST, "E-mail inválido.");
+            throw new MyFinancesException(nameof(loginQuery.Email), MyFinancesExceptionType.BAD_REQUEST, "E-mail inválido.");
 
-        if (!BCrypt.Net.BCrypt.Verify(loginUsuarioRequest.Senha, usuario.SenhaHash))
+        if (!BCrypt.Net.BCrypt.Verify(loginQuery.Senha, usuario.SenhaHash))
             throw new MyFinancesException("Senha inválida.", MyFinancesExceptionType.UNAUTHORIZED);
 
         return _jwtTokenGenarator.GerarToken(usuario);

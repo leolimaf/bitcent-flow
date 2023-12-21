@@ -1,8 +1,10 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
-using MyFinances.Application.Services.Authentication.Common.Requests;
-using MyFinances.Application.Services.Authentication.Common.Responses;
+using MyFinances.Application.Authentication.Commands.AtualizacaoToken;
+using MyFinances.Application.Authentication.Commands.Cadastro;
+using MyFinances.Application.Authentication.Common.Responses;
+using MyFinances.Application.Authentication.Queries.Login;
 using MyFinances.Tests.Fixtures;
 using MyFinances.Tests.Helpers.HttpHelper;
 using Xunit.Priority;
@@ -29,7 +31,7 @@ public class AutenticacaoControllerTest
     {
         // GIVEN
         var novoUsuario = DataFixture.ObterUsuarios(1, true).First();
-        var usuarioRequest = new RegistroUsuarioRequest(novoUsuario.Nome, novoUsuario.Email, novoUsuario.SenhaNaoCriptografada);
+        var usuarioRequest = new CadastroCommand(novoUsuario.Nome, novoUsuario.Email, novoUsuario.SenhaNaoCriptografada);
         
         // WHEN
         var requisicao = await _client.PostAsJsonAsync(HttpHelper.UrlsUsuario.Cadastrar, usuarioRequest);
@@ -50,7 +52,7 @@ public class AutenticacaoControllerTest
     {
         // GIVEN
         var usuario = DataFixture.ObterUsuarios(1).First();
-        var usuarioRequest = new LoginUsuarioRequest(usuario.Email, usuario.SenhaNaoCriptografada);
+        var usuarioRequest = new LoginQuery(usuario.Email, usuario.SenhaNaoCriptografada);
         
         // WHEN
         var requisicao = await _client.PostAsJsonAsync(HttpHelper.UrlsUsuario.Logar, usuarioRequest);
@@ -75,7 +77,7 @@ public class AutenticacaoControllerTest
     public async Task AoAtualizarToken()
     {
         // GIVEN
-        var atualizacaoTokenRequest = new AtualizacaoTokenRequest(_factory.AccessToken, _factory.RefreshToken);
+        var atualizacaoTokenRequest = new AtualizacaoTokenCommand(_factory.AccessToken, _factory.RefreshToken);
 
         // WHEN
         var requisicao = await _client.PostAsJsonAsync(HttpHelper.UrlsUsuario.AtualizarToken, atualizacaoTokenRequest);
