@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MyFinances.Application.Services.Authentication.Commands;
+using MyFinances.Application.Services.Authentication.Common.Requests;
+using MyFinances.Application.Services.Authentication.Common.Responses;
+using MyFinances.Application.Services.Authentication.Queries;
 using MyFinances.Application.Services.Interfaces;
-using MyFinances.Domain.Authentication.Requests;
-using MyFinances.Domain.Authentication.Responses;
 using MyFinances.Domain.Exception;
 
 namespace MyFinances.API.Controllers;
@@ -15,11 +17,13 @@ namespace MyFinances.API.Controllers;
 [Produces("application/json")]
 public class AutenticacaoController : ControllerBase
 {
-    private IAutenticacaoService _autenticacaoService;
+    private IAutenticacaoCommandService _autenticacaoCommandService;
+    private IAutenticacaoQueryService _autenticacaoQueryService;
 
-    public AutenticacaoController(IAutenticacaoService autenticacaoService)
+    public AutenticacaoController(IAutenticacaoCommandService autenticacaoCommandService, IAutenticacaoQueryService autenticacaoQueryService)
     {
-        _autenticacaoService = autenticacaoService;
+        _autenticacaoCommandService = autenticacaoCommandService;
+        _autenticacaoQueryService = autenticacaoQueryService;
     }
 
     [HttpPost, Route("cadastrar"), AllowAnonymous]
@@ -27,7 +31,7 @@ public class AutenticacaoController : ControllerBase
     {
         try
         {
-            RegistroUsuarioResponse registroUsuarioResponse = await _autenticacaoService.CadastrarUsuario(usuarioRequest);
+            RegistroUsuarioResponse registroUsuarioResponse = await _autenticacaoCommandService.CadastrarUsuario(usuarioRequest);
             return CreatedAtAction(nameof(ObterPorId), new {version = HttpContext.GetRequestedApiVersion()!.ToString(),registroUsuarioResponse.Id}, registroUsuarioResponse);
         }
         catch (MyFinancesException e)
@@ -43,7 +47,7 @@ public class AutenticacaoController : ControllerBase
     {
         try
         {
-            return Ok(await _autenticacaoService.ObterUsuarioPorId(id));
+            return Ok(await _autenticacaoQueryService.ObterUsuarioPorId(id));
         }
         catch (MyFinancesException e)
         {
@@ -56,7 +60,7 @@ public class AutenticacaoController : ControllerBase
     {
         try
         {
-            return Ok(await _autenticacaoService.LogarUsuario(usuarioDto));
+            return Ok(await _autenticacaoQueryService.LogarUsuario(usuarioDto));
         }
         catch (MyFinancesException e)
         {
@@ -69,7 +73,7 @@ public class AutenticacaoController : ControllerBase
     {
         try
         {
-            return Ok(await _autenticacaoService.LogarUsuario(atualizacaoTokenRequest));
+            return Ok(await _autenticacaoCommandService.AtualizarToken(atualizacaoTokenRequest));
         }
         catch (MyFinancesException e)
         {
@@ -82,7 +86,7 @@ public class AutenticacaoController : ControllerBase
     {
         try
         {
-            await _autenticacaoService.RevogarToken(User.Identity.Name);
+            await _autenticacaoCommandService.RevogarToken(User.Identity.Name);
             return NoContent();
         }
         catch (MyFinancesException e)

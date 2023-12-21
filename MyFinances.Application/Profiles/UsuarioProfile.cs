@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using MyFinances.Domain.Authentication.Requests;
-using MyFinances.Domain.Authentication.Responses;
+using MyFinances.Application.Services.Authentication.Common.Requests;
+using MyFinances.Application.Services.Authentication.Common.Responses;
 using MyFinances.Domain.Models;
 
 namespace MyFinances.Application.Profiles;

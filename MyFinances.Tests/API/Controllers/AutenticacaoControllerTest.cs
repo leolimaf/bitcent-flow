@@ -1,8 +1,8 @@
-using System.Net;
+﻿using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
-using MyFinances.Domain.Authentication.Requests;
-using MyFinances.Domain.Authentication.Responses;
+using MyFinances.Application.Services.Authentication.Common.Requests;
+using MyFinances.Application.Services.Authentication.Common.Responses;
 using MyFinances.Tests.Fixtures;
 using MyFinances.Tests.Helpers.HttpHelper;
 using Xunit.Priority;

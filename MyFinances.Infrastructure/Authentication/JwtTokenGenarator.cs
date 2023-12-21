@@ -6,8 +6,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MyFinances.Application.Common.Interfaces;
 using MyFinances.Application.Data;
+using MyFinances.Application.Services.Authentication.Common.Responses;
 using MyFinances.Application.Services.Interfaces;
-using MyFinances.Domain.Authentication.Responses;
 using MyFinances.Domain.Exception;
 using MyFinances.Domain.Models;
 

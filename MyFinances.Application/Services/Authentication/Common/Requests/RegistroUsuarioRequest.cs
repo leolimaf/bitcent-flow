@@ -1,4 +1,4 @@
-﻿namespace MyFinances.Domain.Authentication.Requests;
+﻿namespace MyFinances.Application.Services.Authentication.Common.Requests;
 
 public record RegistroUsuarioRequest(
     string Nome,

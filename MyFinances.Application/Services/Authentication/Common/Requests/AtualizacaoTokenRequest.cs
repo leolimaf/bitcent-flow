@@ -1,4 +1,4 @@
-﻿namespace MyFinances.Domain.Authentication.Requests;
+﻿namespace MyFinances.Application.Services.Authentication.Common.Requests;
 
 public record AtualizacaoTokenRequest(
     string AccessToken,
