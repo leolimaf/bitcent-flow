@@ -58,10 +58,7 @@ builder.Services.AddAuthorization(opts =>
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddApplication();//.AddInfrastructure(builder.Configuration);
-builder.Services.Configure<JwtSettings>(config.GetSection(JwtSettings.SectionName));
-builder.Services.AddScoped<IJwtTokenGenarator,JwtTokenGenarator>();
-builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+builder.Services.AddApplication().AddInfrastructure(builder.Configuration);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddApiVersioning(opts =>
 {
