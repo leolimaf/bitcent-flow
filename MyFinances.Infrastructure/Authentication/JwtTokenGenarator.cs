@@ -4,10 +4,10 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using MyFinances.Application.Authentication.Common.Responses;
 using MyFinances.Application.Common.Interfaces;
 using MyFinances.Application.Data;
 using MyFinances.Application.Services.Interfaces;
-using MyFinances.Domain.Authentication.Responses;
 using MyFinances.Domain.Exception;
 using MyFinances.Domain.Models;
 

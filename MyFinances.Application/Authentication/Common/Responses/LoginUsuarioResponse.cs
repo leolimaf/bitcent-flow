@@ -1,4 +1,4 @@
-﻿namespace MyFinances.Domain.Authentication.Responses;
+﻿namespace MyFinances.Application.Authentication.Common.Responses;
 
 public record LoginUsuarioResponse(
     bool Authenticated,
