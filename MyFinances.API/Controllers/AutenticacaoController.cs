@@ -1,9 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MyFinances.Application.Services.Interfaces;
-using MyFinances.Domain.Authentication.Requests;
-using MyFinances.Domain.Authentication.Responses;
+using MyFinances.Application.Authentication.Commands.AtualizacaoToken;
+using MyFinances.Application.Authentication.Commands.Cadastro;
+using MyFinances.Application.Authentication.Commands.Logoff;
+using MyFinances.Application.Authentication.Common.Responses;
+using MyFinances.Application.Authentication.Queries.Identificacao;
+using MyFinances.Application.Authentication.Queries.Login;
 using MyFinances.Domain.Exception;
 
 namespace MyFinances.API.Controllers;
@@ -15,19 +19,19 @@ namespace MyFinances.API.Controllers;
 [Produces("application/json")]
 public class AutenticacaoController : ControllerBase
 {
-    private IAutenticacaoService _autenticacaoService;
+    private readonly ISender _mediator;
 
-    public AutenticacaoController(IAutenticacaoService autenticacaoService)
+    public AutenticacaoController(ISender mediator)
     {
-        _autenticacaoService = autenticacaoService;
+        _mediator = mediator;
     }
 
     [HttpPost, Route("cadastrar"), AllowAnonymous]
-    public async Task<IActionResult> Cadastrar([FromBody, Required] RegistroUsuarioRequest usuarioRequest)
+    public async Task<IActionResult> Cadastrar([FromBody, Required] CadastroCommand usuarioRequest)
     {
         try
         {
-            RegistroUsuarioResponse registroUsuarioResponse = await _autenticacaoService.CadastrarUsuario(usuarioRequest);
+            RegistroUsuarioResponse registroUsuarioResponse = await _mediator.Send(usuarioRequest);
             return CreatedAtAction(nameof(ObterPorId), new {version = HttpContext.GetRequestedApiVersion()!.ToString(),registroUsuarioResponse.Id}, registroUsuarioResponse);
         }
         catch (MyFinancesException e)
@@ -39,11 +43,11 @@ public class AutenticacaoController : ControllerBase
     [Authorize(Roles = "Administrator")]
     [HttpGet, Route("obter-por-id")]
     [ApiExplorerSettings(IgnoreApi = true)]
-    public async Task<IActionResult> ObterPorId([Required] string id)
+    public async Task<IActionResult> ObterPorId([Required] IdentificacaoQuery id)
     {
         try
         {
-            return Ok(await _autenticacaoService.ObterUsuarioPorId(id));
+            return Ok(await _mediator.Send(id));
         }
         catch (MyFinancesException e)
         {
@@ -52,11 +56,11 @@ public class AutenticacaoController : ControllerBase
     }
 
     [HttpPost, Route("logar"), AllowAnonymous]
-    public async Task<IActionResult> Logar([FromBody, Required] LoginUsuarioRequest usuarioDto)
+    public async Task<IActionResult> Logar([FromBody, Required] LoginQuery usuarioDto)
     {
         try
         {
-            return Ok(await _autenticacaoService.LogarUsuario(usuarioDto));
+            return Ok(await _mediator.Send(usuarioDto));
         }
         catch (MyFinancesException e)
         {
@@ -65,11 +69,11 @@ public class AutenticacaoController : ControllerBase
     }
     
     [HttpPost, Route("atualizar-token")]
-    public async Task<IActionResult> AtualizarToken([FromBody, Required] AtualizacaoTokenRequest atualizacaoTokenRequest)
+    public async Task<IActionResult> AtualizarToken([FromBody, Required] AtualizacaoTokenCommand atualizacaoTokenCommand)
     {
         try
         {
-            return Ok(await _autenticacaoService.LogarUsuario(atualizacaoTokenRequest));
+            return Ok(await _mediator.Send(atualizacaoTokenCommand));
         }
         catch (MyFinancesException e)
         {
@@ -82,7 +86,7 @@ public class AutenticacaoController : ControllerBase
     {
         try
         {
-            await _autenticacaoService.RevogarToken(User.Identity.Name);
+            await _mediator.Send(new LogoffCommand(User.Identity.Name));
             return NoContent();
         }
         catch (MyFinancesException e)

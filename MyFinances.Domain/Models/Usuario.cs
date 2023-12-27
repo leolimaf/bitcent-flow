@@ -36,5 +36,7 @@ public class Usuario
     public bool IsAdministrador { get; set; }
     
     public virtual List<TransacaoFinanceira> TransacaoFinanceiras { get; set; }
-
+    
+    [NotMapped]
+    public string SenhaNaoCriptografada { get; set; }
 }

@@ -8,30 +8,28 @@ using MyFinances.Tests.Helpers.HttpHelper;
 
 namespace MyFinances.Tests.API.Controllers;
 
-[Collection("Collection Fixture")]
+[Collection(nameof(IntegrationApiTestFixtureCollection))]
 public class TransacaoFinanceiraControllerTest
 {
     
     private readonly WebApplicationFactoryFixture _factory;
     private readonly HttpClient _client;
-    private readonly IMapper _mapper;
     
     public TransacaoFinanceiraControllerTest(WebApplicationFactoryFixture factory)
     {
         _factory = factory;
         _client = _factory.CreateClient();
-        _mapper = _factory.ConfigureMapper();
     }
     
-    [Fact(DisplayName = "Ao adicionar uma transação financeira, a transação deve ser retornada")]
+    [Fact(Skip = "Necessário terminar de configurar o ambiente e terminar os teste do controller de autenticação", DisplayName = "Ao adicionar uma transação financeira, a transação deve ser retornada")]
     public async Task TestarAdicionarTransacao()
     {
         // ARRANGE
         var novaTransacao = DataFixture.ObterTransacoes(1, true).First();
-        var transacaoDto = _mapper.Map<CreateTransacaoDTO>(novaTransacao);
+        var transacaoDto = new CreateTransacaoDTO();
         
         // ACT
-        var requisicao = await _client.PostAsync(HttpHelper.UrlsTransacaoFinanceira.Adicionar, HttpHelper.GetJsonHttpContent(transacaoDto));
+        var requisicao = await _client.PostAsJsonAsync(HttpHelper.UrlsTransacaoFinanceira.Adicionar, transacaoDto);
         var retorno = await requisicao.Content.ReadFromJsonAsync<ReadTransacaoDTO>();
         
         // ASSERT
