@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using MyFinances.Application.Authentication;
 using MyFinances.Application.Persistence.Authentication;
 using MyFinances.Infrastructure.Authentication;
 using MyFinances.Infrastructure.Context;

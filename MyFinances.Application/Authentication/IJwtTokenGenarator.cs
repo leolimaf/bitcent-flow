@@ -2,7 +2,7 @@
 using MyFinances.Application.Authentication.Common.Responses;
 using MyFinances.Domain.Models;
 
-namespace MyFinances.Application.Persistence.Authentication;
+namespace MyFinances.Application.Authentication;
 
 public interface IJwtTokenGenarator
 {

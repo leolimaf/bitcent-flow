@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MyFinances.Application.Authentication;
 using MyFinances.Application.Persistence.Authentication;
 using MyFinances.Application.Persistence.TransacaoFinanceira;
 using MyFinances.Infrastructure.Authentication;
