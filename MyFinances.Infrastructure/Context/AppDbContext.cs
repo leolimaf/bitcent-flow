@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyFinances.Domain.Models;
 
-namespace MyFinances.Application.Data;
+namespace MyFinances.Infrastructure.Context;
 
 public class AppDbContext : DbContext
 {

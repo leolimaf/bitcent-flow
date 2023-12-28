@@ -5,25 +5,22 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MyFinances.Application.Authentication.Common.Responses;
-using MyFinances.Application.Common.Interfaces;
-using MyFinances.Application.Data;
-using MyFinances.Application.Services.Interfaces;
+using MyFinances.Application.Persistence.Authentication;
 using MyFinances.Domain.Exception;
 using MyFinances.Domain.Models;
+using MyFinances.Infrastructure.Context;
 
 namespace MyFinances.Infrastructure.Authentication;
 
 public class JwtTokenGenarator : IJwtTokenGenarator
 {
-    private readonly IDateTimeProvider _dateTimeProvider;
     private readonly JwtSettings _jwtOptions;
     private AppDbContext _context;
 
-    public JwtTokenGenarator(IOptions<JwtSettings> jwtOptions, AppDbContext context, IDateTimeProvider dateTimeProvider)
+    public JwtTokenGenarator(IOptions<JwtSettings> jwtOptions, AppDbContext context)
     {
         _jwtOptions = jwtOptions.Value;
         _context = context;
-        _dateTimeProvider = dateTimeProvider;
     }
 
     public LoginUsuarioResponse GerarToken(Usuario usuario)
@@ -39,11 +36,11 @@ public class JwtTokenGenarator : IJwtTokenGenarator
         var refreshToken = GerarRefreshToken();
         
         usuario.Token = refreshToken;
-        usuario.ValidadeToken = _dateTimeProvider.UtcNow.AddDays(_jwtOptions.DaysToExpiry);
+        usuario.ValidadeToken = DateTime.Now.AddDays(_jwtOptions.DaysToExpiry);
 
         _context.SaveChanges();
 
-        var dataCriacao = _dateTimeProvider.UtcNow;
+        var dataCriacao = DateTime.Now;
         var dataExpiracao = dataCriacao.AddMinutes(_jwtOptions.Minutes);
         
         return new LoginUsuarioResponse(
@@ -60,7 +57,7 @@ public class JwtTokenGenarator : IJwtTokenGenarator
         var chave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Secret));
         var signinCredentials = new SigningCredentials(chave, SecurityAlgorithms.HmacSha256);
         var token = new JwtSecurityToken(
-            expires: _dateTimeProvider.UtcNow.AddMinutes(60), 
+            expires: DateTime.Now.AddMinutes(60), 
             issuer: _jwtOptions.Issuer,
             audience: _jwtOptions.Audience,
             claims: claims, 
@@ -99,7 +96,7 @@ public class JwtTokenGenarator : IJwtTokenGenarator
 
     public LoginUsuarioResponse RetornarTokenAtualizado(string accessToken, string refreshToken)
     {
-        var dataCriacao = _dateTimeProvider.UtcNow;
+        var dataCriacao = DateTime.Now;
         var dataExpiracao = dataCriacao.AddMinutes(_jwtOptions.Minutes);
         
         return new LoginUsuarioResponse(

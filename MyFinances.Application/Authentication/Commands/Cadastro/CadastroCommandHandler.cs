@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using MyFinances.Application.Authentication.Common.Responses;
-using MyFinances.Application.Common.Interfaces;
-using MyFinances.Application.Data;
+using MyFinances.Application.Persistence.Authentication;
 using MyFinances.Domain.Exception;
 using MyFinances.Domain.Models;
 
@@ -12,27 +10,25 @@ namespace MyFinances.Application.Authentication.Commands.Cadastro;
 public class CadastroCommandHandler : IRequestHandler<CadastroCommand, RegistroUsuarioResponse>
 {
     private readonly IMapper _mapper;
-    private readonly IJwtTokenGenarator _jwtTokenGenarator;
-    private readonly AppDbContext _context;
+    private readonly IUsuarioRepository _usuarioRepository;
 
-    public CadastroCommandHandler(IMapper mapper, IJwtTokenGenarator jwtTokenGenarator, AppDbContext context)
+    public CadastroCommandHandler(IMapper mapper, IUsuarioRepository usuarioRepository)
     {
         _mapper = mapper;
-        _jwtTokenGenarator = jwtTokenGenarator;
-        _context = context;
+        _usuarioRepository = usuarioRepository;
     }
 
     public async Task<RegistroUsuarioResponse> Handle(CadastroCommand command, CancellationToken cancellationToken)
     {
-        if (await _context.Usuarios.AnyAsync(x => x.Email == command.Email, cancellationToken: cancellationToken))
+        if (await _usuarioRepository.IsCadastradoAsync(command.Email, cancellationToken))
             throw new MyFinancesException(nameof(command.Email), MyFinancesExceptionType.CONFLICT, "E-mail já cadastrado.");
 
         Usuario usuario = _mapper.Map<Usuario>(command);
         
         usuario.SenhaHash = BCrypt.Net.BCrypt.HashPassword(command.Senha);
         
-        _context.Usuarios.Add(usuario);
-        await _context.SaveChangesAsync(cancellationToken);
+        await _usuarioRepository.CadastrarAsync(usuario);
+        await _usuarioRepository.SalvarAlteracoesAsync(cancellationToken);
 
         return _mapper.Map<RegistroUsuarioResponse>(usuario);
     }

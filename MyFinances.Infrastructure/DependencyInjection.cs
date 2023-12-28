@@ -1,8 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MyFinances.Application.Common;
-using MyFinances.Application.Common.Interfaces;
+using MyFinances.Application.Persistence.Authentication;
+using MyFinances.Application.Persistence.TransacaoFinanceira;
 using MyFinances.Infrastructure.Authentication;
+using MyFinances.Infrastructure.Repositories;
 
 namespace MyFinances.Infrastructure;
 
@@ -13,7 +14,8 @@ public static class DependencyInjection
         services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SectionName));
         
         services.AddScoped<IJwtTokenGenarator,JwtTokenGenarator>();
-        services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+        services.AddScoped<ITransacaoFinanceiraRepository, TransacaoFinanceiraRepository>();
+        services.AddScoped<IUsuarioRepository, UsuarioRepository>();
         
         return services;
     }

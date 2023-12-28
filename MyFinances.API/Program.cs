@@ -8,11 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MyFinances.Application;
-using MyFinances.Application.Common;
-using MyFinances.Application.Common.Interfaces;
-using MyFinances.Application.Data;
 using MyFinances.Infrastructure;
-using MyFinances.Infrastructure.Authentication;
+using MyFinances.Infrastructure.Context;
 using Sieve.Services;
 
 var builder = WebApplication.CreateBuilder(args);

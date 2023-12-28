@@ -1,28 +1,27 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using MyFinances.Application.Data;
+using MyFinances.Application.Persistence.Authentication;
 using MyFinances.Domain.Exception;
 
 namespace MyFinances.Application.Authentication.Commands.Logoff;
 
 public class LogoffCommandHandler : IRequestHandler<LogoffCommand, bool>
 {
-    private readonly AppDbContext _context;
+    private readonly IUsuarioRepository _usuarioRepository;
 
-    public LogoffCommandHandler(AppDbContext context)
+    public LogoffCommandHandler(IUsuarioRepository usuarioRepository)
     {
-        _context = context;
+        _usuarioRepository = usuarioRepository;
     }
 
     public async Task<bool> Handle(LogoffCommand command, CancellationToken cancellationToken)
     {
-        var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == command.NomeDeUsuario);
+        var usuario = await _usuarioRepository.ObterPorEmailAsync(command.NomeDeUsuario);
         
         if (usuario is null)
             throw new MyFinancesException(nameof(command.NomeDeUsuario), MyFinancesExceptionType.NOT_FOUND);
         
         usuario.Token = null;
-        await _context.SaveChangesAsync(cancellationToken);
+        await _usuarioRepository.SalvarAlteracoesAsync(cancellationToken);
         
         return true;
     }

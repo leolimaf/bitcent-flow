@@ -1,8 +1,6 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
 using MyFinances.Application.Authentication.Common.Responses;
-using MyFinances.Application.Common.Interfaces;
-using MyFinances.Application.Data;
+using MyFinances.Application.Persistence.Authentication;
 using MyFinances.Domain.Exception;
 
 namespace MyFinances.Application.Authentication.Commands.AtualizacaoToken;
@@ -10,12 +8,12 @@ namespace MyFinances.Application.Authentication.Commands.AtualizacaoToken;
 public class AtualizacaoTokenCommandHandler  : IRequestHandler<AtualizacaoTokenCommand, LoginUsuarioResponse>
 {
     private readonly IJwtTokenGenarator _jwtTokenGenarator;
-    private readonly AppDbContext _context;
+    private readonly IUsuarioRepository _usuarioRepository;
 
-    public AtualizacaoTokenCommandHandler(IJwtTokenGenarator jwtTokenGenarator, AppDbContext context)
+    public AtualizacaoTokenCommandHandler(IJwtTokenGenarator jwtTokenGenarator, IUsuarioRepository usuarioRepository)
     {
         _jwtTokenGenarator = jwtTokenGenarator;
-        _context = context;
+        _usuarioRepository = usuarioRepository;
     }
 
     public async Task<LoginUsuarioResponse> Handle(AtualizacaoTokenCommand command, CancellationToken cancellationToken)
@@ -23,7 +21,7 @@ public class AtualizacaoTokenCommandHandler  : IRequestHandler<AtualizacaoTokenC
         var principal = _jwtTokenGenarator.GetPrincipalFromExpiredToken(command.AccessToken);
         var username = principal.Identity?.Name;
 
-        var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == username);
+        var usuario = await _usuarioRepository.ObterPorEmailAsync(username);
 
         if (usuario is null || usuario.Token != command.RefreshToken || usuario.ValidadeToken <= DateTime.Now)
             throw new MyFinancesException(nameof(command.RefreshToken), MyFinancesExceptionType.UNAUTHORIZED, "Refresh Token inválido.");
@@ -33,7 +31,7 @@ public class AtualizacaoTokenCommandHandler  : IRequestHandler<AtualizacaoTokenC
 
         usuario.Token = refreshToken;
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await _usuarioRepository.SalvarAlteracoesAsync(cancellationToken);
 
         return _jwtTokenGenarator.RetornarTokenAtualizado(accessToken, refreshToken);
     }

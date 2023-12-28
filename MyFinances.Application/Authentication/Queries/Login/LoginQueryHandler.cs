@@ -1,8 +1,6 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
 using MyFinances.Application.Authentication.Common.Responses;
-using MyFinances.Application.Common.Interfaces;
-using MyFinances.Application.Data;
+using MyFinances.Application.Persistence.Authentication;
 using MyFinances.Domain.Exception;
 
 namespace MyFinances.Application.Authentication.Queries.Login;
@@ -10,17 +8,17 @@ namespace MyFinances.Application.Authentication.Queries.Login;
 public class LoginQueryHandler : IRequestHandler<LoginQuery, LoginUsuarioResponse>
 {
     private readonly IJwtTokenGenarator _jwtTokenGenarator;
-    private readonly AppDbContext _context;
+    private readonly IUsuarioRepository _usuarioRepository;
 
-    public LoginQueryHandler(AppDbContext context, IJwtTokenGenarator jwtTokenGenarator)
+    public LoginQueryHandler(IJwtTokenGenarator jwtTokenGenarator, IUsuarioRepository usuarioRepository)
     {
-        _context = context;
         _jwtTokenGenarator = jwtTokenGenarator;
+        _usuarioRepository = usuarioRepository;
     }
 
     public async Task<LoginUsuarioResponse> Handle(LoginQuery query, CancellationToken cancellationToken)
     {
-        var usuario = await  _context.Usuarios.FirstOrDefaultAsync(u => u.Email == query.Email);
+        var usuario = await  _usuarioRepository.ObterPorEmailAsync(query.Email);
 
         if (usuario is null)
             throw new MyFinancesException(nameof(query.Email), MyFinancesExceptionType.BAD_REQUEST, "E-mail inválido.");

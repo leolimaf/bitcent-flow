@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using MyFinances.Application.Common.Interfaces;
-using MyFinances.Application.Data;
+using MyFinances.Application.Persistence.Authentication;
 using MyFinances.Infrastructure.Authentication;
+using MyFinances.Infrastructure.Context;
 using Testcontainers.MsSql;
 
 namespace MyFinances.Tests.Fixtures;
