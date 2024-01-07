@@ -5,8 +5,8 @@ using Microsoft.EntityFrameworkCore;
 namespace MyFinances.Domain.Models;
 
 [Table("USUARIO")]
-[Index(nameof(Nome), IsUnique = true)]
 [Index(nameof(Email), IsUnique = true)]
+[Index(nameof(CPF), IsUnique = true)]
 public class Usuario
 {
     [Key]
@@ -14,17 +14,28 @@ public class Usuario
     [Column("ID")]
     public Guid Id { get; set; }
     
-    [Required,] 
-    [Column("NOME")]
-    public string Nome { get; set; }
+    [Required, MaxLength(120)] 
+    [Column("NOME_COMPLETO")]
+    public string NomeCompleto { get; set; }
     
-    [Required, DataType(DataType.EmailAddress)] 
+    [Required] 
+    [Column("CPF")]
+    public int CPF { get; set; }
+    
+    [Required, DataType(DataType.EmailAddress), MaxLength(120)] 
     [Column("EMAIL")]
     public string Email { get; set; }
 
-    [Required, DataType(DataType.Password)]
+    [Required, DataType(DataType.Password), MaxLength(24)]
     [Column("SENHA_HASH")]
     public string SenhaHash { get; set; }
+    
+    [Required]
+    [Column("DATA_DE_NASCIMENTO")]
+    public DateTime DataDeNascimento { get; set; }
+    
+    [Column("EMAIL_VERIFICADO")] 
+    public bool IsEmailVerificado { get; set; }
     
     [Column("TOKEN")]
     public string? Token { get; set; }
@@ -34,6 +45,16 @@ public class Usuario
     
     [Column("ADMINISTRADOR")] 
     public bool IsAdministrador { get; set; }
+    
+    [Required]
+    public Guid EnderecoId { get; set; }
+    
+    [Required]
+    public Guid ContatoId { get; set; }
+    
+    public virtual Endereco Endereco { get; set; }
+    
+    public virtual Contato Contato { get; set; }
     
     public virtual List<TransacaoFinanceira> TransacaoFinanceiras { get; set; }
     

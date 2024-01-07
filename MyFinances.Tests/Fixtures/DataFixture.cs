@@ -19,7 +19,7 @@ public class DataFixture
         
         return new Faker<Usuario>()
             .RuleFor(u => u.Id, Guid.NewGuid)
-            .RuleFor(u => u.Nome, faker => faker.Name.FullName())
+            .RuleFor(u => u.NomeCompleto, faker => faker.Name.FullName())
             .RuleFor(u => u.Email, faker => faker.Internet.Email())
             .RuleFor(u => u.SenhaNaoCriptografada, faker => faker.Internet.Password())
             .RuleFor(u => u.SenhaHash, (faker, u) => BCrypt.Net.BCrypt.HashPassword(u.SenhaNaoCriptografada))

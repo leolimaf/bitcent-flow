@@ -31,7 +31,7 @@ public class AutenticacaoControllerTest
     {
         // GIVEN
         var novoUsuario = DataFixture.ObterUsuarios(1, true).First();
-        var usuarioRequest = new CadastroCommand(novoUsuario.Nome, novoUsuario.Email, novoUsuario.SenhaNaoCriptografada);
+        var usuarioRequest = new CadastroCommand(novoUsuario.NomeCompleto, novoUsuario.Email, novoUsuario.SenhaNaoCriptografada);
         
         // WHEN
         var requisicao = await _client.PostAsJsonAsync(HttpHelper.UrlsUsuario.Cadastrar, usuarioRequest);
@@ -42,7 +42,7 @@ public class AutenticacaoControllerTest
         
         Assert.NotNull(retorno);
 
-        retorno.Nome.Should().Be(novoUsuario.Nome);
+        retorno.Nome.Should().Be(novoUsuario.NomeCompleto);
         retorno.Email.Should().Be(novoUsuario.Email);
     }
 

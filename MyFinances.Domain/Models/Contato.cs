@@ -1,0 +1,26 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+
+namespace MyFinances.Domain.Models;
+
+public class Contato
+{
+    [Key]
+    [Required]
+    [Column("ID")]
+    public Guid Id { get; set; }
+
+    [Column("TELEFONE_FIXO")]
+    public string TelefoneFixo { get; set; }
+    
+    [Column("CELULAR")]
+    public string Celular { get; set; }
+    
+    [Required]
+    public Guid UsuarioId { get; set; }
+    
+    [JsonIgnore]
+    public virtual Usuario Usuario { get; set; }
+    
+}
