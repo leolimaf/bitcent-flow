@@ -1,19 +1,19 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using MyFinances.Domain.Models;
 
-namespace MyFinances.Domain.DTOs.TransacaoFinanceira;
+namespace MyFinances.Application.DTOs.TransacaoFinanceira;
 
-public record CreateTransacaoDTO
+public record UpdateTransacaoDTO
 {
-    [Required, StringLength(80)] 
+    [Required, StringLength(80)]
     public string Descricao { get; init; }
     
-    [Required] 
+    [Required]
     public DateTime Data { get; init; }
     
-    [Required] 
+    [Required]
     public decimal Valor { get; init; }
     
-    [Required] 
+    [Required]
     public TipoTransacao Tipo { get; init; }
 }

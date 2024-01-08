@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using MyFinances.Application.DTOs.TransacaoFinanceira;
 using MyFinances.Application.Services.Interfaces;
-using MyFinances.Domain.DTOs.TransacaoFinanceira;
 using MyFinances.Domain.Exception;
 using Sieve.Models;
 

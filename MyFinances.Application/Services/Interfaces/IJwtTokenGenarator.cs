@@ -1,14 +1,14 @@
 ﻿using System.Security.Claims;
-using MyFinances.Application.Authentication.Common.Responses;
+using MyFinances.Application.DTOs.Usuario;
 using MyFinances.Domain.Models;
 
-namespace MyFinances.Application.Authentication;
+namespace MyFinances.Application.Services.Interfaces;
 
 public interface IJwtTokenGenarator
 {
-    LoginUsuarioResponse GerarToken(Usuario usuario);
+    ReadLoginUsuarioDTO GerarToken(Usuario usuario);
     string GerarAccessToken(IEnumerable<Claim> claims);
     string GerarRefreshToken();
     ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
-    LoginUsuarioResponse RetornarTokenAtualizado(string accessToken, string refreshToken);
+    ReadLoginUsuarioDTO RetornarTokenAtualizado(string accessToken, string refreshToken);
 }

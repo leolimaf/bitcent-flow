@@ -1,10 +1,8 @@
 using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
-using MyFinances.Application.Authentication.Commands.AtualizacaoToken;
-using MyFinances.Application.Authentication.Commands.Cadastro;
-using MyFinances.Application.Authentication.Common.Responses;
-using MyFinances.Application.Authentication.Queries.Login;
+using MyFinances.Application.DTOs.Token;
+using MyFinances.Application.DTOs.Usuario;
 using MyFinances.Tests.Fixtures;
 using MyFinances.Tests.Helpers.HttpHelper;
 using Xunit.Priority;
@@ -31,11 +29,11 @@ public class AutenticacaoControllerTest
     {
         // GIVEN
         var novoUsuario = DataFixture.ObterUsuarios(1, true).First();
-        var usuarioRequest = new CadastroCommand(novoUsuario.NomeCompleto, novoUsuario.Email, novoUsuario.SenhaNaoCriptografada);
+        var usuarioRequest = new CreateUsuarioDTO();
         
         // WHEN
         var requisicao = await _client.PostAsJsonAsync(HttpHelper.UrlsUsuario.Cadastrar, usuarioRequest);
-        var retorno = await requisicao.Content.ReadFromJsonAsync<RegistroUsuarioResponse>();
+        var retorno = await requisicao.Content.ReadFromJsonAsync<ReadUsuarioDTO>();
         
         // THEN
         requisicao.StatusCode.Should().Be(HttpStatusCode.Created);
@@ -52,11 +50,11 @@ public class AutenticacaoControllerTest
     {
         // GIVEN
         var usuario = DataFixture.ObterUsuarios(1).First();
-        var usuarioRequest = new LoginQuery(usuario.Email, usuario.SenhaNaoCriptografada);
+        var usuarioRequest = new LoginUsuarioDTO(usuario.Email, usuario.SenhaNaoCriptografada);
         
         // WHEN
         var requisicao = await _client.PostAsJsonAsync(HttpHelper.UrlsUsuario.Logar, usuarioRequest);
-        var retorno = await requisicao.Content.ReadFromJsonAsync<LoginUsuarioResponse>();
+        var retorno = await requisicao.Content.ReadFromJsonAsync<ReadLoginUsuarioDTO>();
         
         // THEN
         requisicao.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -77,11 +75,11 @@ public class AutenticacaoControllerTest
     public async Task AoAtualizarToken()
     {
         // GIVEN
-        var atualizacaoTokenRequest = new AtualizacaoTokenCommand(_factory.AccessToken, _factory.RefreshToken);
+        var atualizacaoTokenRequest = new TokenDTO(_factory.AccessToken, _factory.RefreshToken);
 
         // WHEN
         var requisicao = await _client.PostAsJsonAsync(HttpHelper.UrlsUsuario.AtualizarToken, atualizacaoTokenRequest);
-        var retorno = await requisicao.Content.ReadFromJsonAsync<LoginUsuarioResponse>();
+        var retorno = await requisicao.Content.ReadFromJsonAsync<ReadLoginUsuarioDTO>();
 
         // THEN
         requisicao.StatusCode.Should().Be(HttpStatusCode.OK);

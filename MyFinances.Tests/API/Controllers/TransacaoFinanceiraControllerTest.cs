@@ -2,7 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using AutoMapper;
 using FluentAssertions;
-using MyFinances.Domain.DTOs.TransacaoFinanceira;
+using MyFinances.Application.DTOs.TransacaoFinanceira;
 using MyFinances.Tests.Fixtures;
 using MyFinances.Tests.Helpers.HttpHelper;
 

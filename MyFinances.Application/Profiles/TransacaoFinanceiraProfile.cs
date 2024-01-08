@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using MyFinances.Domain.DTOs.TransacaoFinanceira;
+using MyFinances.Application.DTOs.TransacaoFinanceira;
 using MyFinances.Domain.Models;
 
 namespace MyFinances.Application.Profiles;

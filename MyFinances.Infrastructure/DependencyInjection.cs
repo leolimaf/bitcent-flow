@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MyFinances.Application.Authentication;
 using MyFinances.Application.Persistence.Authentication;
 using MyFinances.Application.Persistence.TransacaoFinanceira;
+using MyFinances.Application.Services.Interfaces;
 using MyFinances.Infrastructure.Authentication;
 using MyFinances.Infrastructure.Repositories;
 
