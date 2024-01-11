@@ -46,11 +46,11 @@ public class Usuario
     [Column("ADMINISTRADOR")] 
     public bool IsAdministrador { get; set; }
     
-    [Required]
+    [Required, Column("ENDERECO_ID")]
     public Guid EnderecoId { get; set; }
     
-    [Required]
-    public Guid ContatoId { get; set; }
+    [Required, Column("ID_CONTATO")]
+    public Guid IdContato { get; set; }
     
     public virtual Endereco Endereco { get; set; }
     

@@ -40,7 +40,7 @@ public class AutenticacaoControllerTest
         
         Assert.NotNull(retorno);
 
-        retorno.Nome.Should().Be(novoUsuario.NomeCompleto);
+        retorno.NomeCompleto.Should().Be(novoUsuario.NomeCompleto);
         retorno.Email.Should().Be(novoUsuario.Email);
     }
 

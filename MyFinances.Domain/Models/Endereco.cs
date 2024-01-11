@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace MyFinances.Domain.Models;
 
+[Table("ENDERECO")]
 public class Endereco
 {
     [Key]

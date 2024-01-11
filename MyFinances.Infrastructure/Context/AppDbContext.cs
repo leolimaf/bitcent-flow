@@ -28,7 +28,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Usuario>()
             .HasOne(usuario => usuario.Contato)
             .WithOne(contato => contato.Usuario)
-            .HasForeignKey<Contato>(usuario => usuario.UsuarioId)
+            .HasForeignKey<Contato>(usuario => usuario.IdUsuario)
             .IsRequired();
     }
 

@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace MyFinances.Domain.Models;
 
+[Table("CONTATO")]
 public class Contato
 {
     [Key]
@@ -17,8 +18,8 @@ public class Contato
     [Column("CELULAR")]
     public string Celular { get; set; }
     
-    [Required]
-    public Guid UsuarioId { get; set; }
+    [Required, Column("ID_USUARIO")]
+    public Guid IdUsuario { get; set; }
     
     [JsonIgnore]
     public virtual Usuario Usuario { get; set; }
