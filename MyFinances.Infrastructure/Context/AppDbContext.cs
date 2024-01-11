@@ -22,13 +22,13 @@ public class AppDbContext : DbContext
         
         modelBuilder.Entity<Usuario>()
             .HasOne(usuario => usuario.Endereco)
-            .WithMany(endereco => endereco.Usuarios)
-            .HasForeignKey(usuario => usuario.EnderecoId);
+            .WithOne(endereco => endereco.Usuario)
+            .HasForeignKey<Usuario>(usuario => usuario.IdEndereco);
 
         modelBuilder.Entity<Usuario>()
             .HasOne(usuario => usuario.Contato)
             .WithOne(contato => contato.Usuario)
-            .HasForeignKey<Contato>(usuario => usuario.IdUsuario)
+            .HasForeignKey<Usuario>(usuario => usuario.IdContato)
             .IsRequired();
     }
 

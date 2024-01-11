@@ -18,9 +18,6 @@ public class Contato
     [Column("CELULAR")]
     public string Celular { get; set; }
     
-    [Required, Column("ID_USUARIO")]
-    public Guid IdUsuario { get; set; }
-    
     [JsonIgnore]
     public virtual Usuario Usuario { get; set; }
     

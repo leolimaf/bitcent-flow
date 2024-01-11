@@ -26,7 +26,7 @@ public class Usuario
     [Column("EMAIL")]
     public string Email { get; set; }
 
-    [Required, DataType(DataType.Password), MaxLength(24)]
+    [Required, DataType(DataType.Password)]
     [Column("SENHA_HASH")]
     public string SenhaHash { get; set; }
     
@@ -46,8 +46,8 @@ public class Usuario
     [Column("ADMINISTRADOR")] 
     public bool IsAdministrador { get; set; }
     
-    [Required, Column("ENDERECO_ID")]
-    public Guid EnderecoId { get; set; }
+    [Required, Column("ID_ENDERECO")]
+    public Guid IdEndereco { get; set; }
     
     [Required, Column("ID_CONTATO")]
     public Guid IdContato { get; set; }

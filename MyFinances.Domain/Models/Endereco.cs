@@ -34,5 +34,5 @@ public class Endereco
     public string CEP { get; set; }
     
     [JsonIgnore]
-    public virtual List<Usuario> Usuarios { get; set; }
+    public virtual Usuario Usuario { get; set; }
 }
