@@ -7,7 +7,7 @@ public record ReadUsuarioDTO
 {
     public Guid Id { get; init; }
     public string NomeCompleto { get; init; }
-    public int CPF { get; init; }
+    public string CPF { get; init; }
     public string Email { get; init; }
     public DateTime DataDeNascimento { get; init; }
     public EnderecoDTO Endereco { get; init; }

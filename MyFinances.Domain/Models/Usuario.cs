@@ -20,7 +20,7 @@ public class Usuario
     
     [Required] 
     [Column("CPF")]
-    public int CPF { get; set; }
+    public string CPF { get; set; }
     
     [Required, DataType(DataType.EmailAddress), MaxLength(120)] 
     [Column("EMAIL")]

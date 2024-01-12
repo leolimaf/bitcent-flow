@@ -6,7 +6,7 @@ namespace MyFinances.Application.DTOs.Usuario;
 public record CreateUsuarioDTO
 {
     public string NomeCompleto { get; init; }
-    public int CPF { get; init; }
+    public string CPF { get; init; }
     public string Email { get; init; }
     public string Senha { get; init; }
     public string ConfirmacaoDeSenha { get; init; }
