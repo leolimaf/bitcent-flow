@@ -59,5 +59,5 @@ public class Usuario
     public virtual List<TransacaoFinanceira> TransacaoFinanceiras { get; set; }
     
     [NotMapped]
-    public string SenhaNaoCriptografada { get; set; }
+    public string Senha { get; set; }
 }
