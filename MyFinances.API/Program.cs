@@ -29,13 +29,6 @@ builder.Services.AddCors();
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddApplication().AddInfrastructure(builder.Configuration);
-builder.Services.AddAuthorization(opts =>
-{
-    opts.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
-        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-        .RequireAuthenticatedUser()
-        .Build());
-});
 builder.Services.AddApiVersioning(opts =>
 {
     opts.DefaultApiVersion = new ApiVersion(1, 0);
