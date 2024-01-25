@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿using Mapster;
 using MyFinances.Application.DTOs.Token;
 using MyFinances.Application.DTOs.Usuario;
 using MyFinances.Application.Persistence.Authentication;
@@ -10,14 +10,11 @@ namespace MyFinances.Application.Services;
 
 public class AutenticacaoService : IAutenticacaoService
 {
-    
-    private readonly IMapper _mapper;
     private readonly IUsuarioRepository _usuarioRepository;
     private readonly IJwtTokenGenarator _jwtTokenGenarator;
 
-    public AutenticacaoService(IMapper mapper, IUsuarioRepository usuarioRepository, IJwtTokenGenarator jwtTokenGenarator)
+    public AutenticacaoService(IUsuarioRepository usuarioRepository, IJwtTokenGenarator jwtTokenGenarator)
     {
-        _mapper = mapper;
         _usuarioRepository = usuarioRepository;
         _jwtTokenGenarator = jwtTokenGenarator;
     }
@@ -27,14 +24,14 @@ public class AutenticacaoService : IAutenticacaoService
         if (await _usuarioRepository.IsCadastradoAsync(usuarioDto.Email))
             throw new MyFinancesException(nameof(usuarioDto.Email), MyFinancesExceptionType.CONFLICT, "E-mail já cadastrado.");
 
-        Usuario usuario = _mapper.Map<Usuario>(usuarioDto);
+        Usuario usuario = usuarioDto.Adapt<Usuario>();
         
         usuario.SenhaHash = BCrypt.Net.BCrypt.HashPassword(usuarioDto.Senha);
         
         await _usuarioRepository.CadastrarAsync(usuario);
         await _usuarioRepository.SalvarAlteracoesAsync();
 
-        return _mapper.Map<ReadUsuarioDTO>(usuario);
+        return usuario.Adapt<ReadUsuarioDTO>();
     }
 
     public async Task<ReadUsuarioDTO> ObterPorId(string id)
@@ -44,7 +41,7 @@ public class AutenticacaoService : IAutenticacaoService
         if (usuario is null)
             throw new MyFinancesException(nameof(id), MyFinancesExceptionType.NOT_FOUND, "Usuário não encontrado.");
         
-        return _mapper.Map<ReadUsuarioDTO>(usuario);
+        return usuario.Adapt<ReadUsuarioDTO>();
     }
 
     public async Task<ReadLoginUsuarioDTO> Logar(LoginUsuarioDTO usuarioDto)

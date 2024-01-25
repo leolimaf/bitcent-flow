@@ -56,7 +56,6 @@ builder.Services.AddAuthorization(opts =>
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddApplication().AddInfrastructure(builder.Configuration);
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddApiVersioning(opts =>
 {
     opts.DefaultApiVersion = new ApiVersion(1, 0);

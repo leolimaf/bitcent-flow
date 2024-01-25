@@ -1,6 +1,5 @@
 using System.Net;
 using System.Net.Http.Json;
-using AutoMapper;
 using FluentAssertions;
 using MyFinances.Application.DTOs.TransacaoFinanceira;
 using MyFinances.Tests.Fixtures;
