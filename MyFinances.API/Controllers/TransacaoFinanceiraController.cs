@@ -23,7 +23,7 @@ public class TransacaoFinanceiraController : ControllerBase
         _transacaoFinanceiraService = transacaoFinanceiraService;
     }
 
-    /// <summary> Adiciona uma transação financeira</summary>
+    /// <summary>Adiciona uma transação financeira</summary>
     /// <remarks>Realiza a entrada das receitas e despesas do usuário autenticado.</remarks>
     /// <response code="201">Requisição realizada com sucesso</response>
     [HttpPost, Route("adicionar")]
