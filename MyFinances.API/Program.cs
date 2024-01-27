@@ -1,16 +1,10 @@
 using System.Diagnostics;
 using System.Reflection;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MyFinances.Application;
 using MyFinances.Infrastructure;
 using MyFinances.Infrastructure.Context;
-using Sieve.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -24,22 +18,9 @@ builder.Services.AddDbContext<AppDbContext>(opts =>
     );
 });
 
-builder.Services.AddCors();
-
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddApplication().AddInfrastructure(builder.Configuration);
-builder.Services.AddApiVersioning(opts =>
-{
-    opts.DefaultApiVersion = new ApiVersion(1, 0);
-    opts.ReportApiVersions = true;
-    opts.AssumeDefaultVersionWhenUnspecified = true;
-});
-builder.Services.AddVersionedApiExplorer(opts =>
-{
-    opts.GroupNameFormat = "'v'VVV";
-    opts.SubstituteApiVersionInUrl = true;
-});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(opts =>
@@ -104,7 +85,6 @@ builder.Services.AddSwaggerGen(opts =>
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     opts.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
-builder.Services.AddSingleton<SieveProcessor>();
 
 var app = builder.Build();
 

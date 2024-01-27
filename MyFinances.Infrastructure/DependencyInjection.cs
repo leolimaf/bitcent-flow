@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -17,14 +18,18 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, ConfigurationManager configuration)
     {
+        services.AddCors();
         services.AddAuth(configuration);
+        
         services.AddScoped<ITransacaoFinanceiraRepository, TransacaoFinanceiraRepository>();
         services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+
+        services.AddVersioning();
         
         return services;
     }
 
-    public static IServiceCollection AddAuth(this IServiceCollection services, ConfigurationManager configuration)
+    private static IServiceCollection AddAuth(this IServiceCollection services, IConfiguration configuration)
     {
         var jwtSettings = new JwtSettings();
         configuration.Bind(JwtSettings.SectionName, jwtSettings);
@@ -58,6 +63,23 @@ public static class DependencyInjection
                 .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
                 .RequireAuthenticatedUser()
                 .Build());
+        });
+
+        return services;
+    }
+
+    private static IServiceCollection AddVersioning(this IServiceCollection services)
+    {
+        services.AddApiVersioning(opts =>
+        {
+            opts.DefaultApiVersion = new ApiVersion(1, 0);
+            opts.ReportApiVersions = true;
+            opts.AssumeDefaultVersionWhenUnspecified = true;
+        });
+        services.AddVersionedApiExplorer(opts =>
+        {
+            opts.GroupNameFormat = "'v'VVV";
+            opts.SubstituteApiVersionInUrl = true;
         });
 
         return services;
