@@ -1,12 +1,11 @@
 ﻿using System.Security.Claims;
-using AutoMapper;
 using FluentResults;
+using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
-using MyFinances.Application.Persistence;
+using MyFinances.Application.DTOs.TransacaoFinanceira;
 using MyFinances.Application.Persistence.TransacaoFinanceira;
 using MyFinances.Application.Services.Interfaces;
-using MyFinances.Domain.DTOs.TransacaoFinanceira;
 using MyFinances.Domain.Exception;
 using MyFinances.Domain.Models;
 using Sieve.Models;
@@ -16,16 +15,14 @@ namespace MyFinances.Application.Services;
 
 public class TransacaoFinanceiraService : ITransacaoFinanceiraService
 {
-    private readonly IMapper _mapper;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly SieveProcessor _sieveProcessor;
     private readonly Guid _idUsuarioAutenticado;
     private readonly ITransacaoFinanceiraRepository _transacaoRepository;
 
 
-    public TransacaoFinanceiraService(ITransacaoFinanceiraRepository transacaoRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor, SieveProcessor sieveProcessor)
+    public TransacaoFinanceiraService(ITransacaoFinanceiraRepository transacaoRepository, IHttpContextAccessor httpContextAccessor, SieveProcessor sieveProcessor)
     {
-        _mapper = mapper;
         _httpContextAccessor = httpContextAccessor;
         _sieveProcessor = sieveProcessor;
         _transacaoRepository = transacaoRepository;
@@ -34,11 +31,11 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
 
     public ReadTransacaoDTO AdicionarTransacao(CreateTransacaoDTO transacaoDto)
     {
-        TransacaoFinanceira transacao = _mapper.Map<TransacaoFinanceira>(transacaoDto);
+        TransacaoFinanceira transacao = transacaoDto.Adapt<TransacaoFinanceira>();
         transacao.IdUsuario = _idUsuarioAutenticado;
         _transacaoRepository.Adicionar(transacao);
         _transacaoRepository.SalvarAlteracoes();
-        return _mapper.Map<ReadTransacaoDTO>(transacao);
+        return transacao.Adapt<ReadTransacaoDTO>();
     }
 
     public ReadTransacaoDTO ObterTransacaoPorId(Guid id)
@@ -48,14 +45,14 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
         if (transacao is null)
             throw new MyFinancesException(nameof(id), MyFinancesExceptionType.NOT_FOUND, "Transação financeira não encontrada.");
             
-        return _mapper.Map<ReadTransacaoDTO>(transacao);
+        return transacao.Adapt<ReadTransacaoDTO>();
     }
 
     public List<ReadTransacaoDTO> ListarTransacoes(SieveModel model)
     {
         var transacoes = _transacaoRepository.Listar();
 
-        var readTransacaoDto = _mapper.Map<List<ReadTransacaoDTO>>(transacoes).AsQueryable();
+        var readTransacaoDto = transacoes.Adapt<List<ReadTransacaoDTO>>().AsQueryable();
         
         readTransacaoDto = _sieveProcessor.Apply(model, readTransacaoDto);
         
@@ -71,7 +68,7 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
         
         transacao.IdUsuario = _idUsuarioAutenticado;
 
-        _mapper.Map(transacaoDto, transacao);
+        transacao.Adapt(transacaoDto);
         _transacaoRepository.SalvarAlteracoes();
         return Result.Ok();
     }

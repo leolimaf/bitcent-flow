@@ -26,37 +26,9 @@ builder.Services.AddDbContext<AppDbContext>(opts =>
 
 builder.Services.AddCors();
 
-builder.Services.AddAuthentication(opts =>
-{
-    opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    opts.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    opts.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(opts =>
-{
-    opts.TokenValidationParameters = new TokenValidationParameters
-    {
-        // ValidIssuer = config["JwtSettings:Issuer"],
-        // ValidAudience = config["JwtSettings:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JwtSettings:Secret"]!)),
-        ValidateIssuer = false,
-        ValidateAudience = false,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ClockSkew = TimeSpan.Zero
-    };
-});
-builder.Services.AddAuthorization(opts =>
-{
-    opts.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
-        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-        .RequireAuthenticatedUser()
-        .Build());
-});
-
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddApplication().AddInfrastructure(builder.Configuration);
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddApiVersioning(opts =>
 {
     opts.DefaultApiVersion = new ApiVersion(1, 0);

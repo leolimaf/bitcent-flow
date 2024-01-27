@@ -1,6 +1,6 @@
 ﻿using FluentResults;
 using Microsoft.AspNetCore.JsonPatch;
-using MyFinances.Domain.DTOs.TransacaoFinanceira;
+using MyFinances.Application.DTOs.TransacaoFinanceira;
 using Sieve.Models;
 
 namespace MyFinances.Application.Services.Interfaces;

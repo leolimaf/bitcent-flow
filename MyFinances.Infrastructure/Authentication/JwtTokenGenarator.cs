@@ -4,8 +4,8 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using MyFinances.Application.Authentication;
-using MyFinances.Application.Authentication.Common.Responses;
+using MyFinances.Application.DTOs.Usuario;
+using MyFinances.Application.Services.Interfaces;
 using MyFinances.Domain.Exception;
 using MyFinances.Domain.Models;
 using MyFinances.Infrastructure.Context;
@@ -23,7 +23,7 @@ public class JwtTokenGenarator : IJwtTokenGenarator
         _context = context;
     }
 
-    public LoginUsuarioResponse GerarToken(Usuario usuario)
+    public ReadLoginUsuarioDTO GerarToken(Usuario usuario)
     {
         Claim[] claims = {
             new(JwtRegisteredClaimNames.UniqueName, usuario.Email),
@@ -43,7 +43,7 @@ public class JwtTokenGenarator : IJwtTokenGenarator
         var dataCriacao = DateTime.Now;
         var dataExpiracao = dataCriacao.AddMinutes(_jwtOptions.Minutes);
         
-        return new LoginUsuarioResponse(
+        return new ReadLoginUsuarioDTO(
             true, 
             dataCriacao.ToString("yyyy-MM-dd HH:mm:ss"), 
             dataExpiracao.ToString("yyyy-MM-dd HH:mm:ss"),
@@ -94,12 +94,12 @@ public class JwtTokenGenarator : IJwtTokenGenarator
         return principal;
     }
 
-    public LoginUsuarioResponse RetornarTokenAtualizado(string accessToken, string refreshToken)
+    public ReadLoginUsuarioDTO RetornarTokenAtualizado(string accessToken, string refreshToken)
     {
         var dataCriacao = DateTime.Now;
         var dataExpiracao = dataCriacao.AddMinutes(_jwtOptions.Minutes);
         
-        return new LoginUsuarioResponse(
+        return new ReadLoginUsuarioDTO(
             true, 
             dataCriacao.ToString("yyyy-MM-dd HH:mm:ss"), 
             dataExpiracao.ToString("yyyy-MM-dd HH:mm:ss"),

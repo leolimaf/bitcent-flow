@@ -1,6 +1,6 @@
-﻿namespace MyFinances.Application.Authentication.Common.Responses;
+﻿namespace MyFinances.Application.DTOs.Usuario;
 
-public record LoginUsuarioResponse(
+public record ReadLoginUsuarioDTO(
     bool Authenticated,
     string Created,
     string Expiration,

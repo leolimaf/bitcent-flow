@@ -1,13 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MyFinances.Application.Authentication.Commands.AtualizacaoToken;
-using MyFinances.Application.Authentication.Commands.Cadastro;
-using MyFinances.Application.Authentication.Commands.Logoff;
-using MyFinances.Application.Authentication.Common.Responses;
-using MyFinances.Application.Authentication.Queries.Identificacao;
-using MyFinances.Application.Authentication.Queries.Login;
+using MyFinances.Application.DTOs.Token;
+using MyFinances.Application.DTOs.Usuario;
+using MyFinances.Application.Services.Interfaces;
 using MyFinances.Domain.Exception;
 
 namespace MyFinances.API.Controllers;
@@ -19,20 +15,21 @@ namespace MyFinances.API.Controllers;
 [Produces("application/json")]
 public class AutenticacaoController : ControllerBase
 {
-    private readonly ISender _mediator;
 
-    public AutenticacaoController(ISender mediator)
+    private readonly IAutenticacaoService _autenticacaoService;
+
+    public AutenticacaoController(IAutenticacaoService autenticacaoService)
     {
-        _mediator = mediator;
+        _autenticacaoService = autenticacaoService;
     }
 
     [HttpPost, Route("cadastrar"), AllowAnonymous]
-    public async Task<IActionResult> Cadastrar([FromBody, Required] CadastroCommand usuarioRequest)
+    public async Task<IActionResult> Cadastrar([FromBody, Required] CreateUsuarioDTO usuarioRequest)
     {
         try
         {
-            RegistroUsuarioResponse registroUsuarioResponse = await _mediator.Send(usuarioRequest);
-            return CreatedAtAction(nameof(ObterPorId), new {version = HttpContext.GetRequestedApiVersion()!.ToString(),registroUsuarioResponse.Id}, registroUsuarioResponse);
+            ReadUsuarioDTO readUsuarioDto = await _autenticacaoService.Cadastrar(usuarioRequest);
+            return CreatedAtAction(nameof(ObterPorId), new {version = HttpContext.GetRequestedApiVersion()!.ToString(),readUsuarioDto.Id}, readUsuarioDto);
         }
         catch (MyFinancesException e)
         {
@@ -43,11 +40,11 @@ public class AutenticacaoController : ControllerBase
     [Authorize(Roles = "Administrator")]
     [HttpGet, Route("obter-por-id")]
     [ApiExplorerSettings(IgnoreApi = true)]
-    public async Task<IActionResult> ObterPorId([Required] IdentificacaoQuery id)
+    public async Task<IActionResult> ObterPorId([Required, FromQuery] string id)
     {
         try
         {
-            return Ok(await _mediator.Send(id));
+            return Ok(await _autenticacaoService.ObterPorId(id));
         }
         catch (MyFinancesException e)
         {
@@ -56,11 +53,11 @@ public class AutenticacaoController : ControllerBase
     }
 
     [HttpPost, Route("logar"), AllowAnonymous]
-    public async Task<IActionResult> Logar([FromBody, Required] LoginQuery usuarioDto)
+    public async Task<IActionResult> Logar([FromBody, Required] LoginUsuarioDTO usuarioDto)
     {
         try
         {
-            return Ok(await _mediator.Send(usuarioDto));
+            return Ok(await _autenticacaoService.Logar(usuarioDto));
         }
         catch (MyFinancesException e)
         {
@@ -69,11 +66,11 @@ public class AutenticacaoController : ControllerBase
     }
     
     [HttpPost, Route("atualizar-token")]
-    public async Task<IActionResult> AtualizarToken([FromBody, Required] AtualizacaoTokenCommand atualizacaoTokenCommand)
+    public async Task<IActionResult> AtualizarToken([FromBody, Required] TokenDTO tokenDto)
     {
         try
         {
-            return Ok(await _mediator.Send(atualizacaoTokenCommand));
+            return Ok(await _autenticacaoService.AtualizarToken(tokenDto));
         }
         catch (MyFinancesException e)
         {
@@ -86,7 +83,7 @@ public class AutenticacaoController : ControllerBase
     {
         try
         {
-            await _mediator.Send(new LogoffCommand(User.Identity.Name));
+            await _autenticacaoService.Deslogar(User.Identity.Name);
             return NoContent();
         }
         catch (MyFinancesException e)

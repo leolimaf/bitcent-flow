@@ -1,7 +1,7 @@
 ﻿using MyFinances.Domain.Models;
 using Sieve.Attributes;
 
-namespace MyFinances.Domain.DTOs.TransacaoFinanceira;
+namespace MyFinances.Application.DTOs.TransacaoFinanceira;
 
 public record ReadTransacaoDTO
 {
