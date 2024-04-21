@@ -13,7 +13,7 @@ public class TransacaoFinanceira
     
     [Required]
     [Column("DESCRICAO")]
-    public string Descricao { get; set; }
+    public string? Descricao { get; set; }
     
     [Required]
     [Column("DATA")]
