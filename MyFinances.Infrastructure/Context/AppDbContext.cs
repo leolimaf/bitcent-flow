@@ -19,11 +19,6 @@ public class AppDbContext : DbContext
             .HasOne(transacao => transacao.Usuario)
             .WithMany(usuario => usuario.TransacaoFinanceiras)
             .HasForeignKey(transacao => transacao.IdUsuario);
-        
-        modelBuilder.Entity<Usuario>()
-            .HasOne(usuario => usuario.Endereco)
-            .WithOne(endereco => endereco.Usuario)
-            .HasForeignKey<Usuario>(usuario => usuario.IdEndereco);
 
         modelBuilder.Entity<Usuario>()
             .HasOne(usuario => usuario.Contato)
@@ -33,5 +28,6 @@ public class AppDbContext : DbContext
     }
 
     public DbSet<TransacaoFinanceira> TransacoesFinanceiras { get; set; }
-    public DbSet<Usuario> Usuarios { get; set; }
+    public DbSet<Contato> Contatos { get; set; }
+    public DbSet<Usuario?> Usuarios { get; set; }
 }

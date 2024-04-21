@@ -1,5 +1,4 @@
-﻿using MyFinances.Domain.Models;
-using Sieve.Attributes;
+﻿using Sieve.Attributes;
 
 namespace MyFinances.Application.DTOs.TransacaoFinanceira;
 
@@ -17,7 +16,7 @@ public record ReadTransacaoDTO
     public decimal Valor { get; init; }
     
     [Sieve(CanFilter = true)]
-    public TipoTransacao Tipo { get; init; }
+    public TipoTransacaoDTO Tipo { get; init; }
     
     public Guid IdUsuario { get; init; }
 }

@@ -14,7 +14,7 @@ public class UsuarioRepository : IUsuarioRepository
         _context = context;
     }
 
-    public async Task CadastrarAsync(Usuario usuario)
+    public async Task CadastrarAsync(Usuario? usuario)
     {
         await _context.Usuarios.AddAsync(usuario);
     }
@@ -34,8 +34,8 @@ public class UsuarioRepository : IUsuarioRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<Usuario> ObterPorIdAsync(string id)
+    public async Task<Usuario?> ObterPorIdAsync(string id)
     {
-        return await _context.Usuarios.SingleOrDefaultAsync(u => u.Id.ToString() == id);
+        return await _context.Usuarios.FindAsync(id);
     }
 }

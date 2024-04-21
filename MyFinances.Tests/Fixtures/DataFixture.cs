@@ -20,8 +20,8 @@ public class DataFixture
         
         return new Faker<Usuario>()
             .RuleFor(u => u.Id, Guid.NewGuid)
-            .RuleFor(u => u.NomeCompleto, faker => faker.Person.FullName)
-            .RuleFor(u => u.CPF, faker => faker.Person.Cpf(false))
+            .RuleFor(u => u.Nome, faker => faker.Person.FirstName)
+            .RuleFor(u => u.Sobrenome, faker => faker.Person.LastName)
             .RuleFor(u => u.Email, faker => faker.Person.Email)
             .RuleFor(u => u.Senha, faker => faker.Internet.Password())
             .RuleFor(u => u.SenhaHash, (faker, u) => BCrypt.Net.BCrypt.HashPassword(u.Senha))
@@ -30,24 +30,10 @@ public class DataFixture
             .RuleFor(u => u.Token, () => null)
             .RuleFor(u => u.ValidadeToken, () => null)
             .RuleFor(u => u.IsAdministrador, () => false)
-            .RuleFor(u => u.IdEndereco, Guid.NewGuid)
             .RuleFor(u => u.IdContato, Guid.NewGuid)
-            .RuleFor(u => u.Endereco, (faker, u) => ObterEnderecoFalso(u.IdEndereco))
             .RuleFor(u => u.Contato, (faker, u) => ObterContatoFalso(u.IdContato))
             .UseSeed(seed);
             
-    }
-    private static Faker<Endereco> ObterEnderecoFalso(Guid idEndereco)
-    {
-        return new Faker<Endereco>()
-            .RuleFor(u => u.Id, idEndereco)
-            .RuleFor(u => u.Rua, faker => faker.Address.StreetName())
-            .RuleFor(u => u.Numero, faker => faker.Address.BuildingNumber())
-            .RuleFor(u => u.Complemento, faker => faker.Address.Random.Word())
-            .RuleFor(u => u.Bairro, faker => faker.Address.Random.Word())
-            .RuleFor(u => u.Cidade, faker => faker.Address.City())
-            .RuleFor(u => u.Estado, faker => faker.Address.State())
-            .RuleFor(u => u.CEP, faker => faker.Address.ZipCode("#####-###"));
     }
     private static Faker<Contato> ObterContatoFalso(Guid IdContato)
     {

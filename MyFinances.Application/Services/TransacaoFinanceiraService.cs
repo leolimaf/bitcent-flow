@@ -68,7 +68,7 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
         
         transacao.IdUsuario = _idUsuarioAutenticado;
 
-        transacao.Adapt(transacaoDto);
+        transacaoDto.Adapt(transacao);
         _transacaoRepository.SalvarAlteracoes();
         return Result.Ok();
     }

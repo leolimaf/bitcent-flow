@@ -13,7 +13,7 @@ public class Contato
     public Guid Id { get; set; }
 
     [Column("TELEFONE_FIXO")]
-    public string TelefoneFixo { get; set; }
+    public string? TelefoneFixo { get; set; }
     
     [Column("CELULAR")]
     public string Celular { get; set; }

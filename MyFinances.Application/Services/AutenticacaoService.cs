@@ -24,7 +24,7 @@ public class AutenticacaoService : IAutenticacaoService
         if (await _usuarioRepository.IsCadastradoAsync(usuarioDto.Email))
             throw new MyFinancesException(nameof(usuarioDto.Email), MyFinancesExceptionType.CONFLICT, "E-mail já cadastrado.");
 
-        Usuario usuario = usuarioDto.Adapt<Usuario>();
+        Usuario? usuario = usuarioDto.Adapt<Usuario>();
         
         usuario.SenhaHash = BCrypt.Net.BCrypt.HashPassword(usuarioDto.Senha);
         
