@@ -2,12 +2,12 @@
 using BitcentFlow.Application.DTOs.TransacaoFinanceira;
 using BitcentFlow.Application.Persistence.TransacaoFinanceira;
 using BitcentFlow.Application.Services.Interfaces;
-using FluentResults;
 using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using BitcentFlow.Domain.Exception;
 using BitcentFlow.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 using Sieve.Models;
 using Sieve.Services;
 
@@ -29,18 +29,18 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
         _idUsuarioAutenticado = ObterIdDoUsuarioAutenticado();
     }
 
-    public ReadTransacaoDTO AdicionarTransacao(CreateTransacaoDTO transacaoDto)
+    public async Task<ReadTransacaoDTO> AdicionarTransacao(CreateTransacaoDTO transacaoDto)
     {
         TransacaoFinanceira transacao = transacaoDto.Adapt<TransacaoFinanceira>();
         transacao.IdUsuario = _idUsuarioAutenticado;
-        _transacaoRepository.Adicionar(transacao);
-        _transacaoRepository.SalvarAlteracoes();
+        await _transacaoRepository.AdicionarAsync(transacao);
+        await _transacaoRepository.SalvarAlteracoesAsync();
         return transacao.Adapt<ReadTransacaoDTO>();
     }
 
-    public ReadTransacaoDTO ObterTransacaoPorId(Guid id)
+    public async Task<ReadTransacaoDTO> ObterTransacaoPorId(Guid id)
     {
-        var transacao = _transacaoRepository.ObterPorId(id);
+        var transacao = await _transacaoRepository.ObterPorIdAsync(id);
 
         if (transacao is null)
             throw new BitcentFlowException(nameof(id), BitcentFlowExceptionType.NOT_FOUND, "Transação financeira não encontrada.");
@@ -48,9 +48,9 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
         return transacao.Adapt<ReadTransacaoDTO>();
     }
 
-    public List<ReadTransacaoDTO> ListarTransacoes(SieveModel model)
+    public async Task<List<ReadTransacaoDTO>> ListarTransacoes(SieveModel model)
     {
-        var transacoes = _transacaoRepository.Listar();
+        var transacoes = await _transacaoRepository.ListarAsync();
 
         var readTransacaoDto = transacoes.Adapt<List<ReadTransacaoDTO>>().AsQueryable();
         
@@ -59,9 +59,9 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
         return readTransacaoDto.ToList();
     }
 
-    public Result AtualizarTransacao(Guid id, UpdateTransacaoDTO transacaoDto)
+    public async Task<int> AtualizarTransacao(Guid id, UpdateTransacaoDTO transacaoDto)
     {
-        var transacao = _transacaoRepository.ObterPorId(id);
+        var transacao = await _transacaoRepository.ObterPorIdAsync(id);
         
         if (transacao is null)
             throw new BitcentFlowException(nameof(id), BitcentFlowExceptionType.NOT_FOUND, "Transação financeira não encontrada.");
@@ -69,13 +69,17 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
         transacao.IdUsuario = _idUsuarioAutenticado;
 
         transacaoDto.Adapt(transacao);
-        _transacaoRepository.SalvarAlteracoes();
-        return Result.Ok();
+        var result = await _transacaoRepository.SalvarAlteracoesAsync();
+
+        if(result < 1)
+            throw new BitcentFlowException(nameof(id), BitcentFlowExceptionType.CONFLICT, "Falha ao atualizar transação.");
+        
+        return result;
     }
 
-    public Result AtualizarTransacaoParcialmente(Guid id, JsonPatchDocument transacaoDto)
+    public async Task<int> AtualizarTransacaoParcialmente(Guid id, JsonPatchDocument transacaoDto)
     {
-        var transacao = _transacaoRepository.ObterPorId(id);
+        var transacao = await _transacaoRepository.ObterPorIdAsync(id);
         
         var idUsuario = _idUsuarioAutenticado;
         
@@ -85,13 +89,17 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
         transacao.IdUsuario = idUsuario;
         
         transacaoDto.ApplyTo(transacao);
-        _transacaoRepository.SalvarAlteracoes();
-        return Result.Ok();
+       var result = await _transacaoRepository.SalvarAlteracoesAsync();
+       
+       if(result < 1)
+           throw new BitcentFlowException(nameof(id), BitcentFlowExceptionType.CONFLICT, "Falha ao atualizar transação.");
+       
+        return result;
     }
 
-    public Result RemoverTransacao(Guid id)
+    public async Task<int> RemoverTransacao(Guid id)
     {
-        var transacao = _transacaoRepository.ObterPorId(id);
+        var transacao = await _transacaoRepository.ObterPorIdAsync(id);
 
         if (transacao is null)
             throw new BitcentFlowException(nameof(id), BitcentFlowExceptionType.NOT_FOUND, "Transação financeira não encontrada.");
@@ -99,8 +107,7 @@ public class TransacaoFinanceiraService : ITransacaoFinanceiraService
         transacao.IdUsuario = _idUsuarioAutenticado;
 
         _transacaoRepository.Remover(transacao);
-        _transacaoRepository.SalvarAlteracoes();
-        return Result.Ok();
+        return await _transacaoRepository.SalvarAlteracoesAsync();
     }
     
     private Guid ObterIdDoUsuarioAutenticado()

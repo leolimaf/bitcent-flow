@@ -1,43 +1,35 @@
-﻿using BitcentFlow.Application.Persistence;
-using BitcentFlow.Application.Persistence.TransacaoFinanceira;
+﻿using BitcentFlow.Application.Persistence.TransacaoFinanceira;
 using BitcentFlow.Domain.Models;
 using BitcentFlow.Infrastructure.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace BitcentFlow.Infrastructure.Repositories;
 
-public class TransacaoFinanceiraRepository : ITransacaoFinanceiraRepository
+public class TransacaoFinanceiraRepository(AppDbContext context) : ITransacaoFinanceiraRepository
 {
-    private readonly AppDbContext _context;
-
-    public TransacaoFinanceiraRepository(AppDbContext context)
+    public async Task AdicionarAsync(TransacaoFinanceira transacao)
     {
-        _context = context;
+        await context.AddAsync(transacao);
     }
 
-    public void Adicionar(TransacaoFinanceira transacao)
+    public async Task<TransacaoFinanceira?> ObterPorIdAsync(Guid id)
     {
-        _context.Add(transacao);
-        _context.SaveChanges();
+        return await context.TransacoesFinanceiras.FindAsync(id)!;
     }
 
-    public TransacaoFinanceira ObterPorId(Guid id)
+    public async Task<List<TransacaoFinanceira>> ListarAsync()
     {
-        return _context.TransacoesFinanceiras.Find(id)!;
-    }
-
-    public List<TransacaoFinanceira> Listar()
-    {
-        return _context.TransacoesFinanceiras.ToList();
-    }
+        return await context.TransacoesFinanceiras.ToListAsync();
+    } 
 
     public void Remover(TransacaoFinanceira transacao)
     {
-        _context.TransacoesFinanceiras.Remove(transacao);
-        _context.SaveChanges();
+        context.TransacoesFinanceiras.Remove(transacao);
+        context.SaveChanges();
     }
 
-    public void SalvarAlteracoes()
+    public async Task<int> SalvarAlteracoesAsync()
     {
-        _context.SaveChanges();
+        return await context.SaveChangesAsync();
     }
 }

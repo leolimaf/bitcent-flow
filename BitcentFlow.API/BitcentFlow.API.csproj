@@ -6,10 +6,10 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
       <UserSecretsId>6d8f5c26-2c42-456d-ad01-76410b417380</UserSecretsId>
+      <LangVersion>12</LangVersion>
   </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentResults" Version="3.15.2" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.11" />
         <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="7.0.13" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.13" />

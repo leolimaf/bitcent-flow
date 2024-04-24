@@ -14,26 +14,19 @@ namespace BitcentFlow.API.Controllers;
 [ApiVersion("1.0")]
 [Route("v{version:apiVersion}/transacoes-financeiras")]
 [Produces("application/json")]
-public class TransacaoFinanceiraController : ControllerBase
+public class TransacaoFinanceiraController(ITransacaoFinanceiraService transacaoFinanceiraService) : ControllerBase
 {
-    private readonly ITransacaoFinanceiraService _transacaoFinanceiraService;
-
-    public TransacaoFinanceiraController(ITransacaoFinanceiraService transacaoFinanceiraService)
-    {
-        _transacaoFinanceiraService = transacaoFinanceiraService;
-    }
-
     /// <summary> Adiciona uma transação financeira</summary>
     /// <remarks>Realiza a entrada das receitas e despesas do usuário autenticado.</remarks>
     /// <response code="201">Requisição realizada com sucesso</response>
     [HttpPost, Route("adicionar")]
     [ProducesResponseType(201, Type = typeof(ReadTransacaoDTO))]
     [ProducesResponseType(400, Type = typeof(ErroDTO))]
-    public IActionResult AdicionarTransacaoFinanceira([FromBody, Required] CreateTransacaoDTO transacaoDto)
+    public async Task<IActionResult> AdicionarTransacaoFinanceira([FromBody, Required] CreateTransacaoDTO transacaoDto)
     {
         try
         {
-            ReadTransacaoDTO readTransacaoDto = _transacaoFinanceiraService.AdicionarTransacao(transacaoDto);
+            ReadTransacaoDTO readTransacaoDto = await transacaoFinanceiraService.AdicionarTransacao(transacaoDto);
             return CreatedAtAction(nameof(ObterTransacaoPorId), new {version = HttpContext.GetRequestedApiVersion()!.ToString(), readTransacaoDto.Id} , readTransacaoDto);
         }
         catch (BitcentFlowException e)
@@ -50,11 +43,11 @@ public class TransacaoFinanceiraController : ControllerBase
     [HttpGet, Route("obter-por-id")]
     [ProducesResponseType(200, Type = typeof(ReadTransacaoDTO))]
     [ProducesResponseType(404, Type = typeof(ErroDTO))]
-    public IActionResult ObterTransacaoPorId([Required] Guid id)
+    public async Task<IActionResult> ObterTransacaoPorId([Required] Guid id)
     {
         try
         {
-            ReadTransacaoDTO readTransacaoDto = _transacaoFinanceiraService.ObterTransacaoPorId(id);
+            ReadTransacaoDTO readTransacaoDto = await transacaoFinanceiraService.ObterTransacaoPorId(id);
             return Ok(readTransacaoDto);
         }
         catch (BitcentFlowException e)
@@ -68,11 +61,11 @@ public class TransacaoFinanceiraController : ControllerBase
     /// <response code="200">Requisição realizada com sucesso</response>
     [HttpGet, Route("listar")]
     [ProducesResponseType(200, Type = typeof(List<ReadTransacaoDTO>))]
-    public IActionResult ListarTransacoes([FromQuery] SieveModel model)
+    public async Task<IActionResult> ListarTransacoes([FromQuery] SieveModel model)
     {
         try
         {
-            List<ReadTransacaoDTO> readTransacaoDtos = _transacaoFinanceiraService.ListarTransacoes(model);
+            List<ReadTransacaoDTO> readTransacaoDtos = await transacaoFinanceiraService.ListarTransacoes(model);
             return Ok(readTransacaoDtos);
         }
         catch (BitcentFlowException e)
@@ -90,11 +83,11 @@ public class TransacaoFinanceiraController : ControllerBase
     [HttpPut, Route("atualizar")]
     [ProducesResponseType(204)]
     [ProducesResponseType(404, Type = typeof(ErroDTO))]
-    public IActionResult AtualizarTransacao([FromQuery, Required] Guid id, [FromBody, Required] UpdateTransacaoDTO transacaoDto)
+    public async Task<IActionResult> AtualizarTransacao([FromQuery, Required] Guid id, [FromBody, Required] UpdateTransacaoDTO transacaoDto)
     {
         try
         {
-            _transacaoFinanceiraService.AtualizarTransacao(id, transacaoDto);
+            await transacaoFinanceiraService.AtualizarTransacao(id, transacaoDto);
             return NoContent();
         }
         catch (BitcentFlowException e)
@@ -111,11 +104,11 @@ public class TransacaoFinanceiraController : ControllerBase
     [HttpPatch, Route("atualizar-parcialmente")]
     [ProducesResponseType(204)]
     [ProducesResponseType(404, Type = typeof(ErroDTO))]
-    public IActionResult AtualizarTransacaoParcialmente([FromQuery, Required] Guid id, [FromBody] JsonPatchDocument transacaoDto)
+    public async Task<IActionResult> AtualizarTransacaoParcialmente([FromQuery, Required] Guid id, [FromBody] JsonPatchDocument transacaoDto)
     {
         try
         {
-            _transacaoFinanceiraService.AtualizarTransacaoParcialmente(id, transacaoDto);
+            await transacaoFinanceiraService.AtualizarTransacaoParcialmente(id, transacaoDto);
             return NoContent();
         }
         catch (BitcentFlowException e)
@@ -132,11 +125,11 @@ public class TransacaoFinanceiraController : ControllerBase
     [HttpDelete, Route("remover")]
     [ProducesResponseType(204)]
     [ProducesResponseType(404, Type = typeof(ErroDTO))]
-    public IActionResult RemoverTransacao([FromQuery, Required] Guid id)
+    public async Task<IActionResult> RemoverTransacao([FromQuery, Required] Guid id)
     {
         try
         {
-            _transacaoFinanceiraService.RemoverTransacao(id);
+            await transacaoFinanceiraService.RemoverTransacao(id);
             return NoContent();
         }
         catch (BitcentFlowException e)

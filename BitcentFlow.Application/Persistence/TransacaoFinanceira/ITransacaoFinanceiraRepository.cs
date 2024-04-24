@@ -2,9 +2,9 @@
 
 public interface ITransacaoFinanceiraRepository
 {
-    void Adicionar(Domain.Models.TransacaoFinanceira transacao);
-    Domain.Models.TransacaoFinanceira ObterPorId(Guid id);
-    List<Domain.Models.TransacaoFinanceira> Listar();
+    Task AdicionarAsync(Domain.Models.TransacaoFinanceira transacao);
+    Task<Domain.Models.TransacaoFinanceira?> ObterPorIdAsync(Guid id);
+    Task<List<Domain.Models.TransacaoFinanceira>> ListarAsync();
     void Remover(Domain.Models.TransacaoFinanceira transacao);
-    void SalvarAlteracoes();
+    Task<int> SalvarAlteracoesAsync();
 }
