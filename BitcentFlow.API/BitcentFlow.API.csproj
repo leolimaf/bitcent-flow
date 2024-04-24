@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+      <UserSecretsId>6d8f5c26-2c42-456d-ad01-76410b417380</UserSecretsId>
+  </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FluentResults" Version="3.15.2" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.11" />
+        <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="7.0.13" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.13" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.5" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.10" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.10">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.10" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.10" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.10" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.10">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Controllers\WeatherForecastController.cs" />
+      <Compile Remove="Migrations\20230903044440_CriandoTabelaDeTransacoes.Designer.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\BitcentFlow.Application\BitcentFlow.Application.csproj" />
+      <ProjectReference Include="..\BitcentFlow.Domain\BitcentFlow.Domain.csproj" />
+      <ProjectReference Include="..\BitcentFlow.Infrastructure\BitcentFlow.Infrastructure.csproj" />
+    </ItemGroup>
+
+</Project>
