@@ -105,7 +105,20 @@ public class TransacaoFinanceiraController(ITransacaoFinanceiraService transacao
     }
     
     /// <summary>Atualiza uma transação financeira parcialmente</summary>
-    /// <remarks>A partir do identificador de uma transação financeira do usuário autenticado, é possível atualiza-la  utilizando o verto Patch do Http.</remarks>
+    /// <remarks>
+    /// A partir do identificador de uma transação financeira do usuário autenticado, é possível atualiza-la  utilizando o verbo Patch do Http.
+    ///
+    /// Exemplo:
+    /// 
+    ///     [
+    ///         {
+    ///             "path": "descricao",
+    ///             "op": "replace",
+    ///             "value": "Conta de Água Atualizada"
+    ///         }
+    ///     ]
+    /// 
+    /// </remarks>
     /// <param name="id">Identificador da transação financeira</param>
     /// <response code="204">Requisição realizada com sucesso</response>
     /// <response code="404">A transação não foi encontrada</response>
