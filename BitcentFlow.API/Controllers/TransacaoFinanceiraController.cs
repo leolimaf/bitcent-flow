@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -57,7 +57,15 @@ public class TransacaoFinanceiraController(ITransacaoFinanceiraService transacao
     }
 
     /// <summary>Lista todas as transações financeiras</summary>
-    /// <remarks>Retorna todas as transações financeiras do usuário autenticado.</remarks>
+    /// <remarks>
+    /// Retorna todas as transações financeiras do usuário autenticado. Alguns filtros podem ser aplicados conforme os exemplos logo abaixo:
+    /// 
+    ///     Filters: descricao@=Conta de Luz
+    ///     Sorts: valor
+    ///     Page: 2
+    ///     PageSize: 1
+    /// 
+    /// </remarks>
     /// <response code="200">Requisição realizada com sucesso</response>
     [HttpGet, Route("listar")]
     [ProducesResponseType(200, Type = typeof(List<ReadTransacaoDTO>))]
