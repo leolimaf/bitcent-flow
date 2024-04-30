@@ -57,7 +57,15 @@ public class TransacaoFinanceiraController(ITransacaoFinanceiraService transacao
     }
 
     /// <summary>Lista todas as transações financeiras</summary>
-    /// <remarks>Retorna todas as transações financeiras do usuário autenticado.</remarks>
+    /// <remarks>
+    /// Retorna todas as transações financeiras do usuário autenticado. Alguns filtros podem ser aplicados conforme os exemplos logo abaixo:
+    /// 
+    ///     Filters: descricao@=Conta de Luz
+    ///     Sorts: valor
+    ///     Page: 2
+    ///     PageSize: 1
+    /// 
+    /// </remarks>
     /// <response code="200">Requisição realizada com sucesso</response>
     [HttpGet, Route("listar")]
     [ProducesResponseType(200, Type = typeof(List<ReadTransacaoDTO>))]
@@ -97,7 +105,20 @@ public class TransacaoFinanceiraController(ITransacaoFinanceiraService transacao
     }
     
     /// <summary>Atualiza uma transação financeira parcialmente</summary>
-    /// <remarks>A partir do identificador de uma transação financeira do usuário autenticado, é possível atualiza-la  utilizando o verto Patch do Http.</remarks>
+    /// <remarks>
+    /// A partir do identificador de uma transação financeira do usuário autenticado, é possível atualiza-la  utilizando o verbo Patch do Http.
+    ///
+    /// Exemplo:
+    /// 
+    ///     [
+    ///         {
+    ///             "path": "descricao",
+    ///             "op": "replace",
+    ///             "value": "Conta de Água Atualizada"
+    ///         }
+    ///     ]
+    /// 
+    /// </remarks>
     /// <param name="id">Identificador da transação financeira</param>
     /// <response code="204">Requisição realizada com sucesso</response>
     /// <response code="404">A transação não foi encontrada</response>

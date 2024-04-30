@@ -23,6 +23,9 @@ public class AutenticacaoController : ControllerBase
         _autenticacaoService = autenticacaoService;
     }
 
+    /// <summary>Cadastra um usuário</summary>
+    /// <remarks>Realiza o cadastro do usuário que poderá gerenciar suas transações financeiras.</remarks>
+    /// <response code="201">Requisição realizada com sucesso</response>
     [HttpPost, Route("cadastrar"), AllowAnonymous]
     public async Task<IActionResult> Cadastrar([FromBody, Required] CreateUsuarioDTO usuarioRequest)
     {
@@ -37,6 +40,9 @@ public class AutenticacaoController : ControllerBase
         }
     }
     
+    /// <summary>Obtem um usuário</summary>
+    /// <remarks>Obtem um usuário a partir do seu id.</remarks>
+    /// <response code="200">Requisição realizada com sucesso</response>
     [Authorize(Roles = "Administrator")]
     [HttpGet, Route("obter-por-id")]
     [ApiExplorerSettings(IgnoreApi = true)]
@@ -52,6 +58,9 @@ public class AutenticacaoController : ControllerBase
         }
     }
 
+    /// <summary>Autentica um usuário</summary>
+    /// <remarks>Autentica o usuário por meio de suas credenciais.</remarks>
+    /// <response code="200">Requisição realizada com sucesso</response>
     [HttpPost, Route("logar"), AllowAnonymous]
     public async Task<IActionResult> Logar([FromBody, Required] LoginUsuarioDTO usuarioDto)
     {
@@ -65,6 +74,9 @@ public class AutenticacaoController : ControllerBase
         }
     }
     
+    /// <summary>Atualiza o token do usuário</summary>
+    /// <remarks>Atualiza o access e refresh token do usuário autenticado através dos atuais.</remarks>
+    /// <response code="200">Requisição realizada com sucesso</response>
     [HttpPost, Route("atualizar-token")]
     public async Task<IActionResult> AtualizarToken([FromBody, Required] TokenDTO tokenDto)
     {
@@ -78,6 +90,9 @@ public class AutenticacaoController : ControllerBase
         }
     }
     
+    /// <summary>Desloga o usuário</summary>
+    /// <remarks>Invalida o token do usuário autenticado.</remarks>
+    /// <response code="204">Requisição realizada com sucesso</response>
     [HttpPost, Route("deslogar")]
     public async Task<IActionResult> Deslogar()
     {
