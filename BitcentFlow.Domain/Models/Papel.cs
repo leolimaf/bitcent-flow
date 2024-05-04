@@ -2,7 +2,7 @@
 
 namespace BitcentFlow.Domain.Models;
 
-public class Usuario : IdentityUser<Guid>
+public class Papel : IdentityRole<Guid>
 {
     
 }

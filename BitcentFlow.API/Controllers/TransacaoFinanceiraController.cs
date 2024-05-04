@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using BitcentFlow.Application.DTOs.TransacaoFinanceira;
@@ -10,7 +9,6 @@ using Sieve.Models;
 namespace BitcentFlow.API.Controllers;
 
 [ApiController]
-[Authorize(Policy = "Bearer")]
 [ApiVersion("1.0")]
 [Route("v{version:apiVersion}/transacoes-financeiras")]
 [Produces("application/json")]

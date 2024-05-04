@@ -7,9 +7,6 @@ using BitcentFlow.Infrastructure;
 using BitcentFlow.Infrastructure.Context;
 
 var builder = WebApplication.CreateBuilder(args);
-var config = builder.Configuration;
-
-// Add services to the container.
 
 builder.Services.AddDbContext<AppDbContext>(opts =>
 {
@@ -19,9 +16,7 @@ builder.Services.AddDbContext<AppDbContext>(opts =>
 });
 
 builder.Services.AddControllers().AddNewtonsoftJson();
-builder.Services.AddHttpContextAccessor();
 builder.Services.AddApplication().AddInfrastructure(builder.Configuration);
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(opts =>
 {

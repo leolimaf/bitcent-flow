@@ -1,15 +1,7 @@
-﻿using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using BitcentFlow.Application.Persistence.Authentication;
 using BitcentFlow.Application.Persistence.TransacaoFinanceira;
-using BitcentFlow.Application.Services.Interfaces;
-using BitcentFlow.Infrastructure.Authentication;
 using BitcentFlow.Infrastructure.Repositories;
 
 namespace BitcentFlow.Infrastructure;
@@ -19,10 +11,9 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, ConfigurationManager configuration)
     {
         services.AddCors();
-        services.AddAuth(configuration);
+        // services.AddAuth(configuration);
         
         services.AddScoped<ITransacaoFinanceiraRepository, TransacaoFinanceiraRepository>();
-        services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
         services.AddVersioning();
         
@@ -31,41 +22,7 @@ public static class DependencyInjection
 
     private static IServiceCollection AddAuth(this IServiceCollection services, IConfiguration configuration)
     {
-        var jwtSettings = new JwtSettings();
-        configuration.Bind(JwtSettings.SectionName, jwtSettings);
-
-        services.AddSingleton(Options.Create(jwtSettings));
-        services.AddScoped<IJwtTokenGenarator,JwtTokenGenarator>();
-
-        services.AddAuthentication(opts =>
-        {
-            opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            opts.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            opts.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(opts =>
-        {
-            opts.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = jwtSettings.Issuer,
-                ValidAudience = jwtSettings.Audience,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret)),
-                ClockSkew = TimeSpan.Zero
-            };
-        });
-        
-        services.AddAuthorization(opts =>
-        {
-            opts.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
-                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-                .RequireAuthenticatedUser()
-                .Build());
-        });
-
-        return services;
+        throw new NotImplementedException();
     }
 
     private static IServiceCollection AddVersioning(this IServiceCollection services)

@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using BitcentFlow.Domain.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace BitcentFlow.Infrastructure.Context;
 
-public class AppDbContext : DbContext
+public class AppDbContext : IdentityDbContext<Usuario, Papel, Guid>
 {
     public AppDbContext()
     {
@@ -15,19 +16,8 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<TransacaoFinanceira>()
-            .HasOne(transacao => transacao.Usuario)
-            .WithMany(usuario => usuario.TransacaoFinanceiras)
-            .HasForeignKey(transacao => transacao.IdUsuario);
-
-        modelBuilder.Entity<Usuario>()
-            .HasOne(usuario => usuario.Contato)
-            .WithOne(contato => contato.Usuario)
-            .HasForeignKey<Usuario>(usuario => usuario.IdContato)
-            .IsRequired();
+        base.OnModelCreating(modelBuilder);
     }
 
     public DbSet<TransacaoFinanceira> TransacoesFinanceiras { get; set; }
-    public DbSet<Contato> Contatos { get; set; }
-    public DbSet<Usuario?> Usuarios { get; set; }
 }
