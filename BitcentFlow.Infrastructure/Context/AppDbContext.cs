@@ -11,7 +11,7 @@ public class AppDbContext : IdentityDbContext<Usuario, Papel, Guid>
     {
     }
 
-    public AppDbContext(DbContextOptions options) : base(options)
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
     }
 
