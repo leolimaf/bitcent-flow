@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using BitcentFlow.Application;
 using BitcentFlow.Infrastructure;
 using BitcentFlow.Infrastructure.Context;
+using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,14 +24,15 @@ builder.Services.AddSwaggerGen(opts =>
     opts.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
-        Description = "Cabeçalho de autorização JWT utilizando o Bearer Authentication Scheme.",
+        Description = "Cabeçalho de autorização utilizando o Bearer Authentication Scheme.",
         In = ParameterLocation.Header,
-        Type = SecuritySchemeType.Http,
-        BearerFormat = "JWT",
+        Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer"
     });
     
-    opts.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    opts.OperationFilter<SecurityRequirementsOperationFilter>();
+    
+    opts.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecurityScheme
@@ -50,7 +52,7 @@ builder.Services.AddSwaggerGen(opts =>
     
     if (Debugger.IsAttached)
     {
-        opts.AddServer(new OpenApiServer()
+        opts.AddServer(new OpenApiServer
         {
             Description = "Local",
             Url = "https://localhost:44330/"
@@ -58,7 +60,7 @@ builder.Services.AddSwaggerGen(opts =>
     }
     else
     {
-        opts.AddServer(new OpenApiServer()
+        opts.AddServer(new OpenApiServer
         {
             Description = "Production",
             Url = "https://bitcent-flow-web-api.com.br"
@@ -83,7 +85,6 @@ builder.Services.AddSwaggerGen(opts =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

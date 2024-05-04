@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace BitcentFlow.Domain.Models;
+namespace BitcentFlow.Infrastructure.Models;
 
 public class Papel : IdentityRole<Guid>
 {

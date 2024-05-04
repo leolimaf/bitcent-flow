@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using BitcentFlow.Domain.Models;
+using BitcentFlow.Infrastructure.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace BitcentFlow.Infrastructure.Context;

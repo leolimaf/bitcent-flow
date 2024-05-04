@@ -1,6 +1,4 @@
-using BitcentFlow.Domain.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BitcentFlow.Auth.Controllers;
@@ -16,19 +14,15 @@ public class WeatherForecastController : ControllerBase
     };
 
     private readonly ILogger<WeatherForecastController> _logger;
-    private readonly UserManager<Usuario> _userManager;
 
-    public WeatherForecastController(ILogger<WeatherForecastController> logger, UserManager<Usuario> userManager)
+    public WeatherForecastController(ILogger<WeatherForecastController> logger)
     {
         _logger = logger;
-        _userManager = userManager;
     }
 
     [HttpGet(Name = "GetWeatherForecast")]
     public IEnumerable<WeatherForecast> Get()
     {
-        var testa = _userManager.GetUserId(User);
-        
         return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),

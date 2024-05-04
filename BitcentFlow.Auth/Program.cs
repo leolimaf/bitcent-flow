@@ -1,7 +1,6 @@
 using System.Text.Json.Serialization;
-using BitcentFlow.Domain.Models;
 using BitcentFlow.Infrastructure.Context;
-using Microsoft.AspNetCore.Identity;
+using BitcentFlow.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
@@ -33,10 +32,9 @@ builder.Services.AddSwaggerGen(opts =>
 builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options => options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 builder.Services.AddAuthorization();
+
 builder.Services.AddIdentityApiEndpoints<Usuario>()
     .AddEntityFrameworkStores<AppDbContext>();
-
-builder.Services.AddScoped<UserManager<Usuario>>();
 
 var app = builder.Build();
 
