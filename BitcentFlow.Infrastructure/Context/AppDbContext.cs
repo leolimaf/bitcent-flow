@@ -13,5 +13,6 @@ public class AppDbContext : DbContext
     {
     }
 
+    public DbSet<Usuario> Usuarios { get; set; }
     public DbSet<TransacaoFinanceira> TransacoesFinanceiras { get; set; }
 }

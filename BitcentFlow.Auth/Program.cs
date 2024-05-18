@@ -1,8 +1,5 @@
-using System.Security.Claims;
 using System.Text.Json.Serialization;
 using BitcentFlow.Infrastructure.Context;
-using BitcentFlow.Infrastructure.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,7 +31,5 @@ if (app.Environment.IsDevelopment())
 // }).RequireAuthorization();
 
 app.UseHttpsRedirection();
-
-app.MapIdentityApi<Usuario>();
 
 app.Run();

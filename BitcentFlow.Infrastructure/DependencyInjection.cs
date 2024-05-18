@@ -6,18 +6,18 @@ using BitcentFlow.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json.Serialization;
 using BitcentFlow.Infrastructure.Context;
-using BitcentFlow.Infrastructure.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace BitcentFlow.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, ConfigurationManager configuration)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<AppDbContext>(opts =>
-            opts.UseSqlServer(configuration.GetConnectionString("BitcentFlowConnection"))
+        // TODO: Configurar criação de migrations em Infrastructure 
+        services.AddDbContext<AppDbContext>(opstions =>
+                opstions.UseSqlServer(configuration.GetConnectionString("Default"),
+                    b => b.MigrationsAssembly(typeof(DependencyInjection).Assembly.FullName))
                 .UseLazyLoadingProxies());
         
         services.AddCors();
