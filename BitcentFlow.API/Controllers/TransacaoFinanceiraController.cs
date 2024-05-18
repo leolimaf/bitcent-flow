@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using BitcentFlow.Application.DTOs.TransacaoFinanceira;
 using BitcentFlow.Application.Services.Interfaces;
 using BitcentFlow.Domain.Exception;
+using Microsoft.AspNetCore.Authorization;
 using Sieve.Models;
 
 namespace BitcentFlow.API.Controllers;
 
 [ApiController]
+[Authorize]
 [ApiVersion("1.0")]
 [Route("v{version:apiVersion}/transacoes-financeiras")]
 [Produces("application/json")]

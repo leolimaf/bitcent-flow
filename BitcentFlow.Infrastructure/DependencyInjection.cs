@@ -5,6 +5,10 @@ using BitcentFlow.Application.Persistence.TransacaoFinanceira;
 using BitcentFlow.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json.Serialization;
+using BitcentFlow.Infrastructure.Context;
+using BitcentFlow.Infrastructure.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace BitcentFlow.Infrastructure;
 
@@ -12,16 +16,33 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, ConfigurationManager configuration)
     {
+        services.AddDbContext<AppDbContext>(opts =>
+            opts.UseSqlServer(configuration.GetConnectionString("BitcentFlowConnection"))
+                .UseLazyLoadingProxies());
+        
         services.AddCors();
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         
-        services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options => options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+        services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(opts => 
+            opts.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
-        // services.AddAuthorization();
+        services.AddAuth();
         
         services.AddScoped<ITransacaoFinanceiraRepository, TransacaoFinanceiraRepository>();
 
         services.AddVersioning();
+        
+        return services;
+    }
+
+    private static IServiceCollection AddAuth(this IServiceCollection services)
+    {
+        services.AddIdentityApiEndpoints<Usuario>()
+            .AddEntityFrameworkStores<AppDbContext>()
+            .AddApiEndpoints();
+        
+        services.AddAuthorization();
+        services.AddAuthentication();
         
         return services;
     }

@@ -5,19 +5,14 @@ using Microsoft.OpenApi.Models;
 using BitcentFlow.Application;
 using BitcentFlow.Infrastructure;
 using BitcentFlow.Infrastructure.Context;
+using BitcentFlow.Infrastructure.Models;
 using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<AppDbContext>(opts =>
-{
-    opts.UseLazyLoadingProxies().UseSqlServer(
-        builder.Configuration.GetConnectionString("BitcentFlowConnection")
-    );
-});
-
 builder.Services.AddControllers().AddNewtonsoftJson();
-builder.Services.AddApplication().AddInfrastructure(builder.Configuration);
+builder.Services.AddApplication()
+    .AddInfrastructure(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(opts =>
 {
