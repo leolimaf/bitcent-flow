@@ -1,11 +1,8 @@
 using System.Diagnostics;
 using System.Reflection;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using BitcentFlow.Application;
 using BitcentFlow.Infrastructure;
-using BitcentFlow.Infrastructure.Context;
-using BitcentFlow.Infrastructure.Models;
 using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);

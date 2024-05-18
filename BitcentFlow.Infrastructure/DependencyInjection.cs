@@ -37,10 +37,6 @@ public static class DependencyInjection
 
     private static IServiceCollection AddAuth(this IServiceCollection services)
     {
-        services.AddIdentityApiEndpoints<Usuario>()
-            .AddEntityFrameworkStores<AppDbContext>()
-            .AddApiEndpoints();
-        
         services.AddAuthorization();
         services.AddAuthentication();
         

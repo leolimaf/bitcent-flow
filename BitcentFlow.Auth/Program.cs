@@ -12,10 +12,6 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options => options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
-builder.Services.AddIdentityApiEndpoints<Usuario>()
-    .AddEntityFrameworkStores<AppDbContext>()
-    .AddApiEndpoints();
-
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication();
 
@@ -30,12 +26,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapGet("me", async (ClaimsPrincipal claims, AppDbContext context) =>
-{
-    var userId = claims.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
-
-    return await context.Users.FindAsync(Guid.Parse(userId));
-}).RequireAuthorization();
+// app.MapGet("me", async (ClaimsPrincipal claims, AppDbContext context) =>
+// {
+//     var userId = claims.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+//
+//     return await context.Users.FindAsync(Guid.Parse(userId));
+// }).RequireAuthorization();
 
 app.UseHttpsRedirection();
 
