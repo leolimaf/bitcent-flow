@@ -1,4 +1,4 @@
-﻿using BitcentFlow.Application.Persistence.TransacaoFinanceira;
+﻿using BitcentFlow.Application.Persistence.Contracts;
 using BitcentFlow.Domain.Models;
 using BitcentFlow.Infrastructure.Context;
 using Microsoft.AspNetCore.Http;

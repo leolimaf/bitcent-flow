@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using BitcentFlow.Application.DTOs.TransacaoFinanceira;
-using BitcentFlow.Application.Services.Interfaces;
+using BitcentFlow.Application.Services.Contracts;
 using BitcentFlow.Domain.Exception;
 using Microsoft.AspNetCore.Authorization;
 using Sieve.Models;

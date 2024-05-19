@@ -1,6 +1,6 @@
 ﻿using BitcentFlow.Application.DTOs.TransacaoFinanceira;
-using BitcentFlow.Application.Persistence.TransacaoFinanceira;
-using BitcentFlow.Application.Services.Interfaces;
+using BitcentFlow.Application.Persistence.Contracts;
+using BitcentFlow.Application.Services.Contracts;
 using Mapster;
 using Microsoft.AspNetCore.JsonPatch;
 using BitcentFlow.Domain.Exception;

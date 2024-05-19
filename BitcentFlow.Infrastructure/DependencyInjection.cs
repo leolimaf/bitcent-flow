@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using BitcentFlow.Application.Persistence.TransacaoFinanceira;
 using BitcentFlow.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json.Serialization;
+using BitcentFlow.Application.Persistence.Contracts;
+using BitcentFlow.Infrastructure.Configurations;
 using BitcentFlow.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,6 +30,8 @@ public static class DependencyInjection
         services.AddAuth();
         
         services.AddScoped<ITransacaoFinanceiraRepository, TransacaoFinanceiraRepository>();
+        services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+        services.AddScoped<IGeradorJwt, GeradorJwt>();
 
         services.AddVersioning();
         
