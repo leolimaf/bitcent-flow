@@ -10,7 +10,7 @@ using Sieve.Models;
 namespace BitcentFlow.API.Controllers;
 
 [ApiController]
-[Authorize]
+[Authorize("Bearer")]
 [ApiVersion("1.0")]
 [Route("v{version:apiVersion}/transacoes-financeiras")]
 [Produces("application/json")]

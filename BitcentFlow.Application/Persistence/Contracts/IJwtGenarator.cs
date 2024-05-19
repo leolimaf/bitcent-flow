@@ -2,7 +2,7 @@
 
 namespace BitcentFlow.Application.Persistence.Contracts;
 
-public interface IGeradorJwt
+public interface IJwtGenarator
 {
-    string GerarAccessToken(Usuario usuario);
+    string GerarToken(Usuario usuario);
 }

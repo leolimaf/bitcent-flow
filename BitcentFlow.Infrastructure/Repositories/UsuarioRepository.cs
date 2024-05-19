@@ -13,11 +13,6 @@ public class UsuarioRepository(AppDbContext context) : IUsuarioRepository
         return await context.SaveChangesAsync();
     }
 
-    public async Task<int> LogarAsync(string email, string senhaHash)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<Usuario?> ObterPorEmailAsync(string email)
     {
         return await context.Usuarios.FirstOrDefaultAsync(u => u!.Email == email);

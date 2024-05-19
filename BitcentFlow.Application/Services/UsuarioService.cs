@@ -7,7 +7,7 @@ using Mapster;
 
 namespace BitcentFlow.Application.Services;
 
-public class UsuarioService(IUsuarioRepository usuarioRepository , IGeradorJwt geradorJwt) : IUsuarioService
+public class UsuarioService(IUsuarioRepository usuarioRepository , IJwtGenarator jwtGenarator) : IUsuarioService
 {
     public async Task<RegistrationResponse> RegistrarUsuarioAsync(RegistrationRequest registrationRequest)
     {
@@ -33,6 +33,6 @@ public class UsuarioService(IUsuarioRepository usuarioRepository , IGeradorJwt g
         if (usuario is null || !BCrypt.Net.BCrypt.Verify(loginRequest.Senha, usuario.SenhaHash))
             return new LoginResponse(false, "Credenciais Inválidas.");
 
-        return new LoginResponse(true, "Autenticação realizada com sucesso.", geradorJwt.GerarAccessToken(usuario));
+        return new LoginResponse(true, "Autenticação realizada com sucesso.", jwtGenarator.GerarToken(usuario));
     }
 }

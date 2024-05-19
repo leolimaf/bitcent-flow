@@ -19,4 +19,7 @@ public record RegistrationRequest
     
     [Required, DataType(DataType.Password), Compare(nameof(Senha)), NotMapped] 
     public string ConfirmacaoDeSenhaSenha { get; set; } = string.Empty;
+    
+    [Required, DataType(DataType.PhoneNumber)]
+    public string Celular { get; set; } = string.Empty;
 }
