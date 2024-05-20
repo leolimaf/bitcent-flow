@@ -14,9 +14,9 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
             .Build();
 
         var builder = new DbContextOptionsBuilder<AppDbContext>()
-            .UseLazyLoadingProxies()
-            .UseSqlServer(configuration.GetConnectionString("BitcentFlowConnection"),
-                b => b.MigrationsAssembly("BitcentFlow.API"));
+            .UseSqlServer(configuration.GetConnectionString("Default"),
+                b => b.MigrationsAssembly("BitcentFlow.API"))
+            .UseLazyLoadingProxies();
 
         return new AppDbContext(builder.Options);
     }

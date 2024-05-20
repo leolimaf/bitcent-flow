@@ -1,11 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using BitcentFlow.Domain.Models;
-using BitcentFlow.Infrastructure.Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace BitcentFlow.Infrastructure.Context;
 
-public class AppDbContext : IdentityDbContext<Usuario, Papel, Guid>
+public class AppDbContext : DbContext
 {
     public AppDbContext()
     {
@@ -15,10 +13,6 @@ public class AppDbContext : IdentityDbContext<Usuario, Papel, Guid>
     {
     }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        base.OnModelCreating(modelBuilder);
-    }
-
+    public DbSet<Usuario?> Usuarios { get; set; }
     public DbSet<TransacaoFinanceira> TransacoesFinanceiras { get; set; }
 }
