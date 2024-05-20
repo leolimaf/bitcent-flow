@@ -1,4 +1,5 @@
-﻿using BitcentFlow.Application.DTOs.Usuario.Requests;
+﻿using BitcentFlow.Application.DTOs.Usuario;
+using BitcentFlow.Application.DTOs.Usuario.Requests;
 using BitcentFlow.Application.DTOs.Usuario.Responses;
 using BitcentFlow.Application.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
@@ -25,6 +26,13 @@ public class UsuarioController(IUsuarioService usuarioService) : ControllerBase
     public async Task<ActionResult<LoginResponse>> Logar(LoginRequest loginRequest)
     {
         var result = await usuarioService.LogarUsuarioAsync(loginRequest);
+        return result.Autenticado ? Ok(result) : BadRequest(result);
+    }
+    
+    [HttpPost("atualizar-token")]
+    public async Task<ActionResult<LoginResponse>> AtualizarToken(TokenDTO tokenDto)
+    {
+        var result = await usuarioService.AtualizarTokenUsuarioAsync(tokenDto);
         return result.Autenticado ? Ok(result) : BadRequest(result);
     }
 }

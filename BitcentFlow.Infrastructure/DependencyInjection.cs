@@ -48,7 +48,7 @@ public static class DependencyInjection
         configuration.Bind(JwtSettings.SectionName, jwtSettings);
 
         services.AddSingleton(Options.Create(jwtSettings));
-        services.AddScoped<IJwtGenarator, JwtGenaratorGenarator>();
+        services.AddScoped<IJwtGenarator, JwtGenarator>();
         
         services.AddAuthentication(options =>
         {

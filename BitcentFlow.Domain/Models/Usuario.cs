@@ -29,4 +29,10 @@ public class Usuario
     
     [Required, DataType(DataType.PhoneNumber)]
     public string Celular { get; set; } = string.Empty;
+    
+    [Column("TOKEN")]
+    public string? Token { get; set; }
+    
+    [Column("VALIDADE_TOKEN")]
+    public DateTime? ValidadeToken { get; set; }
 }

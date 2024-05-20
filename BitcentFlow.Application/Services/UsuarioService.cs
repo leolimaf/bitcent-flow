@@ -1,4 +1,5 @@
-﻿using BitcentFlow.Application.DTOs.Usuario.Requests;
+﻿using BitcentFlow.Application.DTOs.Usuario;
+using BitcentFlow.Application.DTOs.Usuario.Requests;
 using BitcentFlow.Application.DTOs.Usuario.Responses;
 using BitcentFlow.Application.Persistence.Contracts;
 using BitcentFlow.Application.Services.Contracts;
@@ -33,6 +34,23 @@ public class UsuarioService(IUsuarioRepository usuarioRepository , IJwtGenarator
         if (usuario is null || !BCrypt.Net.BCrypt.Verify(loginRequest.Senha, usuario.SenhaHash))
             return new LoginResponse(false, "Credenciais Inválidas.");
 
-        return new LoginResponse(true, "Autenticação realizada com sucesso.", jwtGenarator.GerarToken(usuario));
+        var token = await jwtGenarator.GerarToken(usuario);
+
+        return new LoginResponse(true, "Autenticação realizada com sucesso.", token);
+    }
+
+    public async Task<LoginResponse> AtualizarTokenUsuarioAsync(TokenDTO tokenDto)
+    {
+        var principal = jwtGenarator.GetPrincipalFromExpiredToken(tokenDto.AccessToken);
+        var id = Guid.Parse(principal.Identity?.Name ?? "");
+
+        var usuario = await usuarioRepository.ObterPorIdAsync(id);
+
+        if (usuario is null || usuario.Token != tokenDto.RefreshToken || usuario.ValidadeToken <= DateTime.Now)
+            return new LoginResponse(false, "Token inválido.");
+
+        var token = await jwtGenarator.GerarToken(usuario, principal.Claims);
+
+        return new LoginResponse(true, "Atualização do token realizada com sucesso.", token);
     }
 }
