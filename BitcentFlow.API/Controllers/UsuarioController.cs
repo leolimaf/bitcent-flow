@@ -35,4 +35,11 @@ public class UsuarioController(IUsuarioService usuarioService) : ControllerBase
         var result = await usuarioService.AtualizarTokenUsuarioAsync(tokenDto);
         return result.Autenticado ? Ok(result) : BadRequest(result);
     }
+    
+    [HttpPost("deslogar")]
+    public async Task<IActionResult> Deslogar()
+    {
+        await usuarioService.DeslogarUsuarioAsync();
+        return NoContent();
+    }
 }

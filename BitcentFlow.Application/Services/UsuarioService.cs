@@ -53,4 +53,9 @@ public class UsuarioService(IUsuarioRepository usuarioRepository , IJwtGenarator
 
         return new LoginResponse(true, "Atualização do token realizada com sucesso.", token);
     }
+
+    public async Task DeslogarUsuarioAsync()
+    {
+        await usuarioRepository.DeslogarAsync();
+    }
 }

@@ -9,4 +9,5 @@ public interface IUsuarioService
     Task<RegistrationResponse> RegistrarUsuarioAsync(RegistrationRequest registrationRequest);
     Task<LoginResponse> LogarUsuarioAsync(LoginRequest loginRequest);
     Task<LoginResponse> AtualizarTokenUsuarioAsync(TokenDTO tokenDto);
+    Task DeslogarUsuarioAsync();
 }
