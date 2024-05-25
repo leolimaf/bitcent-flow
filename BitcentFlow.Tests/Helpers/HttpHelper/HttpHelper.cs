@@ -7,10 +7,10 @@ public class HttpHelper
 {
     internal static class UrlsUsuario
     {
-        public readonly static string Cadastrar = "/v1/autenticacao/cadastrar";
-        public readonly static string Logar = "/v1/autenticacao/logar";
-        public readonly static string AtualizarToken = "/v1/autenticacao/atualizar-token";
-        public readonly static string Deslogar = "/v1/autenticacao/deslogar";
+        public readonly static string Registrar = "/v1/usuarios/registrar";
+        public readonly static string Logar = "/v1/usuarios/logar";
+        public readonly static string AtualizarToken = "/v1/usuarios/atualizar-token";
+        public readonly static string Deslogar = "/v1/usuarios/deslogar";
     }
     
     internal static class UrlsTransacaoFinanceira

@@ -24,23 +24,12 @@ public class DataFixture
             .RuleFor(u => u.Sobrenome, faker => faker.Person.LastName)
             .RuleFor(u => u.Email, faker => faker.Person.Email)
             .RuleFor(u => u.Senha, faker => faker.Internet.Password())
-            .RuleFor(u => u.SenhaHash, (faker, u) => BCrypt.Net.BCrypt.HashPassword(u.Senha))
-            .RuleFor(u => u.DataDeNascimento, faker => faker.Person.DateOfBirth)
-            .RuleFor(u => u.IsEmailVerificado, () => false)
+            .RuleFor(u => u.SenhaHash, (_, u) => BCrypt.Net.BCrypt.HashPassword(u.Senha))
+            .RuleFor(u => u.Celular, faker => faker.Phone.PhoneNumber())
             .RuleFor(u => u.Token, () => null)
             .RuleFor(u => u.ValidadeToken, () => null)
-            .RuleFor(u => u.IsAdministrador, () => false)
-            .RuleFor(u => u.IdContato, Guid.NewGuid)
-            .RuleFor(u => u.Contato, (faker, u) => ObterContatoFalso(u.IdContato))
             .UseSeed(seed);
             
-    }
-    private static Faker<Contato> ObterContatoFalso(Guid IdContato)
-    {
-        return new Faker<Contato>()
-            .RuleFor(u => u.Id, IdContato)
-            .RuleFor(u => u.TelefoneFixo, faker => faker.Phone.PhoneNumber())
-            .RuleFor(u => u.Celular, faker => faker.Phone.PhoneNumber());
     }
 
     public static List<TransacaoFinanceira> ObterTransacoes(int quantidade, bool useNovaTransacao = false)
@@ -61,7 +50,6 @@ public class DataFixture
             .RuleFor(t => t.Data, faker => faker.Date.Past())
             .RuleFor(t => t.Valor, faker => faker.Finance.Amount(0.01m))
             .RuleFor(t => t.Tipo, faker => faker.Random.Enum<TipoTransacao>())
-            .RuleFor(t => t.IdUsuario, ObterUsuarios(1,true).First().Id) // TODO: NECESSÁRIO AJUSTAR
             .UseSeed(seed);
     }
 }

@@ -5,20 +5,21 @@ using BitcentFlow.Tests.Helpers.HttpHelper;
 using BitcentFlow.Tests.Mappers;
 using FluentAssertions;
 using Mapster;
-using BitcentFlow.Application.DTOs.Token;
 using BitcentFlow.Application.DTOs.Usuario;
+using BitcentFlow.Application.DTOs.Usuario.Requests;
+using BitcentFlow.Application.DTOs.Usuario.Responses;
 using Xunit.Priority;
 
 namespace BitcentFlow.Tests.API.Controllers;
 
 [Collection(nameof(IntegrationApiTestFixtureCollection))]
 [TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
-public class AutenticacaoControllerTest
+public class UsuarioControllerTest
 {
     private readonly WebApplicationFactoryFixture _factory;
     private readonly HttpClient _client;
 
-    public AutenticacaoControllerTest(WebApplicationFactoryFixture factory)
+    public UsuarioControllerTest(WebApplicationFactoryFixture factory)
     {
         _factory = factory;
         _client = _factory.CreateClient();
@@ -26,26 +27,25 @@ public class AutenticacaoControllerTest
         Mapper.ConfigureMapster();
     }
 
-    [Fact(DisplayName = "Ao cadastrar um usuário deve ser retornado o usuário cadastrado")]
+    [Fact(DisplayName = "Ao cadastrar um usuário deve ser retornado status de sucesso")]
     [Trait("Autenticação e Autorização", "Cadastro"), Priority(1)]
     public async Task AoCadastrarUsuario()
     {
         // GIVEN
         var novoUsuario = DataFixture.ObterUsuarios(1, true).First();
-        var usuarioRequest = novoUsuario.Adapt<CreateUsuarioDTO>();
+        var usuarioRequest = novoUsuario.Adapt<RegistrationRequest>();
         
         // WHEN
-        var requisicao = await _client.PostAsJsonAsync(HttpHelper.UrlsUsuario.Cadastrar, usuarioRequest);
-        var retorno = await requisicao.Content.ReadFromJsonAsync<ReadUsuarioDTO>();
+        var requisicao = await _client.PostAsJsonAsync(HttpHelper.UrlsUsuario.Registrar, usuarioRequest);
+        var retorno = await requisicao.Content.ReadFromJsonAsync<RegistrationResponse>();
         
         // THEN
-        requisicao.StatusCode.Should().Be(HttpStatusCode.Created);
+        requisicao.StatusCode.Should().Be(HttpStatusCode.OK);
         
         Assert.NotNull(retorno);
 
-        retorno.Nome.Should().Be(novoUsuario.Nome);
-        retorno.Sobrenome.Should().Be(novoUsuario.Sobrenome);
-        retorno.Email.Should().Be(novoUsuario.Email);
+        retorno.Cadastrado.Should().Be(true);
+        retorno.Mensagem.Should().NotBeNullOrWhiteSpace();
     }
 
     [Fact(DisplayName = "Ao logar um usuário deve ser retornado o access token e o refresh token")]
@@ -54,24 +54,25 @@ public class AutenticacaoControllerTest
     {
         // GIVEN
         var usuario = DataFixture.ObterUsuarios(1).First();
-        var usuarioRequest = usuario.Adapt<LoginUsuarioDTO>();
+        var usuarioRequest = usuario.Adapt<LoginRequest>();
         
         // WHEN
         var requisicao = await _client.PostAsJsonAsync(HttpHelper.UrlsUsuario.Logar, usuarioRequest);
-        var retorno = await requisicao.Content.ReadFromJsonAsync<ReadLoginUsuarioDTO>();
+        var retorno = await requisicao.Content.ReadFromJsonAsync<LoginResponse>();
         
         // THEN
         requisicao.StatusCode.Should().Be(HttpStatusCode.OK);
         
         Assert.NotNull(retorno);
 
-        retorno.Authenticated.Should().Be(true);
-        retorno.AccessToken.Should().NotBeNullOrWhiteSpace();
-        retorno.RefreshToken.Should().NotBeNullOrWhiteSpace();
+        retorno.Autenticado.Should().Be(true);
+        retorno.Mensagem.Should().NotBeNullOrWhiteSpace();
+        retorno.Token.AccessToken.Should().NotBeNullOrWhiteSpace();
+        retorno.Token.RefreshToken.Should().NotBeNullOrWhiteSpace();
         
         // TODO: REMOVER DEPENDÊNCIA ENTRE OS TESTES
-        _factory.AccessToken = retorno.AccessToken;
-        _factory.RefreshToken = retorno.RefreshToken;
+        _factory.AccessToken = retorno.Token.AccessToken;
+        _factory.RefreshToken = retorno.Token.RefreshToken;
     }
 
     [Fact(DisplayName = "Ao atualizar o token do usuário autenticado deve ser retornado o novo access e refresh token")]
@@ -79,24 +80,24 @@ public class AutenticacaoControllerTest
     public async Task AoAtualizarToken()
     {
         // GIVEN
-        var atualizacaoTokenRequest = new TokenDTO(_factory.AccessToken, _factory.RefreshToken);
+        var atualizacaoTokenRequest = new TokenDTO(_factory.AccessToken, _factory.RefreshToken, default, default);
 
         // WHEN
         var requisicao = await _client.PostAsJsonAsync(HttpHelper.UrlsUsuario.AtualizarToken, atualizacaoTokenRequest);
-        var retorno = await requisicao.Content.ReadFromJsonAsync<ReadLoginUsuarioDTO>();
+        var retorno = await requisicao.Content.ReadFromJsonAsync<LoginResponse>();
 
         // THEN
         requisicao.StatusCode.Should().Be(HttpStatusCode.OK);
         
         Assert.NotNull(retorno);
 
-        retorno.Authenticated.Should().Be(true);
-        retorno.AccessToken.Should().NotBeEquivalentTo(atualizacaoTokenRequest.AccessToken);
-        retorno.RefreshToken.Should().NotBeEquivalentTo(atualizacaoTokenRequest.RefreshToken);
+        retorno.Autenticado.Should().Be(true);
+        retorno.Token.AccessToken.Should().NotBeEquivalentTo(atualizacaoTokenRequest.AccessToken).And.NotBeNullOrWhiteSpace();
+        retorno.Token.RefreshToken.Should().NotBeEquivalentTo(atualizacaoTokenRequest.RefreshToken).And.NotBeNullOrWhiteSpace();
         
         // TODO: REMOVER DEPENDÊNCIA ENTRE OS TESTES
-        _factory.AccessToken = retorno.AccessToken;
-        _factory.RefreshToken = retorno.RefreshToken;
+        _factory.AccessToken = retorno.Token.AccessToken;
+        _factory.RefreshToken = retorno.Token.RefreshToken;
     }
 
     [Fact(DisplayName = "Ao deslogar o usuário, seu acesso deve ser invalidado")]
