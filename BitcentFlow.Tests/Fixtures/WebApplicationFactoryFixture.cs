@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using BitcentFlow.Application.Persistence.Contracts;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using BitcentFlow.Application.Services.Interfaces;
-using BitcentFlow.Infrastructure.Authentication;
+using BitcentFlow.Application.Services.Contracts;
+using BitcentFlow.Infrastructure.Configurations;
 using BitcentFlow.Infrastructure.Context;
 using Testcontainers.MsSql;
 
@@ -36,7 +37,7 @@ public class WebApplicationFactoryFixture
             services.AddDbContext<AppDbContext>(options => 
                 options.UseSqlServer(connectionString));
 
-            services.AddScoped<IJwtTokenGenarator, JwtTokenGenarator>();
+            services.AddScoped<IJwtGenarator, JwtGenarator>();
         });
     }
 
@@ -52,11 +53,11 @@ public class WebApplicationFactoryFixture
 
         var usuariosIniciais = DataFixture.ObterUsuarios(QuantidadeInicialDeUsuarios);
         
-        var jwtTokenGenarator = scopedService.GetRequiredService<IJwtTokenGenarator>();
-        var token = jwtTokenGenarator.GerarToken(usuariosIniciais.First());
+        var jwtTokenGenarator = scopedService.GetRequiredService<IJwtGenarator>();
+        var token = await jwtTokenGenarator.GerarToken(usuariosIniciais.First());
 
         usuariosIniciais.First().Token = RefreshToken = token.RefreshToken;
-        usuariosIniciais.First().ValidadeToken = DateTime.Parse(token.Expiration);
+        usuariosIniciais.First().ValidadeToken = token.Expiracao;
 
         AccessToken = token.AccessToken;
         

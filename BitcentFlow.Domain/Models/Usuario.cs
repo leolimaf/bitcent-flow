@@ -35,4 +35,7 @@ public class Usuario
     
     [Column("VALIDADE_TOKEN")]
     public DateTime? ValidadeToken { get; set; }
+
+    [NotMapped]
+    public string Senha { get; set; }
 }
