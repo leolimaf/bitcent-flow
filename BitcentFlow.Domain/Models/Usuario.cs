@@ -1,11 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
 namespace BitcentFlow.Domain.Models;
 
 [Table("USUARIO")]
-[Index(nameof(Email), IsUnique = true)]
 public class Usuario
 {
     [Key]
@@ -13,45 +11,28 @@ public class Usuario
     [Column("ID")]
     public Guid Id { get; set; }
     
-    [Required, MaxLength(40)] 
+    [Required]
     [Column("NOME")]
     public string Nome { get; set; }
     
-    [Required, MaxLength(80)] 
+    [Required]
     [Column("SOBRENOME")]
     public string Sobrenome { get; set; }
     
-    [Required, DataType(DataType.EmailAddress), MaxLength(80)] 
-    [Column("EMAIL")]
+    [Required]
+    [Column("EMAIL"), DataType(DataType.EmailAddress)]
     public string Email { get; set; }
-
-    [Required, DataType(DataType.Password)]
-    [Column("SENHA_HASH")]
-    public string SenhaHash { get; set; }
     
     [Required]
-    [Column("DATA_DE_NASCIMENTO")]
-    public DateTime? DataDeNascimento { get; set; }
+    [Column("SENHA")]
+    public string SenhaHash { get; set; }
     
-    [Column("EMAIL_VERIFICADO")] 
-    public bool IsEmailVerificado { get; set; }
+    [Required, DataType(DataType.PhoneNumber)]
+    public string Celular { get; set; } = string.Empty;
     
     [Column("TOKEN")]
     public string? Token { get; set; }
     
     [Column("VALIDADE_TOKEN")]
     public DateTime? ValidadeToken { get; set; }
-    
-    [Column("ADMINISTRADOR")] 
-    public bool IsAdministrador { get; set; }
-    
-    [Required, Column("ID_CONTATO")]
-    public Guid IdContato { get; set; }
-    
-    public virtual Contato Contato { get; set; }
-    
-    public virtual List<TransacaoFinanceira> TransacaoFinanceiras { get; set; }
-    
-    [NotMapped]
-    public string Senha { get; set; }
 }

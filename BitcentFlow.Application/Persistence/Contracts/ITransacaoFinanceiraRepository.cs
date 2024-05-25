@@ -1,4 +1,4 @@
-﻿namespace BitcentFlow.Application.Persistence.TransacaoFinanceira;
+﻿namespace BitcentFlow.Application.Persistence.Contracts;
 
 public interface ITransacaoFinanceiraRepository
 {

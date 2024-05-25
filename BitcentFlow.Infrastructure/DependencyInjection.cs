@@ -1,62 +1,73 @@
 ﻿using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using BitcentFlow.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Http;
+using System.Text.Json.Serialization;
+using BitcentFlow.Application.Persistence.Contracts;
+using BitcentFlow.Infrastructure.Configurations;
+using BitcentFlow.Infrastructure.Context;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using BitcentFlow.Application.Persistence.Authentication;
-using BitcentFlow.Application.Persistence.TransacaoFinanceira;
-using BitcentFlow.Application.Services.Interfaces;
-using BitcentFlow.Infrastructure.Authentication;
-using BitcentFlow.Infrastructure.Repositories;
 
 namespace BitcentFlow.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, ConfigurationManager configuration)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddCors();
+        // TODO: Configurar criação de migrations em Infrastructure 
+        services.AddDbContext<AppDbContext>(opstions =>
+                opstions.UseSqlServer(configuration.GetConnectionString("Default"),
+                    b => b.MigrationsAssembly(typeof(DependencyInjection).Assembly.FullName))
+                .UseLazyLoadingProxies());
+        
         services.AddAuth(configuration);
         
-        services.AddScoped<ITransacaoFinanceiraRepository, TransacaoFinanceiraRepository>();
+        services.AddCors();
+        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+        
+        services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(opts => 
+            opts.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
         services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+        services.AddScoped<ITransacaoFinanceiraRepository, TransacaoFinanceiraRepository>();
 
         services.AddVersioning();
         
         return services;
     }
 
-    private static IServiceCollection AddAuth(this IServiceCollection services, IConfiguration configuration)
+    private static IServiceCollection AddAuth(this IServiceCollection services,  IConfiguration configuration)
     {
         var jwtSettings = new JwtSettings();
         configuration.Bind(JwtSettings.SectionName, jwtSettings);
 
         services.AddSingleton(Options.Create(jwtSettings));
-        services.AddScoped<IJwtTokenGenarator,JwtTokenGenarator>();
-
-        services.AddAuthentication(opts =>
+        services.AddScoped<IJwtGenarator, JwtGenarator>();
+        
+        services.AddAuthentication(options =>
         {
-            opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            opts.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            opts.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(opts =>
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(options =>
         {
-            opts.TokenValidationParameters = new TokenValidationParameters
+            options.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
                 ValidateAudience = true,
-                ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
+                ValidateLifetime = true,
                 ValidIssuer = jwtSettings.Issuer,
                 ValidAudience = jwtSettings.Audience,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret)),
                 ClockSkew = TimeSpan.Zero
             };
         });
-        
         services.AddAuthorization(opts =>
         {
             opts.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
@@ -64,7 +75,7 @@ public static class DependencyInjection
                 .RequireAuthenticatedUser()
                 .Build());
         });
-
+        
         return services;
     }
 

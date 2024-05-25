@@ -28,11 +28,9 @@ public class TransacaoFinanceira
     [Column("TIPO")]
     public TipoTransacao Tipo { get; set; }
 
-    public virtual Usuario Usuario { get; set; }
-
     [Required] 
-    [Column("ID_USUARIO")]
-    public Guid IdUsuario { get; set; }
+    [Column("USUARIO")]
+    public string? Usuario { get; set; }
 }
 
 public enum TipoTransacao

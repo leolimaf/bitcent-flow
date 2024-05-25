@@ -1,41 +1,39 @@
-﻿using Microsoft.EntityFrameworkCore;
-using BitcentFlow.Application.Persistence.Authentication;
+﻿using BitcentFlow.Application.Persistence.Contracts;
 using BitcentFlow.Domain.Models;
 using BitcentFlow.Infrastructure.Context;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace BitcentFlow.Infrastructure.Repositories;
 
-public class UsuarioRepository : IUsuarioRepository
+public class UsuarioRepository(AppDbContext context, IHttpContextAccessor contextAccessor) : IUsuarioRepository
 {
-    private readonly AppDbContext _context;
-
-    public UsuarioRepository(AppDbContext context)
+    private readonly string? _username = contextAccessor.HttpContext?.User.Identity?.Name;
+    
+    public async Task<int> RegistrarAsync(Usuario usuario)
     {
-        _context = context;
+        await context.Usuarios.AddAsync(usuario);
+        return await context.SaveChangesAsync();
+    }
+    
+    public async Task DeslogarAsync()
+    {
+        if (_username is not null)
+        {
+            var usuario = await ObterPorIdAsync(Guid.Parse(_username));
+            usuario!.Token = null;
+            await context.SaveChangesAsync();
+        }
     }
 
-    public async Task CadastrarAsync(Usuario? usuario)
+    public async Task<Usuario?> ObterPorEmailAsync(string email)
     {
-        await _context.Usuarios.AddAsync(usuario);
+        return await context.Usuarios.FirstOrDefaultAsync(u => u!.Email == email);
     }
 
-    public async Task<bool> IsCadastradoAsync(string email)
+    public async Task<Usuario?> ObterPorIdAsync(Guid id)
     {
-        return await _context.Usuarios.AnyAsync(u => u.Email == email);
-    }
+        return await context.Usuarios.FindAsync(id);
 
-    public async Task<Usuario> ObterPorEmailAsync(string email)
-    {
-        return await _context.Usuarios.SingleOrDefaultAsync(u => u.Email == email);
-    }
-
-    public async Task SalvarAlteracoesAsync()
-    {
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task<Usuario?> ObterPorIdAsync(string id)
-    {
-        return await _context.Usuarios.FindAsync(id);
     }
 }
