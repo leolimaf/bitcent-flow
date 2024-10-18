@@ -1,0 +1,6 @@
+@BitcentFlow.Auth_HostAddress = http://localhost:5195
+
+GET {{BitcentFlow.Auth_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

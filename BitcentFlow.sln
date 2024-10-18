@@ -14,6 +14,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitcentFlow.Infrastructure"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitcentFlow.Application", "BitcentFlow.Application\BitcentFlow.Application.csproj", "{C5A179B6-256B-441F-BF88-9D5A68197259}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitcentFlow.Auth", "BitcentFlow.Auth\BitcentFlow.Auth.csproj", "{094F73B1-7E0A-431C-887F-BD1DACECEBE7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1C0E263A-7C85-4537-97DC-8E0BAC548330}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +43,10 @@ Global
 		{C5A179B6-256B-441F-BF88-9D5A68197259}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62DFA8B0-BCA4-4613-AC67-8D781B6D4E60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{62DFA8B0-BCA4-4613-AC67-8D781B6D4E60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{094F73B1-7E0A-431C-887F-BD1DACECEBE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{094F73B1-7E0A-431C-887F-BD1DACECEBE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{094F73B1-7E0A-431C-887F-BD1DACECEBE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{094F73B1-7E0A-431C-887F-BD1DACECEBE7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9DAD8BEF-1B2F-4D5E-94C7-2BD9BA40117D} = {9CA209D3-0107-4B85-ADEA-7A5EE5229090}
@@ -43,5 +54,6 @@ Global
 		{76EA79A6-C9B6-46D0-8538-227FE2567388} = {A7A5248F-DD36-40E5-9A4E-DA6140F08E33}
 		{C5A179B6-256B-441F-BF88-9D5A68197259} = {A7A5248F-DD36-40E5-9A4E-DA6140F08E33}
 		{62DFA8B0-BCA4-4613-AC67-8D781B6D4E60} = {A7A5248F-DD36-40E5-9A4E-DA6140F08E33}
+		{094F73B1-7E0A-431C-887F-BD1DACECEBE7} = {A7A5248F-DD36-40E5-9A4E-DA6140F08E33}
 	EndGlobalSection
 EndGlobal
