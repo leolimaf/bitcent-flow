@@ -1,9 +1,14 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using BitcentFlow.Auth.Context;
 using BitcentFlow.Auth.DTOs.UserDTOs.Requests;
 using BitcentFlow.Auth.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +35,20 @@ builder.Services.Configure<IdentityOptions>(options =>
 builder.Services.AddDbContext<AppDbContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(y =>
+{
+    y.SaveToken = false;
+    y.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Secret"]!))
+    };
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -40,6 +59,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors(o => o.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
+app.UseAuthentication();
 
 app.UseHttpsRedirection();
 
@@ -62,6 +83,29 @@ app.MapPost("/api/signup", async (UserManager<AppUser> userManager, [FromBody] U
     return result.Succeeded 
     ? Results.Ok(result)
     : Results.BadRequest(result);
+});
+
+app.MapPost("/api/signin", async (UserManager<AppUser> userManager, [FromBody] UserLoginRequest userLoginRequest) =>
+{
+    var user = await userManager.FindByEmailAsync(userLoginRequest.Email);
+    
+    if (user is null || !await userManager.CheckPasswordAsync(user, userLoginRequest.Password))
+        return Results.BadRequest(new { message = "Email or password is incorrect." });
+    
+    var signInKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Secret"]!));
+    var tokenDescriptor = new SecurityTokenDescriptor
+    {
+        Subject = new ClaimsIdentity([
+            new Claim("UserID", user.Id),
+        ]),
+        Expires = DateTime.UtcNow.AddDays(10),
+        SigningCredentials = new SigningCredentials(signInKey, SecurityAlgorithms.HmacSha256Signature)
+    };
+    var tokenHandler = new JwtSecurityTokenHandler();
+    var securityToken = tokenHandler.CreateToken(tokenDescriptor);
+    var token = tokenHandler.WriteToken(securityToken);
+    
+    return Results.Ok(token);
 });
 
 app.MapGroup("/api").MapIdentityApi<AppUser>();

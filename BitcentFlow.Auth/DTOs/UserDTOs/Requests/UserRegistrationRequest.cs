@@ -2,12 +2,12 @@ namespace BitcentFlow.Auth.DTOs.UserDTOs.Requests;
 
 public record UserRegistrationRequest
 {
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public DateTime Birthdate { get; set; }
-    public string PhoneNumber { get; set; }
-    public string Email { get; set; }
-    public string Password { get; set; }
-    public string ConfirmPassword { get; set; }
-    public bool AcceptTerms { get; set; }
+    public string FirstName { get; init; } = string.Empty;
+    public string LastName { get; init; } = string.Empty;
+    public DateTime Birthdate { get; init; }
+    public string PhoneNumber { get; init; } = string.Empty;
+    public string Email { get; init; } = string.Empty;
+    public string Password { get; init; } = string.Empty;
+    public string ConfirmPassword { get; init; } = string.Empty;
+    public bool AcceptTerms { get; init; }
 }
