@@ -12,6 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors();
+
 // Services from IdentityCore
 builder.Services
     .AddIdentityApiEndpoints<AppUser>()
@@ -37,11 +39,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors(o => o.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
 app.UseHttpsRedirection();
 
 app.MapPost("/api/signup", async (UserManager<AppUser> userManager, [FromBody] UserRegistrationRequest userRegistrationRequest) => 
 {
-    if (!userRegistrationRequest.IsAcceptTerms)
+    if (!userRegistrationRequest.AcceptTerms)
         return Results.BadRequest();
     
     AppUser user = new()
