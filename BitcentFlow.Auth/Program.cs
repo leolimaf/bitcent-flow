@@ -105,7 +105,7 @@ app.MapPost("/api/signin", async (UserManager<AppUser> userManager, [FromBody] U
     var securityToken = tokenHandler.CreateToken(tokenDescriptor);
     var token = tokenHandler.WriteToken(securityToken);
     
-    return Results.Ok(token);
+    return Results.Ok(new{ token });
 });
 
 app.MapGroup("/api").MapIdentityApi<AppUser>();
