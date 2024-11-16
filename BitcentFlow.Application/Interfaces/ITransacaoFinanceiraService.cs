@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.JsonPatch;
 using Sieve.Models;
 
-namespace BitcentFlow.Application.Services.Contracts;
+namespace BitcentFlow.Application.Interfaces;
 
 public interface ITransacaoFinanceiraService
 {

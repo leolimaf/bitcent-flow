@@ -1,4 +1,4 @@
-﻿namespace BitcentFlow.Infrastructure.Configurations;
+﻿namespace BitcentFlow.Infrastructure.Settings;
 
 public class JwtSettings
 {

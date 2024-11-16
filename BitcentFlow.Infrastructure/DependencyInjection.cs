@@ -5,9 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 using BitcentFlow.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json.Serialization;
-using BitcentFlow.Application.Persistence.Contracts;
-using BitcentFlow.Infrastructure.Configurations;
+using BitcentFlow.Domain.Repositories;
 using BitcentFlow.Infrastructure.Context;
+using BitcentFlow.Infrastructure.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -34,7 +34,6 @@ public static class DependencyInjection
         services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(opts => 
             opts.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
-        services.AddScoped<IUsuarioRepository, UsuarioRepository>();
         services.AddScoped<ITransacaoFinanceiraRepository, TransacaoFinanceiraRepository>();
 
         services.AddVersioning();
@@ -48,7 +47,6 @@ public static class DependencyInjection
         configuration.Bind(JwtSettings.SectionName, jwtSettings);
 
         services.AddSingleton(Options.Create(jwtSettings));
-        services.AddScoped<IJwtGenarator, JwtGenarator>();
         
         services.AddAuthentication(options =>
         {

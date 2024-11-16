@@ -1,11 +1,10 @@
-﻿using BitcentFlow.Application.Persistence.Contracts;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using BitcentFlow.Application.Services.Contracts;
-using BitcentFlow.Infrastructure.Configurations;
+using BitcentFlow.Domain.Repositories;
 using BitcentFlow.Infrastructure.Context;
 using Testcontainers.MsSql;
 

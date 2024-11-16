@@ -1,4 +1,4 @@
-﻿namespace BitcentFlow.Domain.Exception;
+﻿namespace BitcentFlow.Application.Exception;
 
 public class BitcentFlowException : System.Exception
 {

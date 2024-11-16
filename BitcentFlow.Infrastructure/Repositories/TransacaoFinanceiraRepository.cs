@@ -1,5 +1,5 @@
-﻿using BitcentFlow.Application.Persistence.Contracts;
-using BitcentFlow.Domain.Models;
+﻿using BitcentFlow.Domain.Entities;
+using BitcentFlow.Domain.Repositories;
 using BitcentFlow.Infrastructure.Context;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -12,31 +12,22 @@ public class TransacaoFinanceiraRepository(AppDbContext context, IHttpContextAcc
     
     public async Task AdicionarAsync(TransacaoFinanceira transacao)
     {
-        transacao.Usuario = _username;
         await context.AddAsync(transacao);
     }
 
     public async Task<TransacaoFinanceira?> ObterPorIdAsync(Guid id)
     {
-        var transacao = await context.TransacoesFinanceiras.FindAsync(id);
-
-        return transacao?.Usuario == _username 
-            ? transacao 
-            : default;
+        return await context.TransacoesFinanceiras.FindAsync(id);
     }
 
     public async Task<List<TransacaoFinanceira>> ListarAsync()
     {
         return await context.TransacoesFinanceiras
-            .Where(t => t.Usuario == _username)
             .ToListAsync();
     } 
 
     public void Remover(TransacaoFinanceira transacao)
     {
-        if (transacao.Usuario != _username) 
-            return;
-        
         context.TransacoesFinanceiras.Remove(transacao);
     }
 
