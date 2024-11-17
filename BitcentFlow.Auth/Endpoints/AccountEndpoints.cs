@@ -1,4 +1,7 @@
+using System.Security.Claims;
+using BitcentFlow.Auth.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace BitcentFlow.Auth.Endpoints;
 
@@ -11,8 +14,15 @@ public static class AccountEndpoints
         return app;
     }
     
-    private static string GetUserProfile()
+    private static async Task<IResult> GetUserProfile(ClaimsPrincipal user, UserManager<AppUser> userManager)
     {
-        return "/user-profile";
+        var userId = user.Claims.First(x => "UserId" == x.Type).Value;
+        var userDetails = await userManager.FindByIdAsync(userId);
+        return Results.Ok(
+            new
+            {
+                NomeCompleto = userDetails?.FullName,
+                userDetails?.Email,
+            });
     }
 }
