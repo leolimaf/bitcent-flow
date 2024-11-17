@@ -14,9 +14,9 @@ public static class IdentityUserEndpoints
 {
     public static IEndpointRouteBuilder MapIdentityUserEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapPost("/signup", CadastrarUsuario);
+        app.MapPost("/signup", CadastrarUsuario).AllowAnonymous();
 
-        app.MapPost("/signin", LogarUsuario);
+        app.MapPost("/signin", LogarUsuario).AllowAnonymous();
         
         return app;
     }
@@ -53,7 +53,7 @@ public static class IdentityUserEndpoints
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity([
-                new Claim("UserID", user.Id),
+                new Claim("UserId", user.Id),
             ]),
             Expires = DateTime.UtcNow.AddDays(10),
             SigningCredentials = new SigningCredentials(signInKey, SecurityAlgorithms.HmacSha256Signature)
