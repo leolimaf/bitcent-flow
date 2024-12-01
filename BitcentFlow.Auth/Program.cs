@@ -25,6 +25,7 @@ app.MapGroup("/api")
 
 app.MapGroup("/api")
    .MapIdentityUserEndpoints()
+   .MapAdminEndpoints()
    .MapAccountEndpoints();
 
 app.Run();

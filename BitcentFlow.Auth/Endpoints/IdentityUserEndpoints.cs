@@ -36,6 +36,7 @@ public static class IdentityUserEndpoints
 
         };
         var result = await userManager.CreateAsync(user, userRegistrationRequest.Password);
+        await userManager.AddToRoleAsync(user, "User");
 
         return result.Succeeded 
             ? Results.Ok(result)
@@ -49,12 +50,15 @@ public static class IdentityUserEndpoints
         if (user is null || !await userManager.CheckPasswordAsync(user, userLoginRequest.Password))
             return Results.BadRequest(new { message = "Email or password is incorrect." });
     
+        var roles = await userManager.GetRolesAsync(user);
         var signInKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Value.Secret));
+        var claims = new ClaimsIdentity([
+            new Claim("UserId", user.Id),
+            new Claim(ClaimTypes.Role, roles.First()),
+        ]);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity([
-                new Claim("UserId", user.Id),
-            ]),
+            Subject = claims,
             Expires = DateTime.UtcNow.AddDays(10),
             SigningCredentials = new SigningCredentials(signInKey, SecurityAlgorithms.HmacSha256Signature)
         };
