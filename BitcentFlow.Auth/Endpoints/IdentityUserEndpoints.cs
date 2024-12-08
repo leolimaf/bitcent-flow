@@ -1,8 +1,10 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using BitcentFlow.Auth.DTOs.UserDTOs.Requests;
 using BitcentFlow.Auth.Models;
+using BitcentFlow.Auth.Settings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -17,6 +19,7 @@ public static class IdentityUserEndpoints
         app.MapPost("/signup", CadastrarUsuario).AllowAnonymous();
 
         app.MapPost("/signin", LogarUsuario).AllowAnonymous();
+        app.MapPost("/refresh-token", AtualizarToken);
         
         return app;
     }
@@ -26,17 +29,19 @@ public static class IdentityUserEndpoints
         if (!userRegistrationRequest.AcceptTerms)
             return Results.BadRequest();
     
-        AppUser user = new()
+        AppUser appUser = new()
         {
             FullName = userRegistrationRequest.FirstName.Trim() + " " + userRegistrationRequest.LastName.Trim(),
             Birthdate = userRegistrationRequest.Birthdate,
             PhoneNumber = userRegistrationRequest.PhoneNumber,
             UserName = userRegistrationRequest.Email,
             Email = userRegistrationRequest.Email,
+            Token = null,
+            TokenUtcExpiration = null
 
         };
-        var result = await userManager.CreateAsync(user, userRegistrationRequest.Password);
-        await userManager.AddToRoleAsync(user, "User");
+        var result = await userManager.CreateAsync(appUser, userRegistrationRequest.Password);
+        await userManager.AddToRoleAsync(appUser, "User");
 
         return result.Succeeded 
             ? Results.Ok(result)
@@ -53,20 +58,35 @@ public static class IdentityUserEndpoints
         var roles = await userManager.GetRolesAsync(user);
         var signInKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Value.Secret));
         var claims = new ClaimsIdentity([
-            new Claim("UserId", user.Id),
-            new Claim(ClaimTypes.Role, roles.First()),
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+            new Claim(JwtRegisteredClaimNames.Email, user.Email!),
+            new Claim(ClaimTypes.Role, roles.First())
         ]);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = claims,
-            Expires = DateTime.UtcNow.AddDays(10),
-            SigningCredentials = new SigningCredentials(signInKey, SecurityAlgorithms.HmacSha256Signature)
+            Expires = DateTime.UtcNow.AddMinutes(jwtSettings.Value.ExpirationInMinutes),
+            SigningCredentials = new SigningCredentials(signInKey, SecurityAlgorithms.HmacSha256Signature),
+            Issuer = jwtSettings.Value.Issuer,
+            Audience = jwtSettings.Value.Audience
         };
         var tokenHandler = new JwtSecurityTokenHandler();
         var securityToken = tokenHandler.CreateToken(tokenDescriptor);
-        var token = tokenHandler.WriteToken(securityToken);
+        
+        var accessToken = tokenHandler.WriteToken(securityToken);
+        var refreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+        
+        user.Token = refreshToken;
+        user.TokenUtcExpiration = DateTime.UtcNow.AddDays(7);
+
+        await userManager.UpdateAsync(user);
     
-        return Results.Ok(new{ token });
+        return Results.Ok(new{ accessToken, refreshToken });
+    }
+    
+    private static string AtualizarToken()
+    {
+        throw new NotImplementedException();
     }
 
 }

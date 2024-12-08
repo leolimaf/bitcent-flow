@@ -1,4 +1,5 @@
 using BitcentFlow.Auth.Models;
+using BitcentFlow.Auth.Settings;
 
 namespace BitcentFlow.Auth.Extensions;
 

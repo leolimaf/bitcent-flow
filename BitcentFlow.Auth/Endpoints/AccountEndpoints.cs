@@ -16,7 +16,7 @@ public static class AccountEndpoints
     
     private static async Task<IResult> GetUserProfile(ClaimsPrincipal user, UserManager<AppUser> userManager)
     {
-        var userId = user.Claims.First(x => "UserId" == x.Type).Value;
+        var userId = user.Claims.First(x => "sub" == x.Type).Value;
         var userDetails = await userManager.FindByIdAsync(userId);
         return Results.Ok(
             new
