@@ -1,14 +1,10 @@
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 using BitcentFlow.Auth.DTOs.UserDTOs.Requests;
+using BitcentFlow.Auth.DTOs.UserDTOs.Responses;
+using BitcentFlow.Auth.Interfaces;
 using BitcentFlow.Auth.Models;
-using BitcentFlow.Auth.Settings;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.EntityFrameworkCore;
 
 namespace BitcentFlow.Auth.Endpoints;
 
@@ -17,14 +13,13 @@ public static class IdentityUserEndpoints
     public static IEndpointRouteBuilder MapIdentityUserEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapPost("/signup", CadastrarUsuario).AllowAnonymous();
-
         app.MapPost("/signin", LogarUsuario).AllowAnonymous();
         app.MapPost("/refresh-token", AtualizarToken);
         
         return app;
     }
 
-    private static async Task<IResult> CadastrarUsuario(UserManager<AppUser> userManager, [FromBody] UserRegistrationRequest userRegistrationRequest)
+    private static async Task<IResult> CadastrarUsuario(UserManager<AppUser> userManager, UserRegistrationRequest userRegistrationRequest)
     {
         if (!userRegistrationRequest.AcceptTerms)
             return Results.BadRequest();
@@ -48,45 +43,44 @@ public static class IdentityUserEndpoints
             : Results.BadRequest(result);
     }
 
-    private static async Task<IResult> LogarUsuario(UserManager<AppUser> userManager, [FromBody] UserLoginRequest userLoginRequest, IOptions<JwtSettings> jwtSettings)
+    private static async Task<IResult> LogarUsuario(ITokenProvider tokenProvider, UserManager<AppUser> userManager, UserLoginRequest userLoginRequest)
     {
-        var user = await userManager.FindByEmailAsync(userLoginRequest.Email);
+        var usuario = await userManager.FindByEmailAsync(userLoginRequest.Email);
     
-        if (user is null || !await userManager.CheckPasswordAsync(user, userLoginRequest.Password))
-            return Results.BadRequest(new { message = "Email or password is incorrect." });
-    
-        var roles = await userManager.GetRolesAsync(user);
-        var signInKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Value.Secret));
-        var claims = new ClaimsIdentity([
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email!),
-            new Claim(ClaimTypes.Role, roles.First())
-        ]);
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Subject = claims,
-            Expires = DateTime.UtcNow.AddMinutes(jwtSettings.Value.ExpirationInMinutes),
-            SigningCredentials = new SigningCredentials(signInKey, SecurityAlgorithms.HmacSha256Signature),
-            Issuer = jwtSettings.Value.Issuer,
-            Audience = jwtSettings.Value.Audience
-        };
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var securityToken = tokenHandler.CreateToken(tokenDescriptor);
+        if (usuario is null || !await userManager.CheckPasswordAsync(usuario, userLoginRequest.Password))
+            return Results.BadRequest(new TokenResponse{ Message = "Email or password is incorrect."});
         
-        var accessToken = tokenHandler.WriteToken(securityToken);
-        var refreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+        var roles = await userManager.GetRolesAsync(usuario);
         
-        user.Token = refreshToken;
-        user.TokenUtcExpiration = DateTime.UtcNow.AddDays(7);
+        var tokenResponse = tokenProvider.GerarToken(usuario, roles);
+        
+        usuario.Token = tokenResponse.RefreshToken;
+        usuario.TokenUtcExpiration = tokenResponse.ExpiresIn!.Value;
 
-        await userManager.UpdateAsync(user);
+        await userManager.UpdateAsync(usuario);
     
-        return Results.Ok(new{ accessToken, refreshToken });
+        return Results.Ok(tokenResponse);
     }
     
-    private static string AtualizarToken()
+    private static async Task<IResult> AtualizarToken(ITokenProvider tokenProvider, UserManager<AppUser> userManager, TokenRequest tokenRequest)
     {
-        throw new NotImplementedException();
-    }
+         var principal = tokenProvider.GetPrincipalFromExpiredToken(tokenRequest.AccessToken);
+        
+        var id = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        var usuario = await userManager.Users.FirstOrDefaultAsync(x => x.Id == id);
+        
+        if (usuario is null || usuario.Token != tokenRequest.RefreshToken || usuario.TokenUtcExpiration <= DateTime.UtcNow)
+            return Results.BadRequest(new TokenResponse{ Message = "Invalid or expired refresh token."});
 
+        var roles = await userManager.GetRolesAsync(usuario);
+        
+        var tokenResponse = tokenProvider.GerarToken(usuario, roles);
+        
+        usuario.Token = tokenResponse.RefreshToken;
+        usuario.TokenUtcExpiration = tokenResponse.ExpiresIn!.Value;
+        
+        await userManager.UpdateAsync(usuario);
+        
+        return Results.Ok(tokenResponse);
+    }
 }

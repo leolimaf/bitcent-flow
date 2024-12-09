@@ -1,4 +1,6 @@
+using BitcentFlow.Auth.Interfaces;
 using BitcentFlow.Auth.Models;
+using BitcentFlow.Auth.Providers;
 using BitcentFlow.Auth.Settings;
 
 namespace BitcentFlow.Auth.Extensions;
@@ -12,6 +14,8 @@ public static class ConfigExtensions
     
     public static IServiceCollection AddAppConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddScoped<ITokenProvider, TokenProvider>();
+        
         services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
 
         return services;
